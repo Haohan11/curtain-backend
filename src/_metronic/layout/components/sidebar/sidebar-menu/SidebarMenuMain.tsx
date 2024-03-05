@@ -1,10 +1,7 @@
-import { useIntl } from 'react-intl'
-import { KTIcon } from '../../../../helpers'
 import { SidebarMenuItemWithSub } from './SidebarMenuItemWithSub'
 import { SidebarMenuItem } from './SidebarMenuItem'
 
 const SidebarMenuMain = () => {
-  const intl = useIntl()
 
   return (
     <>
