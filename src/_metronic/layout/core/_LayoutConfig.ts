@@ -115,7 +115,7 @@ export const DefaultConfig: ILayout = {
     pageLoader: {
       componentName: 'page-loader',
       type: 'none',
-      logoImage: 'default.svg',
+      logoImage: 'logo.svg',
       logoClass: 'mh-75px',
     },
   },
