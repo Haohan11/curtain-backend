@@ -1,7 +1,7 @@
 import {ILayout} from './_Models'
 
 export const DefaultConfig: ILayout = {
-  layoutType: 'dark-sidebar',
+  layoutType: 'light-sidebar',
   main: {
     componentName: 'main',
     type: 'default',
@@ -21,7 +21,7 @@ export const DefaultConfig: ILayout = {
     },
     header: {
       componentName: 'header',
-      display: true,
+      display: false,
       default: {
         container: 'fluid',
         containerClass: 'd-flex align-items-stretch justify-content-between',
@@ -85,7 +85,7 @@ export const DefaultConfig: ILayout = {
         mobile: false,
       },
       // custom settings,
-      filterButton: true,
+      filterButton: false,
       daterangepickerButton: false,
       primaryButton: true,
       primaryButtonLabel: 'Create',
