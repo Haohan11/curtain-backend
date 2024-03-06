@@ -70,7 +70,7 @@ const ProductsPage = () => (
         path="vendor"
         element={
           <>
-            <PageTitle>面料材質</PageTitle>
+            <PageTitle>供應商</PageTitle>
             <VendorList />
           </>
         }
