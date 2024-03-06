@@ -1,27 +1,6 @@
 import {Navigate, Routes, Route, Outlet} from 'react-router-dom'
 import {PageTitle} from '../../../_metronic/layout/core'
 import { ToolbarWrapper } from '../../../_metronic/layout/components/toolbar'
-// import {Overview} from './components/Overview'
-// import {Projects} from './components/Projects'
-// import {Campaigns} from './components/Campaigns'
-// import {Documents} from './components/Documents'
-// import {Connections} from './components/Connections'
-// import {ProfileHeader} from './ProfileHeader'
-
-const profileBreadCrumbs = [
-  {
-    title: 'Products',
-    path: '/produtcs',
-    isSeparator: false,
-    isActive: false,
-  },
-  {
-    title: '',
-    path: '',
-    isSeparator: true,
-    isActive: false,
-  },
-]
 
 const ProductsPage = () => (
   <Routes>
@@ -38,7 +17,7 @@ const ProductsPage = () => (
         path='management'
         element={
           <>
-            <PageTitle breadcrumbs={profileBreadCrumbs}>商品維護</PageTitle>
+            <PageTitle>商品維護</PageTitle>
             <div>商品維護</div>
           </>
         }
@@ -47,7 +26,7 @@ const ProductsPage = () => (
         path='series'
         element={
           <>
-            <PageTitle breadcrumbs={profileBreadCrumbs}>商品系列</PageTitle>
+            <PageTitle>商品系列</PageTitle>
             <div>商品系列</div>
           </>
         }
@@ -56,7 +35,7 @@ const ProductsPage = () => (
         path='colors'
         element={
           <>
-            <PageTitle breadcrumbs={profileBreadCrumbs}>色系類別</PageTitle>
+            <PageTitle>色系類別</PageTitle>
             <div>色系類別</div>
           </>
         }
@@ -65,7 +44,7 @@ const ProductsPage = () => (
         path='styles'
         element={
           <>
-            <PageTitle breadcrumbs={profileBreadCrumbs}>風格類別</PageTitle>
+            <PageTitle>風格類別</PageTitle>
             <div>風格類別</div>
           </>
         }
@@ -74,7 +53,7 @@ const ProductsPage = () => (
         path='material'
         element={
           <>
-            <PageTitle breadcrumbs={profileBreadCrumbs}>面料材質</PageTitle>
+            <PageTitle>面料材質</PageTitle>
             <div>面料材質</div>
           </>
         }
