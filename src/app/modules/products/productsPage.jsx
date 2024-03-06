@@ -1,66 +1,83 @@
-import {Navigate, Routes, Route, Outlet} from 'react-router-dom'
-import {PageTitle} from '../../../_metronic/layout/core'
-import { ToolbarWrapper } from '../../../_metronic/layout/components/toolbar'
+import { Navigate, Routes, Route, Outlet } from "react-router-dom";
+import { PageTitle } from "../../../_metronic/layout/core";
+import { ToolbarWrapper } from "../../../_metronic/layout/components/toolbar";
+
+import {
+  ProductsList,
+  SeriesList,
+  ColorTypeList,
+  StyleTypeList,
+  MaterialList,
+  VendorList,
+} from "../users-list/List";
 
 const ProductsPage = () => (
   <Routes>
     <Route
       element={
         <>
-          {/* <ProfileHeader /> */}
           <ToolbarWrapper />
           <Outlet />
         </>
       }
     >
       <Route
-        path='management'
+        path="management"
         element={
           <>
             <PageTitle>商品維護</PageTitle>
-            <div>商品維護</div>
+            <ProductsList />
           </>
         }
       />
       <Route
-        path='series'
+        path="series"
         element={
           <>
             <PageTitle>商品系列</PageTitle>
-            <div>商品系列</div>
+            <SeriesList />
           </>
         }
       />
       <Route
-        path='colors'
+        path="colors"
         element={
           <>
             <PageTitle>色系類別</PageTitle>
-            <div>色系類別</div>
+            <ColorTypeList />
           </>
         }
       />
       <Route
-        path='styles'
+        path="styles"
         element={
           <>
             <PageTitle>風格類別</PageTitle>
-            <div>風格類別</div>
+            <StyleTypeList />
           </>
         }
       />
       <Route
-        path='material'
+        path="material"
         element={
           <>
             <PageTitle>面料材質</PageTitle>
-            <div>面料材質</div>
+            <MaterialList />
           </>
         }
       />
-      <Route index element={<Navigate to='/products/management' />} />
+      <Route
+        path="vendor"
+        element={
+          <>
+            <PageTitle>面料材質</PageTitle>
+            <VendorList />
+          </>
+        }
+      />
+      <Route index element={<Navigate to="/products/management" />} />
     </Route>
   </Routes>
-)
+);
 
-export default ProductsPage
+export default ProductsPage;
