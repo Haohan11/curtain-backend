@@ -2,28 +2,20 @@ import {lazy, FC, Suspense} from 'react'
 import {Route, Routes, Navigate} from 'react-router-dom'
 import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import TopBarProgress from 'react-topbar-progress-indicator'
-import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
-import {MenuTestPage} from '../pages/MenuTestPage'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
-import BuilderPageWrapper from '../pages/layout-builder/BuilderPageWrapper'
-// import Products from '../pages/products/productPage'
+import {ProductsPage} from '../pages/products/productsPage'
 
 const PrivateRoutes = () => {
-  const ProductsPage = lazy(() => import('../modules/products/ProductsPage'))
   return (
     <Routes>
       <Route element={<MasterLayout />}>
-        {/* Redirect to Dashboard after success login/registartion */}
         <Route path='auth/*' element={<Navigate to='/product/management' />} />
         {/* Pages */}
-        {/* Lazy Modules */}
         <Route
           path='products/*'
           element={
-            <SuspensedView>
               <ProductsPage />
-            </SuspensedView>
           }
         />
         {/* Page Not Found */}

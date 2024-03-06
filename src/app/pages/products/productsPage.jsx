@@ -9,7 +9,7 @@ import {
   StyleTypeList,
   MaterialList,
   VendorList,
-} from "../users-list/List";
+} from "../../modules/users-list/List";
 
 const ProductsPage = () => (
   <Routes>
@@ -76,8 +76,9 @@ const ProductsPage = () => (
         }
       />
       <Route index element={<Navigate to="/products/management" />} />
+      <Route path='*' element={<Navigate to='/error/404' />} />
     </Route>
   </Routes>
 );
 
-export default ProductsPage;
+export { ProductsPage };
