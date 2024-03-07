@@ -3,7 +3,7 @@ import { useTable, ColumnInstance, Row } from 'react-table'
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn'
 import { CustomRow } from './columns/CustomRow'
 import { useQueryResponseData, useQueryResponseLoading } from '../core/QueryResponseProvider'
-import { usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns } from './columns/_columns'
+import { usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns } from './columns/_columns'
 import { User } from '../core/_models'
 import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { UsersListPagination } from '../components/pagination/UsersListPagination'
@@ -15,7 +15,9 @@ const dist = {
   colorType: colorTypeColumns,
   styleType: styleTypeColumns,
   material: materialColumns,
-  vendor: vendorColumns
+  vendor: vendorColumns,
+  accounts: accountsColumns,
+  role: roleColumns,
 }
 
 const Table = ({ which }) => {

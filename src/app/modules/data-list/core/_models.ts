@@ -35,6 +35,7 @@ export type Products = {
 
 export type Series = {
   id?: ID
+  code?: string
   enable?: boolean
   name?: string
   comments?: string
@@ -63,9 +64,31 @@ export type Material = {
 
 export type Vendor = {
   id?: ID
+  code: string
   enable?: boolean
   name?: string
   comments?: string
+}
+
+export type Account = {
+  id?: ID
+  enable?: boolean
+  role?: string
+  code?: string
+  avatar?: string
+  name?: string
+  id_code?: string
+  phone_number?: string
+  email?: string
+  password?: string
+}
+
+export type Role = {
+  id?: ID
+  name?: string
+  list?: Array<string>
+  comments?: string
+  auth?: any
 }
 
 export type UsersQueryResponse = Response<Array<User>>

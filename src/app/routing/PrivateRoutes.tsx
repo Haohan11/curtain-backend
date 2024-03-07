@@ -5,6 +5,7 @@ import TopBarProgress from 'react-topbar-progress-indicator'
 import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
 import {ProductsPage} from '../pages/products/productsPage'
+import {AccountPage} from '../pages/account/accountPage'
 
 const PrivateRoutes = () => {
   return (
@@ -16,6 +17,12 @@ const PrivateRoutes = () => {
           path='products/*'
           element={
               <ProductsPage />
+          }
+        />
+        <Route
+          path='accounts/*'
+          element={
+              <AccountPage />
           }
         />
         {/* Page Not Found */}

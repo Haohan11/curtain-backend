@@ -8,7 +8,7 @@ import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
 import {
-  User, Products, Series, ColorType, StyleType, Material, Vendor
+  User, Products, Series, ColorType, StyleType, Material, Vendor, Account, Role
 } from '../../core/_models'
 import { EnableCell } from './enableCell'
 import { ProductAvaliableCell } from './ProductAvaliableCell'
@@ -159,7 +159,7 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='系列編號' className='min-w-125px' />,
-    accessor: 'id',
+    accessor: 'code',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='系列名稱' className='min-w-125px' />,
@@ -263,7 +263,7 @@ const vendorColumns: ReadonlyArray<Column<Vendor>> = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='供應商編號' className='min-w-125px' />,
-    accessor: 'id',
+    accessor: 'code',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='供應商名稱' className='min-w-125px' />,
@@ -275,6 +275,76 @@ const vendorColumns: ReadonlyArray<Column<Vendor>> = [
   },
 ]
 
+const accountsColumns: ReadonlyArray<Column<Account>> = [
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
+    ),
+    id: 'actions',
+    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='員工角色' className='min-w-125px' />,
+    accessor: 'role',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='員工編號' className='min-w-125px' />,
+    accessor: 'code',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='大頭貼圖' className='min-w-125px' />,
+    accessor: 'avatar',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='員工姓名' className='min-w-125px' />,
+    accessor: 'name',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='身分證號' className='min-w-125px' />,
+    accessor: 'id_code',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='手機號碼' className='min-w-125px' />,
+    accessor: 'phone_number',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='電子郵箱' className='min-w-125px' />,
+    accessor: 'email',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='登入密碼' className='min-w-125px' />,
+    accessor: 'password',
+  },
+]
+
+const roleColumns: ReadonlyArray<Column<Role>> = [
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
+    ),
+    id: 'actions',
+    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='角色名稱' className='min-w-125px' />,
+    accessor: 'name',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='員工列表' className='min-w-125px' />,
+    accessor: 'list',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
+    accessor: 'comments',
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='權限設定' className='min-w-125px' />,
+    accessor: 'auth',
+  },
+]
+
+
+
 export {
-  usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns
+  usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns
 }
