@@ -6,6 +6,7 @@ import {getCSSVariableValue} from '../../_metronic/assets/ts/_utils'
 import {WithChildren} from '../../_metronic/helpers'
 import {ProductsPage} from '../pages/products/productsPage'
 import {AccountPage} from '../pages/account/accountPage'
+import {EnvironmentPage} from '../pages/environment/environmentPage'
 
 const PrivateRoutes = () => {
   return (
@@ -23,6 +24,12 @@ const PrivateRoutes = () => {
           path='accounts/*'
           element={
               <AccountPage />
+          }
+        />
+        <Route
+          path='environment/*'
+          element={
+              <EnvironmentPage />
           }
         />
         {/* Page Not Found */}

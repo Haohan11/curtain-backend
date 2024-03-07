@@ -8,7 +8,7 @@ import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
 import {
-  User, Products, Series, ColorType, StyleType, Material, Vendor, Account, Role
+  User, Products, Series, ColorType, StyleType, Material, Vendor, Account, Role, Environment
 } from '../../core/_models'
 import { EnableCell } from './enableCell'
 import { ProductAvaliableCell } from './ProductAvaliableCell'
@@ -343,8 +343,22 @@ const roleColumns: ReadonlyArray<Column<Role>> = [
   },
 ]
 
+const environmentColumns: ReadonlyArray<Column<Environment>> = [
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
+    ),
+    id: 'actions',
+    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='場景名稱' className='min-w-125px' />,
+    accessor: 'name',
+  },
+]
+
 
 
 export {
-  usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns
+  usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns
 }

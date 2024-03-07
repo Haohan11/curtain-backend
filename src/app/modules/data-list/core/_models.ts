@@ -91,6 +91,11 @@ export type Role = {
   auth?: any
 }
 
+export type Environment = {
+  id?: ID
+  name?: string
+}
+
 export type UsersQueryResponse = Response<Array<User>>
 
 export const initialUser: User = {

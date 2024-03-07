@@ -10,10 +10,13 @@ const placeholderDict = {
   "colorType": "色系",
   "styleType": "風格",
   "material": "材質",
-  "vendor": "供應商"
+  "vendor": "供應商",
+  "accounts": "員工",
+  "role": "角色類別",
+  "environment": "場景"
 }
 
-const ProductsListSearchComponent = ({which}) => {
+const ListSearchComponent = ({which}) => {
   const { updateState } = useQueryRequest()
   const [searchTerm, setSearchTerm] = useState<string>('')
   // Debounce search term so that it only gives us latest value ...
@@ -41,7 +44,7 @@ const ProductsListSearchComponent = ({which}) => {
           type='text'
           data-kt-user-table-filter='search'
           className='form-control form-control-solid w-250px ps-14'
-          placeholder={`搜尋${placeholderDict[which]}`}
+          placeholder={`搜尋${placeholderDict[which] || ""}`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -51,4 +54,4 @@ const ProductsListSearchComponent = ({which}) => {
   )
 }
 
-export { ProductsListSearchComponent }
+export { ListSearchComponent }

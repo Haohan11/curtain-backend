@@ -1,17 +1,17 @@
 import { ListViewProvider, useListView } from './core/ListViewProvider'
 import { QueryRequestProvider } from './core/QueryRequestProvider'
 import { QueryResponseProvider } from './core/QueryResponseProvider'
-import { ProductsListHeader } from './components/header/ProductsListHeader'
+import { ListHeader } from './components/header/ListHeader'
 import { Table } from './table/Table'
 import { UserEditModal } from './user-edit-modal/UserEditModal'
 import { Content } from '../../../_metronic/layout/components/content'
 
-const List = ({ which, category }) => {
+const List = ({ which, category = which }) => {
   const { itemIdForUpdate } = useListView()
   return (
     <>
       <div className='px-8'>
-        <ProductsListHeader which={which} />
+        <ListHeader which={which} />
         <Table which={which} category={category} />
       </div>
       {itemIdForUpdate !== undefined && <UserEditModal />}
@@ -49,6 +49,8 @@ const accountManageItems = [
 
 const [AccountsList, RoleList] = accountManageItems.map(item => ListWrapper(item, "accounts"))
 
+const EnvironmentList = ListWrapper("environment")
+
 export {
-  ProductsList, SeriesList, ColorTypeList, StyleTypeList, MaterialList, VendorList, AccountsList, RoleList
+  ProductsList, SeriesList, ColorTypeList, StyleTypeList, MaterialList, VendorList, AccountsList, RoleList, EnvironmentList
 }

@@ -1,13 +1,13 @@
 import {useListView} from '../../core/ListViewProvider'
 import {DataListToolbar} from './DataListToolbar'
 import {UsersListGrouping} from './UsersListGrouping'
-import {ProductsListSearchComponent} from './ProductsListSearchComponent'
+import {ListSearchComponent} from './ListSearchComponent'
 
-const ProductsListHeader = ({which}) => {
+const ListHeader = ({which}) => {
   const {selected} = useListView()
   return (
     <div className='d-flex justify-content-between card-header border-0 pt-6'>
-      <ProductsListSearchComponent which={which}/>
+      <ListSearchComponent which={which}/>
       {/* begin::Card toolbar */}
       <div className='card-toolbar'>
         {/* begin::Group actions */}
@@ -19,4 +19,4 @@ const ProductsListHeader = ({which}) => {
   )
 }
 
-export {ProductsListHeader}
+export {ListHeader}

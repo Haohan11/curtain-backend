@@ -25,7 +25,7 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/accounts/info' title='員工資料' hasBullet={true} />
         <SidebarMenuItem to='/accounts/role' title='角色類別' hasBullet={true} />
       </SidebarMenuItemWithSub>
-      <SidebarMenuItem to='/environment' title='場景管理' icon='bi bi-bounding-box' />
+      <SidebarMenuItem to='/environment/main' title='場景管理' icon='bi bi-bounding-box' />
     </>
   )
 }
