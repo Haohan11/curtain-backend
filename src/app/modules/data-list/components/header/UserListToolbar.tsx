@@ -1,6 +1,5 @@
 import {KTIcon} from '../../../../../_metronic/helpers'
 import {useListView} from '../../core/ListViewProvider'
-import {UsersListFilter} from './UsersListFilter'
 
 const UsersListToolbar = () => {
   const {setItemIdForUpdate} = useListView()

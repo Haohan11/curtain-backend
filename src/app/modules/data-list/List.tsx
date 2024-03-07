@@ -1,7 +1,7 @@
 import { ListViewProvider, useListView } from './core/ListViewProvider'
 import { QueryRequestProvider } from './core/QueryRequestProvider'
 import { QueryResponseProvider } from './core/QueryResponseProvider'
-import { UsersListHeader } from './components/header/UsersListHeader'
+import { ProductsListHeader } from './components/header/ProductsListHeader'
 import { Table } from './table/Table'
 import { UserEditModal } from './user-edit-modal/UserEditModal'
 import { Content } from '../../../_metronic/layout/components/content'
@@ -11,7 +11,7 @@ const List = ({ which }) => {
   return (
     <>
       <div className='px-8'>
-        <UsersListHeader />
+        <ProductsListHeader which={which} />
         <Table which={which} />
       </div>
       {itemIdForUpdate !== undefined && <UserEditModal />}
@@ -32,7 +32,6 @@ const ListWrapper = (which) => (() => (
 ))
 
 const ProductsList = ListWrapper("products")
-// const UsersList = ListWrapper("users")
 const SeriesList = ListWrapper("series")
 const ColorTypeList = ListWrapper("colorType")
 const StyleTypeList = ListWrapper("styleType")
