@@ -5,7 +5,7 @@ import { QueryRequestProvider } from './core/QueryRequestProvider'
 import { QueryResponseProvider } from './core/QueryResponseProvider'
 import { ListHeader } from './components/header/ListHeader'
 import { Table } from './table/Table'
-import { UserEditModal } from './user-edit-modal/UserEditModal'
+import { EditModal } from './edit-modal/EditModal'
 import { Content } from '../../../_metronic/layout/components/content'
 
 const List = ({ which }) => {
@@ -22,7 +22,7 @@ const List = ({ which }) => {
         {table && <ListHeader />}
         {table && <Table />}
       </div>
-      {itemIdForUpdate !== undefined && <UserEditModal />}
+      {itemIdForUpdate !== undefined && <EditModal />}
     </>
   )
 }

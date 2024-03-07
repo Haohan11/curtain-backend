@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
-import {MenuComponent} from '../../../../../../../_metronic/assets/ts/components'
-import {initialQueryState, KTIcon} from '../../../../../../../_metronic/helpers'
+import {MenuComponent} from '../../../../../_metronic/assets/ts/components'
+import {initialQueryState, KTIcon} from '../../../../../_metronic/helpers'
 import {useQueryRequest} from '../../core/QueryRequestProvider'
 import {useQueryResponse} from '../../core/QueryResponseProvider'
 
@@ -36,14 +36,14 @@ const UsersListFilter = () => {
         data-kt-menu-placement='bottom-end'
       >
         <KTIcon iconName='filter' className='fs-2' />
-        Filter
+        篩選
       </button>
       {/* end::Filter Button */}
       {/* begin::SubMenu */}
       <div className='menu menu-sub menu-sub-dropdown w-300px w-md-325px' data-kt-menu='true'>
         {/* begin::Header */}
         <div className='px-7 py-5'>
-          <div className='fs-5 text-gray-900 fw-bolder'>Filter Options</div>
+          <div className='fs-5 text-gray-900 fw-bolder'>篩選條件</div>
         </div>
         {/* end::Header */}
 
@@ -108,7 +108,7 @@ const UsersListFilter = () => {
               data-kt-menu-dismiss='true'
               data-kt-user-table-filter='reset'
             >
-              Reset
+              重置
             </button>
             <button
               disabled={isLoading}
@@ -118,7 +118,7 @@ const UsersListFilter = () => {
               data-kt-menu-dismiss='true'
               data-kt-user-table-filter='filter'
             >
-              Apply
+              套用
             </button>
           </div>
           {/* end::Actions */}

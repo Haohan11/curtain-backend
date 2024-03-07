@@ -1,15 +1,14 @@
 import {useEffect} from 'react'
-import {UserEditModalHeader} from './UserEditModalHeader'
-import {UserEditModalFormWrapper} from './UserEditModalFormWrapper'
+import {EditModalHeader} from './EditModalHeader'
+import {EditModalFormWrapper} from './EditModalFormWrapper'
 
-const UserEditModal = () => {
+const EditModal = () => {
   useEffect(() => {
     document.body.classList.add('modal-open')
     return () => {
       document.body.classList.remove('modal-open')
     }
   }, [])
-  return <div>nothing</div>
 
   return (
     <>
@@ -21,13 +20,13 @@ const UserEditModal = () => {
         aria-modal='true'
       >
         {/* begin::Modal dialog */}
-        <div className='modal-dialog modal-dialog-centered mw-650px'>
+        <div className='modal-dialog modal-dialog-centered mw-800px'>
           {/* begin::Modal content */}
           <div className='modal-content'>
-            <UserEditModalHeader />
+            <EditModalHeader />
             {/* begin::Modal body */}
             <div className='modal-body scroll-y mx-5 mx-xl-15 my-7'>
-              <UserEditModalFormWrapper />
+              <EditModalFormWrapper />
             </div>
             {/* end::Modal body */}
           </div>
@@ -42,4 +41,4 @@ const UserEditModal = () => {
   )
 }
 
-export {UserEditModal}
+export {EditModal}

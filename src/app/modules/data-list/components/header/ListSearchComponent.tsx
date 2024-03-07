@@ -4,18 +4,7 @@ import { useEffect, useState } from 'react'
 import { initialQueryState, KTIcon, useDebounce } from '../../../../../_metronic/helpers'
 import { useQueryRequest } from '../../core/QueryRequestProvider'
 import { useTableData } from '../../core/TableDataProvider'
-
-const placeholderDict = {
-  "products": "商品",
-  "series": "系列",
-  "colorType": "色系",
-  "styleType": "風格",
-  "material": "材質",
-  "vendor": "供應商",
-  "accounts": "員工",
-  "role": "角色類別",
-  "environment": "場景"
-}
+import { placeholderDict } from '../../dictionary/tableDictionary'
 
 const ListSearchComponent = () => {
   const { updateState } = useQueryRequest()

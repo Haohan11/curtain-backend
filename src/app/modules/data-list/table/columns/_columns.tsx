@@ -3,7 +3,7 @@ import { UserInfoCell } from './UserInfoCell'
 import { UserLastLoginCell } from './UserLastLoginCell'
 import { UserTwoStepsCell } from './UserTwoStepsCell'
 import { UserActionsCell } from './UserActionsCell'
-import { ProductsActionsCell } from './ProductsActionsCell'
+import { ActionsCell } from './ActionsCell'
 import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
@@ -63,7 +63,7 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -148,7 +148,7 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -177,7 +177,7 @@ const colorTypeColumns: ReadonlyArray<Column<ColorType>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -202,7 +202,7 @@ const styleTypeColumns: ReadonlyArray<Column<StyleType>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -227,7 +227,7 @@ const materialColumns: ReadonlyArray<Column<Material>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -252,7 +252,7 @@ const vendorColumns: ReadonlyArray<Column<Vendor>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => (
@@ -281,7 +281,7 @@ const accountsColumns: ReadonlyArray<Column<Account>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工角色' className='min-w-125px' />,
@@ -323,7 +323,7 @@ const roleColumns: ReadonlyArray<Column<Role>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='角色名稱' className='min-w-125px' />,
@@ -349,7 +349,7 @@ const environmentColumns: ReadonlyArray<Column<Environment>> = [
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <ProductsActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='場景名稱' className='min-w-125px' />,
