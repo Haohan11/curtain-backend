@@ -8,8 +8,9 @@ import { User } from '../core/_models'
 import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { UsersListPagination } from '../components/pagination/UsersListPagination'
 
-const dist = {
-  users: usersColumns,
+import { useTableData } from '../core/TableDataProvider'
+
+const dict = {
   products: productsColumns,
   series: seriesColumns,
   colorType: colorTypeColumns,
@@ -21,11 +22,12 @@ const dist = {
   environment: environmentColumns,
 }
 
-const Table = ({ which }) => {
+const Table = () => {
   const users = useQueryResponseData()
   const isLoading = useQueryResponseLoading()
+  const { table } = useTableData()
   const data = useMemo(() => users, [users])
-  const columns = useMemo(() => dist[which], [])
+  const columns = useMemo(() => dict[table], [])
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } = useTable({
     columns,
     data,

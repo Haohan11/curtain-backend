@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { initialQueryState, KTIcon, useDebounce } from '../../../../../_metronic/helpers'
 import { useQueryRequest } from '../../core/QueryRequestProvider'
+import { useTableData } from '../../core/TableDataProvider'
 
 const placeholderDict = {
   "products": "商品",
@@ -16,9 +17,10 @@ const placeholderDict = {
   "environment": "場景"
 }
 
-const ListSearchComponent = ({which}) => {
+const ListSearchComponent = () => {
   const { updateState } = useQueryRequest()
   const [searchTerm, setSearchTerm] = useState<string>('')
+  const { table } = useTableData()
   // Debounce search term so that it only gives us latest value ...
   // ... if searchTerm has not been updated within last 500ms.
   // The goal is to only have the API call fire when user stops typing ...
@@ -44,7 +46,7 @@ const ListSearchComponent = ({which}) => {
           type='text'
           data-kt-user-table-filter='search'
           className='form-control form-control-solid w-250px ps-14'
-          placeholder={`搜尋${placeholderDict[which] || ""}`}
+          placeholder={`搜尋${placeholderDict[table] || ""}`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

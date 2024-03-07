@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { ListViewProvider, useListView } from './core/ListViewProvider'
+import { TableProvider, useTableData } from './core/TableDataProvider'
 import { QueryRequestProvider } from './core/QueryRequestProvider'
 import { QueryResponseProvider } from './core/QueryResponseProvider'
 import { ListHeader } from './components/header/ListHeader'
@@ -6,33 +8,41 @@ import { Table } from './table/Table'
 import { UserEditModal } from './user-edit-modal/UserEditModal'
 import { Content } from '../../../_metronic/layout/components/content'
 
-const List = ({ which, category = which }) => {
+const List = ({ which }) => {
   const { itemIdForUpdate } = useListView()
+  const { table, setTable } = useTableData()
+
+  useEffect(() => {
+    setTable(which)
+  }, [setTable])
+
   return (
     <>
       <div className='px-8'>
-        <ListHeader which={which} />
-        <Table which={which} category={category} />
+        {table && <ListHeader />}
+        {table && <Table />}
       </div>
       {itemIdForUpdate !== undefined && <UserEditModal />}
     </>
   )
 }
 
-const ListWrapper = (which, category) => (() => (
+const ListWrapper = (which) => (() => (
   <QueryRequestProvider>
     <QueryResponseProvider>
-      <ListViewProvider>
-        <Content>
-          <List which={which} category={category} />
-        </Content>
-      </ListViewProvider>
+      <TableProvider>
+        <ListViewProvider>
+          <Content>
+            <List which={which} />
+          </Content>
+        </ListViewProvider>
+      </TableProvider>
     </QueryResponseProvider>
   </QueryRequestProvider>
 ))
 
-const productManageItems = [
-  "products", "series", "colorType", "styleType", "material", "vendor"
+const tables = [
+  "products", "series", "colorType", "styleType", "material", "vendor", "accounts", "role", "environment"
 ]
 
 const [
@@ -41,15 +51,11 @@ const [
   ColorTypeList,
   StyleTypeList,
   MaterialList,
-  VendorList] = productManageItems.map(item => ListWrapper(item, "products"))
-
-const accountManageItems = [
-  "accounts", "role"
-]
-
-const [AccountsList, RoleList] = accountManageItems.map(item => ListWrapper(item, "accounts"))
-
-const EnvironmentList = ListWrapper("environment")
+  VendorList,
+  AccountsList,
+  RoleList,
+  EnvironmentList
+] = tables.map(item => ListWrapper(item))
 
 export {
   ProductsList, SeriesList, ColorTypeList, StyleTypeList, MaterialList, VendorList, AccountsList, RoleList, EnvironmentList
