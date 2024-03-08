@@ -1,3 +1,7 @@
+const enable_label = "啟用狀態"
+const comments_label = "備註"
+
+
 export const fullData = {
   products: {
     searchPlaceholder: "商品",
@@ -36,35 +40,62 @@ export const fullData = {
     searchPlaceholder: "系列",
     createHeaderText: "商品系列",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "系列名稱",
+      code_label: "系列編號",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   colorScheme: {
     searchPlaceholder: "色系",
     createHeaderText: "色系類別",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "色系名稱",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   design: {
     searchPlaceholder: "風格",
     createHeaderText: "風格類別",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "風格名稱",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   material: {
     searchPlaceholder: "材質",
     createHeaderText: "面料材質",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "面料名稱",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   vendor: {
     searchPlaceholder: "供應商",
     createHeaderText: "供應商",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "供應商名稱",
+      code_label: "供應商編號",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   accounts: {
@@ -74,21 +105,41 @@ export const fullData = {
       avatar: true,
       name_label: "姓名",
       email: true,
-      role: true,
+      role_label: "員工角色",
+      enable_label,
+      code_label: "員工編號",
+      id_code_label: "身分證號",
+      phone_number_label: "手機號碼",
+      password_label: "登入密碼",
+    },
+    formField: {
+      name: "",
     },
   },
   role: {
     searchPlaceholder: "角色類別",
     createHeaderText: "角色類別",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "角色名稱",
+      list_label: "員工列表",
+      auth_label: "權限設定",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
   environment: {
     searchPlaceholder: "場景",
     createHeaderText: "場景",
     modalConfig: {
-      avatar: false,
+      enable_label,
+      name_label: "場景名稱",
+      comments_label
+    },
+    formField: {
+      name: "",
     },
   },
 };

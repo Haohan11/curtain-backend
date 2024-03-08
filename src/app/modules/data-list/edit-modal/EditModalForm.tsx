@@ -43,7 +43,6 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const [mockImg, setMockImg] = useState(null)
 
   const handleImgChoose = (event) => {
-
     const [file] = event.target.files
     if (!file) return
     setMockImg(URL.createObjectURL(file))
@@ -74,6 +73,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     initialValues: field,
     validationSchema: editUserSchema,
     onSubmit: async (values, { setSubmitting }) => {
+      return console.log("mock submit:", values)
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
@@ -178,9 +178,11 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 {/* end::Input */}
               </div>
             }
-            {config.available_label &&
+            {(config.enable_label || config.available_label) &&
               <div className='fv-row ms-5 flex-grow-1 align-self-center text-end'>
-                <label htmlFor='available-switch' className='fw-bold fs-6 mb-2'>{config.available_label}</label>
+                <label htmlFor='available-switch' className='fw-bold fs-6 mb-2 cursor-pointer'>
+                  {config.enable_label || config.available_label}
+                </label>
 
                 <FormCheck
                   inline
@@ -197,7 +199,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
           {config.email &&
             <div className='fv-row mb-7'>
               {/* begin::Label */}
-              <label className='required fw-bold fs-6 mb-2'>Email</label>
+              <label className='required fw-bold fs-6 mb-2'>電子郵箱</label>
               {/* end::Label */}
 
               {/* begin::Input */}
@@ -359,6 +361,15 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
           {config.description_label &&
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
+              <div>
+                <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{ minHeight: "180px" }}></textarea>
+              </div>
+            </div>
+          }
+
+          {config.comments_label &&
+            <div className='mb-7'>
+              <label className='fw-bold fs-6 mb-2'>{config.comments_label}</label>
               <div>
                 <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{ minHeight: "180px" }}></textarea>
               </div>
