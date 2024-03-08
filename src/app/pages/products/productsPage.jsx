@@ -5,8 +5,8 @@ import { ToolbarWrapper } from "../../../_metronic/layout/components/toolbar";
 import {
   ProductsList,
   SeriesList,
-  ColorTypeList,
-  StyleTypeList,
+  ColorSchemeList,
+  DesignList,
   MaterialList,
   VendorList,
 } from "../../modules/data-list/List";
@@ -44,7 +44,7 @@ const ProductsPage = () => (
         element={
           <>
             <PageTitle>色系類別</PageTitle>
-            <ColorTypeList />
+            <ColorSchemeList />
           </>
         }
       />
@@ -53,7 +53,7 @@ const ProductsPage = () => (
         element={
           <>
             <PageTitle>風格類別</PageTitle>
-            <StyleTypeList />
+            <DesignList />
           </>
         }
       />

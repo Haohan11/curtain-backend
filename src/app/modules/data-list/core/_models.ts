@@ -18,15 +18,15 @@ export type User = {
 
 export type Products = {
   id?: ID
-  enable?: boolean
+  available?: boolean
   name?: string
   style?: string
   series?: string
   vendor?: string
   color?: string
-  color_type?: string
+  color_scheme?: string
   material?: string
-  style_type?: string
+  design?: string
   block?: number
   absorption?: number
   description?: string
@@ -41,14 +41,14 @@ export type Series = {
   comments?: string
 }
 
-export type ColorType = {
+export type ColorScheme = {
   id?: ID
   enable?: boolean
   name?: string
   comments?: string
 }
 
-export type StyleType = {
+export type Design = {
   id?: ID
   enable?: boolean
   name?: string

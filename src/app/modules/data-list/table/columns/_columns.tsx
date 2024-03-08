@@ -8,7 +8,7 @@ import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
 import {
-  User, Products, Series, ColorType, StyleType, Material, Vendor, Account, Role, Environment
+  User, Products, Series, ColorScheme, Design, Material, Vendor, Account, Role, Environment
 } from '../../core/_models'
 import { EnableCell } from './enableCell'
 import { ProductAvaliableCell } from './ProductAvaliableCell'
@@ -69,7 +69,7 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='上架狀態' className='min-w-125px' />
     ),
-    id: 'enable',
+    id: 'available',
     Cell: ({ ...props }) => <ProductAvaliableCell enable={props.data[props.row.index].two_steps} />,
   },
   {
@@ -108,7 +108,7 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='色系類別' className='min-w-125px' />
     ),
-    accessor: 'color_type',
+    accessor: 'color_scheme',
   },
   {
     Header: (props) => (
@@ -120,7 +120,7 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品風格' className='min-w-125px' />
     ),
-    accessor: 'style_type',
+    accessor: 'design',
   },
   {
     Header: (props) => (
@@ -171,7 +171,7 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
   },
 ]
 
-const colorTypeColumns: ReadonlyArray<Column<ColorType>> = [
+const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -196,7 +196,7 @@ const colorTypeColumns: ReadonlyArray<Column<ColorType>> = [
   },
 ]
 
-const styleTypeColumns: ReadonlyArray<Column<StyleType>> = [
+const designColumns: ReadonlyArray<Column<Design>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -358,7 +358,6 @@ const environmentColumns: ReadonlyArray<Column<Environment>> = [
 ]
 
 
-
 export {
-  usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns
+  usersColumns, productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns
 }

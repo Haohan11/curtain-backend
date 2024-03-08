@@ -42,14 +42,14 @@ const ListWrapper = (which) => (() => (
 ))
 
 const tables = [
-  "products", "series", "colorType", "styleType", "material", "vendor", "accounts", "role", "environment"
+  "products", "series", "colorScheme", "design", "material", "vendor", "accounts", "role", "environment"
 ]
 
 const [
   ProductsList,
   SeriesList,
-  ColorTypeList,
-  StyleTypeList,
+  ColorSchemeList,
+  DesignList,
   MaterialList,
   VendorList,
   AccountsList,
@@ -58,5 +58,5 @@ const [
 ] = tables.map(item => ListWrapper(item))
 
 export {
-  ProductsList, SeriesList, ColorTypeList, StyleTypeList, MaterialList, VendorList, AccountsList, RoleList, EnvironmentList
+  ProductsList, SeriesList, ColorSchemeList, DesignList, MaterialList, VendorList, AccountsList, RoleList, EnvironmentList
 }

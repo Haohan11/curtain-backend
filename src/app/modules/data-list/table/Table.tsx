@@ -3,7 +3,7 @@ import { useTable, ColumnInstance, Row } from 'react-table'
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn'
 import { CustomRow } from './columns/CustomRow'
 import { useQueryResponseData, useQueryResponseLoading } from '../core/QueryResponseProvider'
-import { usersColumns, productsColumns, seriesColumns, colorTypeColumns, styleTypeColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns } from './columns/_columns'
+import { usersColumns, productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns } from './columns/_columns'
 import { User } from '../core/_models'
 import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { UsersListPagination } from '../components/pagination/UsersListPagination'
@@ -13,8 +13,8 @@ import { useTableData } from '../core/TableDataProvider'
 const dict = {
   products: productsColumns,
   series: seriesColumns,
-  colorType: colorTypeColumns,
-  styleType: styleTypeColumns,
+  colorScheme: colorSchemeColumns,
+  design: designColumns,
   material: materialColumns,
   vendor: vendorColumns,
   accounts: accountsColumns,

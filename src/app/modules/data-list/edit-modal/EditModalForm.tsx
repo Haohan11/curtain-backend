@@ -10,8 +10,9 @@ import { createUser, updateUser } from '../core/_requests'
 import { useQueryResponse } from '../core/QueryResponseProvider'
 
 import { useTableData } from '../core/TableDataProvider'
-import { modalConfig } from '../dictionary/tableDictionary'
+import dict from '../dictionary/tableDictionary'
 
+const { modalConfig, formField } = dict
 
 type Props = {
   isUserLoading: boolean
@@ -19,15 +20,15 @@ type Props = {
 }
 
 const editUserSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Wrong email format')
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Email is required'),
+  // email: Yup.string()
+  //   .email('Wrong email format')
+  //   .min(3, 'Minimum 3 symbols')
+  //   .max(50, 'Maximum 50 symbols')
+  //   .required('Email is required'),
   name: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Name is required'),
+    .min(3, '至少 3 個字')
+    .max(50, '至多 50 個字')
+    .required('此欄位必填'),
 })
 
 const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
@@ -45,6 +46,8 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     email: user.email || initialUser.email,
   })
 
+  const [field] = useState(formField[table])
+
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
       refetch()
@@ -56,7 +59,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const userAvatarImg = toAbsoluteUrl(`media/${userForEdit.avatar}`)
 
   const formik = useFormik({
-    initialValues: userForEdit,
+    initialValues: field,
     validationSchema: editUserSchema,
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true)
@@ -89,7 +92,6 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
           data-kt-scroll-wrappers='#kt_modal_add_user_scroll'
           data-kt-scroll-offset='300px'
         >
-          {/* begin::Avatar group */}
           {config.avatar &&
             <div className='fv-row mb-7'>
               {/* begin::Label */}
@@ -130,9 +132,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {/* end::Hint */}
             </div>
           }
-          {/* end::Avatar group */}
 
-          {/* begin::Name group */}
           {config.name_label &&
             <div className='fv-row mb-7'>
               {/* begin::Label */}
@@ -141,7 +141,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
               {/* begin::Input */}
               <input
-                placeholder='Full name'
+                placeholder={config.name_placeholder || "請輸入"}
                 {...formik.getFieldProps('name')}
                 type='text'
                 name='name'
@@ -165,9 +165,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {/* end::Input */}
             </div>
           }
-          {/* end::Name group */}
 
-          {/* begin::Email group */}
           {config.email &&
             <div className='fv-row mb-7'>
               {/* begin::Label */}
@@ -198,9 +196,27 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               )}
             </div>
           }
-          {/* end::Email group */}
 
-          {/* begin::Role group */}
+          {config.style_label &&
+            <div className='fv-row mb-7'>
+              {/* begin::Label */}
+              <label className='fw-bold fs-6 mb-2'>{config.style_label}</label>
+              {/* end::Label */}
+
+              {/* begin::Input */}
+              <input
+                className={clsx(
+                  'form-control form-control-solid mb-3 mb-lg-0'
+                )}
+                type='text'
+                name='style'
+                autoComplete='off'
+                disabled={formik.isSubmitting || isUserLoading}
+              />
+              {/* end::Input */}
+            </div>
+          }
+
           {config.role &&
             <div className='mb-7'>
               {/* begin::Label */}
@@ -358,7 +374,6 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {/* end::Roles */}
             </div>
           }
-          {/* end::Role group */}
         </div>
         {/* end::Scroll */}
 
