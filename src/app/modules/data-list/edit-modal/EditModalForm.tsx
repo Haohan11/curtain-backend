@@ -13,6 +13,8 @@ import { useQueryResponse } from '../core/QueryResponseProvider'
 import { useTableData } from '../core/TableDataProvider'
 import dict from '../dictionary/tableDictionary'
 
+import Stars from '../../../../components/starsRating'
+
 const { modalConfig, formField } = dict
 
 type Props = {
@@ -93,7 +95,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       <form id='kt_modal_add_user_form' className='form' onSubmit={formik.handleSubmit} noValidate>
         {/* begin::Scroll */}
         <div
-          className='d-flex flex-column scroll-y-auto me-n7 px-7'
+          className='d-flex flex-column scroll-y-auto'
           id='kt_modal_add_user_scroll'
           data-kt-scroll='true'
           data-kt-scroll-activate='{default: false, lg: true}'
@@ -340,11 +342,25 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             </div>
           }
 
+
+          {config.absorption_label &&
+            <div className='row mb-7'>
+              <div className='col'>
+                <label className='fw-bold fs-6 mb-2'>{config.absorption_label}</label>
+                <Stars width={50} name="absorption" />
+              </div>
+              <div className='col'>
+                <label className='fw-bold fs-6 mb-2'>{config.block_label}</label>
+                <Stars width={50} name="block" />
+              </div>
+            </div>
+          }
+
           {config.description_label &&
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
               <div>
-                <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{minHeight: "180px"}}></textarea>
+                <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{ minHeight: "180px" }}></textarea>
               </div>
             </div>
           }

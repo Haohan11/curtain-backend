@@ -12,6 +12,7 @@ $danger-active: rgba(#DC1C16, 0.75);
 $danger-clarity: rgba(#DC1C16, 0.2);
 
 $checkBlue: #6898D9;
+$star: #FFBD12;
 
 .flex-center {
     display: flex;
@@ -27,4 +28,10 @@ $checkBlue: #6898D9;
     background-color: $checkBlue;
     color: white;
     border-color: transparent !important;
+}
+
+.rating label:hover .star-bg,
+.rating label:hover ~ label .star-bg,
+.rating input[type="radio"]:checked ~ label .star-bg {
+  fill: $star;
 }
