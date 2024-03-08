@@ -1,5 +1,6 @@
 import { FC, useState } from 'react'
 import * as Yup from 'yup'
+import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import { isNotEmpty, toAbsoluteUrl } from '../../../../_metronic/helpers'
 import { initialUser, User } from '../core/_models'
@@ -36,6 +37,15 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { refetch } = useQueryResponse()
   const { table } = useTableData()
   const config = modalConfig[table]
+
+  const [mockImg, setMockImg] = useState(null)
+
+  const handleImgChoose = (event) => {
+
+    const [file] = event.target.files
+    if (!file) return
+    setMockImg(URL.createObjectURL(file))
+  }
 
   const [userForEdit] = useState<User>({
     ...user,
@@ -83,7 +93,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
       <form id='kt_modal_add_user_form' className='form' onSubmit={formik.handleSubmit} noValidate>
         {/* begin::Scroll */}
         <div
-          className='d-flex flex-column scroll-y me-n7 px-7'
+          className='d-flex flex-column scroll-y-auto me-n7 px-7'
           id='kt_modal_add_user_scroll'
           data-kt-scroll='true'
           data-kt-scroll-activate='{default: false, lg: true}'
@@ -133,38 +143,54 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             </div>
           }
 
-          {config.name_label &&
-            <div className='fv-row mb-7'>
-              {/* begin::Label */}
-              <label className='required fw-bold fs-6 mb-2'>{config.name_label}</label>
-              {/* end::Label */}
+          <div className='d-flex mb-7'>
+            {config.name_label &&
+              <div className='fv-row flex-grow-1'>
+                {/* begin::Label */}
+                <label className='required fw-bold fs-6 mb-2'>{config.name_label}</label>
+                {/* end::Label */}
 
-              {/* begin::Input */}
-              <input
-                placeholder={config.name_placeholder || "請輸入"}
-                {...formik.getFieldProps('name')}
-                type='text'
-                name='name'
-                className={clsx(
-                  'form-control form-control-solid mb-3 mb-lg-0',
-                  { 'is-invalid': formik.touched.name && formik.errors.name },
-                  {
-                    'is-valid': formik.touched.name && !formik.errors.name,
-                  }
-                )}
-                autoComplete='off'
-                disabled={formik.isSubmitting || isUserLoading}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className='fv-plugins-message-container'>
-                  <div className='fv-help-block'>
-                    <span role='alert'>{formik.errors.name}</span>
+                {/* begin::Input */}
+                <input
+                  placeholder={config.name_placeholder || "請輸入"}
+                  {...formik.getFieldProps('name')}
+                  type='text'
+                  name='name'
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0',
+                    { 'is-invalid': formik.touched.name && formik.errors.name },
+                    {
+                      'is-valid': formik.touched.name && !formik.errors.name,
+                    }
+                  )}
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isUserLoading}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className='fv-plugins-message-container'>
+                    <div className='fv-help-block'>
+                      <span role='alert'>{formik.errors.name}</span>
+                    </div>
                   </div>
-                </div>
-              )}
-              {/* end::Input */}
-            </div>
-          }
+                )}
+                {/* end::Input */}
+              </div>
+            }
+            {config.available_label &&
+              <div className='fv-row ms-5 flex-grow-1 align-self-center text-end'>
+                <label htmlFor='available-switch' className='fw-bold fs-6 mb-2'>{config.available_label}</label>
+
+                <FormCheck
+                  inline
+                  type='switch'
+                  id='available-switch'
+                  name='name'
+                  className={"ms-2"}
+                  disabled={formik.isSubmitting || isUserLoading}
+                />
+              </div>
+            }
+          </div>
 
           {config.email &&
             <div className='fv-row mb-7'>
@@ -197,23 +223,129 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             </div>
           }
 
-          {config.style_label &&
-            <div className='fv-row mb-7'>
-              {/* begin::Label */}
-              <label className='fw-bold fs-6 mb-2'>{config.style_label}</label>
-              {/* end::Label */}
+          {/* begin:: style and series */}
+          <div className='d-flex mb-7'>
+            {config.style_label &&
+              <div className='fv-row flex-grow-1'>
+                <label className='fw-bold fs-6 mb-2'>{config.style_label}</label>
+                <input
+                  className={clsx(
+                    'form-control form-control-solid mb-3 mb-lg-0'
+                  )}
+                  type='text'
+                  name='style'
+                  autoComplete='off'
+                  disabled={formik.isSubmitting || isUserLoading}
+                />
+              </div>
+            }
 
-              {/* begin::Input */}
-              <input
+            {config.series_label &&
+              <div className='fv-row flex-grow-1 ms-5'>
+                <label className='fw-bold fs-6 mb-2'>{config.series_label}</label>
+                <select
+                  className={clsx(
+                    'form-select form-select-solid mb-3 mb-lg-0'
+                  )}
+                  name='series'
+                  disabled={formik.isSubmitting || isUserLoading}
+                >
+                  <option>遮光簾</option>
+                </select>
+              </div>
+            }
+          </div>
+          {/* end:: style and series */}
+
+          {config.vendor_label &&
+            <div className='fv-row mb-7'>
+              <label className='fw-bold fs-6 mb-2'>{config.vendor_label}</label>
+
+              <select
                 className={clsx(
-                  'form-control form-control-solid mb-3 mb-lg-0'
+                  'form-select form-select-solid mb-3 mb-lg-0'
                 )}
-                type='text'
-                name='style'
-                autoComplete='off'
+                name='vendor'
                 disabled={formik.isSubmitting || isUserLoading}
-              />
-              {/* end::Input */}
+              >
+                <option>OOOXXX</option>
+              </select>
+            </div>
+          }
+
+          {config.color_label &&
+            <div className='fv-row mb-7'>
+              <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
+              <div className='row row-cols-2 gy-4'>
+                <div className='col d-flex align-items-center'>
+                  <label className='d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
+                    {mockImg ?
+                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={mockImg} alt="color image" /> :
+                      <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
+                    }
+                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
+                  </label>
+                  {mockImg &&
+                    <div className='ms-3'>
+                      <input
+                        className={clsx(
+                          'form-control form-control-solid mb-3'
+                        )}
+                        type='text'
+                        name='color'
+                        autoComplete='off'
+                        disabled={formik.isSubmitting || isUserLoading}
+                      />
+                      <select
+                        className={clsx(
+                          'form-select form-select-solid'
+                        )}
+                        name='colorScheme'
+                        disabled={formik.isSubmitting || isUserLoading}
+                      >
+                        <option>色系類別</option>
+                      </select>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+
+          {config.material_label &&
+            <div className='mb-7'>
+              <div className='fw-bold fs-6 mb-2'>{config.material_label}</div>
+              <div className='d-flex flex-wrap justify-content-start'>
+                {["OOOXXO", "OOXXYY", "布的", "紙的", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "布布的", "紙布布的", "CCV",].map((item, index) =>
+                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input type='checkbox' hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+                  </label>
+                )}
+              </div>
+            </div>
+          }
+
+          {config.design_label &&
+            <div className='mb-7'>
+              <div className='fw-bold fs-6 mb-2'>{config.design_label}</div>
+              <div className='d-flex flex-wrap justify-content-start'>
+                {["OOOXXO", "OOXXYY", "布的", "紙的", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "布布的", "紙布布的", "CCV",].map((item, index) =>
+                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input type='checkbox' hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+                  </label>
+                )}
+              </div>
+            </div>
+          }
+
+          {config.description_label &&
+            <div className='mb-7'>
+              <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
+              <div>
+                <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{minHeight: "180px"}}></textarea>
+              </div>
             </div>
           }
 

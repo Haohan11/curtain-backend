@@ -9,7 +9,7 @@ export const fullData = {
       style_label: "商品樣式",
       style_placeholder: "請輸入商品樣式",
       vendor_label: "供應廠商",
-      avaliable_label: "上架狀態",
+      available_label: "上架狀態",
       series_label: "商品系列",
       color_label: "商品顏色",
       material_label: "面料材質",

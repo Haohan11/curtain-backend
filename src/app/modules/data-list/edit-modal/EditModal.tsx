@@ -25,7 +25,7 @@ const EditModal = () => {
           <div className='modal-content'>
             <EditModalHeader />
             {/* begin::Modal body */}
-            <div className='modal-body scroll-y mx-5 mx-xl-15 my-7'>
+            <div className='modal-body scroll-y-auto mx-5 mx-xl-15 my-7'>
               <EditModalFormWrapper />
             </div>
             {/* end::Modal body */}

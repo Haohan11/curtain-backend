@@ -10,3 +10,21 @@ $primary-clarity: rgba(#19315e, 0.2);
 $danger: #DC1C16;
 $danger-active: rgba(#DC1C16, 0.75);
 $danger-clarity: rgba(#DC1C16, 0.2);
+
+$checkBlue: #6898D9;
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.tags-label input[type='checkbox']:checked ~ div {
+    background-color: $checkBlue;
+    color: white;
+    border-color: transparent !important;
+}
