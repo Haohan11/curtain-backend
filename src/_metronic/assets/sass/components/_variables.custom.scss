@@ -35,3 +35,8 @@ $star: #FFBD12;
 .rating input[type="radio"]:checked ~ label .star-bg {
   fill: $star;
 }
+
+textarea:focus-visible {
+    outline: 0 !important;
+    border-color: var(--bs-primary) !important;
+}

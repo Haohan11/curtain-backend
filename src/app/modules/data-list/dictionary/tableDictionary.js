@@ -1,6 +1,5 @@
-const enable_label = "啟用狀態"
-const comments_label = "備註"
-
+const enable_label = "啟用狀態";
+const comments_label = "備註";
 
 export const fullData = {
   products: {
@@ -43,10 +42,11 @@ export const fullData = {
       enable_label,
       name_label: "系列名稱",
       code_label: "系列編號",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
+      code: "",
     },
   },
   colorScheme: {
@@ -55,7 +55,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "色系名稱",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
@@ -67,7 +67,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "風格名稱",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
@@ -79,7 +79,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "面料名稱",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
@@ -92,7 +92,7 @@ export const fullData = {
       enable_label,
       name_label: "供應商名稱",
       code_label: "供應商編號",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
@@ -109,8 +109,11 @@ export const fullData = {
       enable_label,
       code_label: "員工編號",
       id_code_label: "身分證號",
+      id_code_placeholder: "輸入身分證號",
       phone_number_label: "手機號碼",
+      phone_number_placeholder: "輸入手機號碼",
       password_label: "登入密碼",
+      password_placeholder: "輸入密碼",
     },
     formField: {
       name: "",
@@ -120,11 +123,11 @@ export const fullData = {
     searchPlaceholder: "角色類別",
     createHeaderText: "角色類別",
     modalConfig: {
-      enable_label,
       name_label: "角色名稱",
-      list_label: "員工列表",
+      members_label: "員工列表",
       auth_label: "權限設定",
-      comments_label
+      auth_list: ["顯示模組", "顯示操作項", "勾選修改/檢視"],
+      comments_label,
     },
     formField: {
       name: "",
@@ -136,7 +139,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "場景名稱",
-      comments_label
+      comments_label,
     },
     formField: {
       name: "",
