@@ -385,6 +385,13 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                     }
                     <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
                   </label>
+                  <label className='ms-3 d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
+                    {mockImg ?
+                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={mockImg} alt="color image" /> :
+                      <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
+                    }
+                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
+                  </label>
                   {mockImg &&
                     <div className='ms-3'>
                       <input
@@ -449,6 +456,20 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               <div className='col'>
                 <label className='fw-bold fs-6 mb-2'>{config.block_label}</label>
                 <Stars width={50} name="block" />
+              </div>
+            </div>
+          }
+
+          {config.environment_label &&
+            <div className='mb-7'>
+              <div className='fw-bold fs-6 mb-2'>{config.environment_label}</div>
+              <div className='d-flex flex-wrap justify-content-start'>
+                {["OOOXXO", "OOXXYY", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "CCV",].map((item, index) =>
+                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input type='checkbox' hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+                  </label>
+                )}
               </div>
             </div>
           }
