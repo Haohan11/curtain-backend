@@ -35,7 +35,7 @@ const Table = () => {
 
   return (
     <div className='py-4'>
-      <div className='table-responsive'>
+      <div className='table-responsive mb-8'>
         <table
           id='kt_table_users'
           className='table align-middle table-row-dashed fs-6 gy-5 dataTable no-footer'
