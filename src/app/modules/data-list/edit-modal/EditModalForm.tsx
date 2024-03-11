@@ -114,7 +114,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 {/* begin::Preview existing avatar */}
                 <div
                   className='image-input-wrapper w-125px h-125px'
-                  style={{ backgroundImage: `url('${avatarSrc}')` }}
+                  style={{ backgroundImage: `url('${avatarSrc || userAvatarImg}')` }}
                 ></div>
                 {/* end::Preview existing avatar */}
 
@@ -127,7 +127,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 >
                   <i className='bi bi-pencil-fill fs-7'></i>
 
-                  <input type='file' name='avatar' accept='.png, .jpg, .jpeg' onInput={handleAvatarChoose}/>
+                  <input type='file' name='avatar' accept='.png, .jpg, .jpeg' />
                   <input type='hidden' name='avatar_remove' />
                 </label>
                 {/* end::Label */}
