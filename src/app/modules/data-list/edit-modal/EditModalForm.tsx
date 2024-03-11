@@ -12,8 +12,8 @@ import { useQueryResponse } from '../core/QueryResponseProvider'
 
 import { useTableData } from '../core/TableDataProvider'
 import dict from '../dictionary/tableDictionary'
-
 import Stars from '../../../../components/starsRating'
+import useInputFilePath from '../../../../tool/hook/useInputFilePath'
 
 const { modalConfig, formField } = dict
 
@@ -40,13 +40,8 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { table } = useTableData()
   const config = modalConfig[table]
 
-  const [mockImg, setMockImg] = useState(null)
-
-  const handleImgChoose = (event) => {
-    const [file] = event.target.files
-    if (!file) return
-    setMockImg(URL.createObjectURL(file))
-  }
+  const [mockImg, handleImgChoose] = useInputFilePath()
+  const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
   const [userForEdit] = useState<User>({
     ...user,
@@ -119,7 +114,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 {/* begin::Preview existing avatar */}
                 <div
                   className='image-input-wrapper w-125px h-125px'
-                  style={{ backgroundImage: `url('${userAvatarImg}')` }}
+                  style={{ backgroundImage: `url('${avatarSrc}')` }}
                 ></div>
                 {/* end::Preview existing avatar */}
 
@@ -132,7 +127,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 >
                   <i className='bi bi-pencil-fill fs-7'></i>
 
-                  <input type='file' name='avatar' accept='.png, .jpg, .jpeg' />
+                  <input type='file' name='avatar' accept='.png, .jpg, .jpeg' onInput={handleAvatarChoose}/>
                   <input type='hidden' name='avatar_remove' />
                 </label>
                 {/* end::Label */}
