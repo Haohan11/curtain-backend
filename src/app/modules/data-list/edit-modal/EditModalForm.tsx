@@ -478,7 +478,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
               <div>
-                <textarea rows="5" className='w-100 border border-2 border-gray-300 px-4 py-2 fs-3' style={{ minHeight: "180px" }}></textarea>
+              <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }}></textarea>
               </div>
             </div>
           }
