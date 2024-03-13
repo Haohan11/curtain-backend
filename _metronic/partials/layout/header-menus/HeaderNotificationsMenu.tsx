@@ -1,7 +1,7 @@
 
 import clsx from 'clsx'
 import {FC} from 'react'
-import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {
   defaultAlerts,
   defaultLogs,
@@ -84,7 +84,7 @@ const HeaderNotificationsMenu: FC = () => (
 
         <div className='py-3 text-center border-top'>
           <Link
-            to='/crafted/pages/profile'
+            href='/crafted/pages/profile'
             className='btn btn-color-gray-600 btn-active-color-primary'
           >
             View All <KTIcon iconName='arrow-right' className='fs-5' />

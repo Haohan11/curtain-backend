@@ -17,7 +17,8 @@ type Props = {
   handleClose: () => void
 }
 
-const modalsRoot = document.getElementById('root-modals') || document.body
+const modalsRoot = typeof document === 'undefined' ? <></> : 
+(document.getElementById('root-modals') || document.body)
 
 const CreateAppModal = ({show, handleClose}: Props) => {
   const stepperRef = useRef<HTMLDivElement | null>(null)

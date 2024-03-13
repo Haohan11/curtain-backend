@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import {useLocation} from 'react-router'
+import { useRouter } from 'next/router'
 import {checkIsActive, KTIcon, WithChildren} from '../../../../helpers'
 import {useLayout} from '../../../core'
 
@@ -20,7 +20,7 @@ const SidebarMenuItemWithSub: React.FC<Props & WithChildren> = ({
   fontIcon,
   hasBullet,
 }) => {
-  const {pathname} = useLocation()
+  const {pathname} = useRouter()
   const isActive = checkIsActive(pathname, to)
   const {config} = useLayout()
   const {app} = config

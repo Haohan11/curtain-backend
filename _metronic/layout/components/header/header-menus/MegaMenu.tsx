@@ -1,6 +1,6 @@
 
 import {FC} from 'react'
-import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {toAbsoluteUrl} from '../../../../helpers'
 import {useLayout} from '../../../core'
 
@@ -143,7 +143,7 @@ const MegaMenu: FC = () => {
             <div className='fs-6 fw-bold text-gray-800'>Layout Builder</div>
             <div className='fs-7 fw-semibold text-muted'>Customize view</div>
           </div>
-          <Link to='/builder' className='btn btn-sm btn-primary fw-bold'>
+          <Link href='/builder' className='btn btn-sm btn-primary fw-bold'>
             Try Builder
           </Link>
         </div>

@@ -91,7 +91,7 @@ class LayoutSetup {
 
   private static initLayoutSettings(config: ILayout): ILayout {
     const updatedConfig = { ...config };
-    if(typeof document) return
+    if(typeof document === 'undefined') return
     // clear body classes
     document.body.className = "";
     // clear body attributes

@@ -1,5 +1,5 @@
 import {FC} from 'react'
-import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {KTIcon} from '../../../helpers'
 import {Item1} from '../../content/activity/Item1'
 import {Item2} from '../../content/activity/Item2'
@@ -60,7 +60,7 @@ const ActivityDrawer: FC = () => (
         </div>
       </div>
       <div className='card-footer py-5 text-center' id='kt_activities_footer'>
-        <Link to='/crafted/pages/profile' className='btn btn-bg-body text-primary'>
+        <Link href='/crafted/pages/profile' className='btn btn-bg-body text-primary'>
           View All Activities
           <KTIcon iconName='arrow-right' className='fs-3 text-primary' />
         </Link>

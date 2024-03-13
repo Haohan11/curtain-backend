@@ -25,7 +25,7 @@ const themeModeSwitchHelper = (_mode: ThemeModeType) => {
 }
 
 const getThemeModeFromLocalStorage = (lsKey: string): ThemeModeType => {
-  if (!localStorage) {
+  if (typeof localStorage === 'undefined' || !localStorage) {
     return 'light'
   }
 

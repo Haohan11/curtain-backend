@@ -1,6 +1,5 @@
- 
-import clsx from 'clsx'
-import {Link} from 'react-router-dom'
+ import clsx from 'clsx'
+import Link from 'next/link'
 import {KTIcon, toAbsoluteUrl} from '../../../helpers'
 import {LayoutSetup, useLayout} from '../../core'
 import {Header} from './Header'
@@ -41,7 +40,7 @@ export function HeaderWrapper() {
                   <KTIcon iconName='abstract-14' className=' fs-1' />
                 </div>
                 <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0'>
-                  <Link to='/dashboard' className='d-lg-none'>
+                  <Link href='/dashboard' className='d-lg-none'>
                       <img
                         alt='Logo'
                         src={toAbsoluteUrl('media/logos/default-small.svg')}
@@ -56,7 +55,7 @@ export function HeaderWrapper() {
 
         {!(config.layoutType === 'dark-sidebar' || config.layoutType === 'light-sidebar') && (
           <div className='d-flex align-items-center flex-grow-1 flex-lg-grow-0 me-lg-15'>
-            <Link to='/dashboard'>
+            <Link href='/dashboard'>
               {config.layoutType === 'dark-header' ? (
                 <img
                   alt='Logo'

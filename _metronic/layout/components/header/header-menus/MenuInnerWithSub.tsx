@@ -1,5 +1,5 @@
 import {FC, useEffect, useRef} from 'react'
-import {useLocation} from 'react-router'
+import { useRouter } from 'next/router'
 import clsx from 'clsx'
 import {checkIsActive, KTIcon, WithChildren} from '../../../../helpers'
 
@@ -28,7 +28,7 @@ const MenuInnerWithSub: FC<Props & WithChildren> = ({
   isMega = false,
 }) => {
   const menuItemRef = useRef<HTMLDivElement>(null)
-  const {pathname} = useLocation()
+  const {pathname} = useRouter()
 
   useEffect(() => {
     if (menuItemRef.current && menuTrigger && menuPlacement) {
