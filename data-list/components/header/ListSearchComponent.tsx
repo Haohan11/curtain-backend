@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 import { initialQueryState, KTIcon, useDebounce } from '@/_metronic/helpers'
 import { useQueryRequest } from '../../core/QueryRequestProvider'
-import { useTableData } from '../../core/TableDataProvider'
+import currentTable from '@/data-list/globalVariable/currentTable'
 import dict from '../../dictionary/tableDictionary'
 
 const ListSearchComponent = () => {
   const { updateState } = useQueryRequest()
   const [searchTerm, setSearchTerm] = useState<string>('')
-  const { table } = useTableData()
+  const tableName = currentTable.get()
   const { searchPlaceholder } = dict
   // Debounce search term so that it only gives us latest value ...
   // ... if searchTerm has not been updated within last 500ms.
@@ -36,7 +36,7 @@ const ListSearchComponent = () => {
           type='text'
           data-kt-user-table-filter='search'
           className='form-control form-control-solid w-250px ps-14'
-          placeholder={`搜尋${searchPlaceholder[table] || ""}`}
+          placeholder={`搜尋${searchPlaceholder[tableName] || ""}`}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

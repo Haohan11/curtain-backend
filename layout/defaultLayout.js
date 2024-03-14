@@ -1,4 +1,3 @@
-import React from "react";
 import { Sidebar } from "@/_metronic/layout/components/sidebar";
 import { HeaderWrapper } from "@/_metronic/layout/components/header";
 import { FooterWrapper } from "@/_metronic/layout/components/footer";

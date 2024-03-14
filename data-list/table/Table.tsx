@@ -8,17 +8,15 @@ import { User } from '../core/_models'
 import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { TablePagination } from '../components/pagination/TablePagination'
 
-import { useTableData } from '../core/TableDataProvider'
-
 import { useRouter } from 'next/router'
 
 import currentTable from '../globalVariable/currentTable'
 
 const dict = {
-  management: productsColumns,
+  products: productsColumns,
   series: seriesColumns,
-  colors: colorSchemeColumns,
-  styles: designColumns,
+  colorScheme: colorSchemeColumns,
+  design: designColumns,
   material: materialColumns,
   vendor: vendorColumns,
   accounts: accountsColumns,

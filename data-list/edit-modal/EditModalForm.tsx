@@ -10,7 +10,7 @@ import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { createUser, updateUser } from '../core/_requests'
 import { useQueryResponse } from '../core/QueryResponseProvider'
 
-import { useTableData } from '../core/TableDataProvider'
+import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
 import useInputFilePath from '@/tool/hook/useInputFilePath'
@@ -39,8 +39,8 @@ const editUserSchema = Yup.object().shape({
 const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
-  const { table } = useTableData()
-  const config = modalConfig[table]
+  const tableName  = currentTable.get()
+  const config = modalConfig[tableName]
 
   const [mockImg, handleImgChoose] = useInputFilePath()
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
@@ -54,7 +54,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     email: user.email || initialUser.email,
   })
 
-  const [field] = useState(formField[table])
+  const [field] = useState(formField[tableName])
 
   const cancel = (withRefresh?: boolean) => {
     if (withRefresh) {
