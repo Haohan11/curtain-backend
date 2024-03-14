@@ -8,17 +8,23 @@ import { Table } from './table/Table'
 import { EditModal } from './edit-modal/EditModal'
 import { Content } from '@/_metronic/layout/components/content'
 
-const List = ({which}) => {
-  const { itemIdForUpdate } = useListView()
-  const { setTable } = useTableData()
+import { useRouter } from 'next/router'
+import currentTable from "@/data-list/globalVariable/currentTable"
 
-  useEffect(() => {
-    setTable(which)
-  }, [setTable])
+const List = () => {
+  const { itemIdForUpdate } = useListView()
+  const { query } = useRouter()
+
+  // const { setTable } = useTableData()
+
+  // useEffect(() => {
+  //   setTable(which)
+  // }, [setTable])
 
   return (
     <>
       <div className='px-8'>
+        {/* {JSON.stringify(query)} */}
         <ListHeader />
         <Table />
       </div>
@@ -27,13 +33,14 @@ const List = ({which}) => {
   )
 }
 
-const ListWrapper = ({table}) => (
+const ListWrapper = () => (
   // <QueryRequestProvider>
     // <QueryResponseProvider>
       <TableProvider>
         <ListViewProvider>
           <Content>
-            <List which={table}/>
+            {/* <div>{currentTable.get()}</div> */}
+            <List />
           </Content>
         </ListViewProvider>
       </TableProvider>

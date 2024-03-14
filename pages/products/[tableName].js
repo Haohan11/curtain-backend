@@ -1,7 +1,19 @@
-// import List from "@/data-list/List";
+import { useEffect } from "react";
+import List from "@/data-list/List";
+import dynamic from "next/dynamic";
+import currentTable from "@/data-list/globalVariable/currentTable";
+
+const DynamicList = dynamic(async() => {
+  const List = await import("@/data-list/List")
+  return List
+}, {
+  ssr: false
+})
 
 const ProductsPage = ({ tableName }) => {
-  return <div>{tableName}</div>;
+  currentTable.set(tableName)
+  
+  return <DynamicList />;
 };
 
 export const getStaticPaths = async () => {
