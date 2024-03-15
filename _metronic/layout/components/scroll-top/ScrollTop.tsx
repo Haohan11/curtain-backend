@@ -1,15 +1,15 @@
-import {useEffect, useState} from 'react'
-import {useLocation} from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import {
   DrawerComponent,
   ScrollTopComponent,
   StickyComponent,
   ToggleComponent,
 } from '../../../assets/ts/components'
-import {KTIcon} from '../../../helpers'
+import { KTIcon } from '../../../helpers'
 
 export function ScrollTop() {
-  const {pathname} = useLocation()
+  const { pathname } = useRouter()
   const [initialized, setInintialized] = useState(false)
 
   const pluginsReinitialization = () => {

@@ -2,6 +2,7 @@ import { Sidebar } from "@/_metronic/layout/components/sidebar";
 import { HeaderWrapper } from "@/_metronic/layout/components/header";
 import { FooterWrapper } from "@/_metronic/layout/components/footer";
 import { PageDataProvider } from "@/_metronic/layout/core";
+import { ScrollTop } from '@/_metronic/layout/components/scroll-top'
 
 const defaultLayout = ({ children }) => {
   return (
@@ -30,6 +31,7 @@ const defaultLayout = ({ children }) => {
           </div>
         </div>
       </div>
+      <ScrollTop />
     </PageDataProvider>
   );
 };
