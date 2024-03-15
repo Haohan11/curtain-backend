@@ -5,6 +5,23 @@ import { ListHeader } from './components/header/ListHeader'
 import { Table } from './table/Table'
 import { EditModal } from './edit-modal/EditModal'
 import { Content } from '@/_metronic/layout/components/content'
+import dict from './dictionary/tableDictionary'
+
+import currentTable from './globalVariable/currentTable'
+import dynamic from "next/dynamic";
+import { PageTitle } from "@/_metronic/layout/core";
+
+const { pageTitle: pageTitleDict } = dict
+
+const DyToolbarWrapper = dynamic(
+  async () => {
+    const { ToolbarWrapper } = await import("@/_metronic/layout/components/toolbar");
+    return ToolbarWrapper;
+  },
+  {
+    ssr: false,
+  }
+);
 
 const List = () => {
   const { itemIdForUpdate } = useListView()
@@ -20,17 +37,21 @@ const List = () => {
   )
 }
 
-const ListWrapper = () => (
-  // <QueryRequestProvider>
-  // <QueryResponseProvider>
-  <ListViewProvider>
-    <Content>
-      <List />
-    </Content>
-  </ListViewProvider>
-  // </QueryResponseProvider>
-  // </QueryRequestProvider>
-)
+const ListWrapper = () => {
+  const tableName = currentTable.get()
+  return (
+    <>
+      <DyToolbarWrapper />
+      <PageTitle>{pageTitleDict[tableName]}</PageTitle>
+      <ListViewProvider>
+        <Content>
+          <List />
+        </Content>
+      </ListViewProvider>
+    </>
+
+  )
+}
 
 export default ListWrapper
 

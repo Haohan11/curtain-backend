@@ -2,7 +2,9 @@ const enable_label = "啟用狀態";
 const comments_label = "備註";
 
 export const fullData = {
+  // -&anchor
   products: {
+    pageTitle: "商品維護",
     searchPlaceholder: "商品",
     createHeaderText: "商品資料",
     modalConfig: {
@@ -36,7 +38,9 @@ export const fullData = {
       description: "",
     },
   },
+  // -&anchor
   series: {
+    pageTitle: "商品系列",
     searchPlaceholder: "系列",
     createHeaderText: "商品系列",
     modalConfig: {
@@ -50,7 +54,9 @@ export const fullData = {
       code: "",
     },
   },
+  // -&anchor
   colorScheme: {
+    pageTitle: "色系類別",
     searchPlaceholder: "色系",
     createHeaderText: "色系類別",
     modalConfig: {
@@ -62,7 +68,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   design: {
+    pageTitle: "風格類別",
     searchPlaceholder: "風格",
     createHeaderText: "風格類別",
     modalConfig: {
@@ -74,7 +82,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   material: {
+    pageTitle: "面料材質",
     searchPlaceholder: "材質",
     createHeaderText: "面料材質",
     modalConfig: {
@@ -86,7 +96,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   vendor: {
+    pageTitle: "供應商",
     searchPlaceholder: "供應商",
     createHeaderText: "供應商",
     modalConfig: {
@@ -99,7 +111,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   accounts: {
+    pageTitle: "員工資料",
     searchPlaceholder: "員工",
     createHeaderText: "員工資料",
     modalConfig: {
@@ -120,7 +134,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   role: {
+    pageTitle: "角色類別",
     searchPlaceholder: "角色類別",
     createHeaderText: "角色類別",
     modalConfig: {
@@ -134,7 +150,9 @@ export const fullData = {
       name: "",
     },
   },
+  // -&anchor
   environment: {
+    pageTitle: "場景管理",
     searchPlaceholder: "場景",
     createHeaderText: "場景",
     modalConfig: {

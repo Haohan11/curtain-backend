@@ -6,7 +6,8 @@ import { PageDataProvider } from "@/_metronic/layout/core";
 const defaultLayout = ({ children }) => {
   return (
     <PageDataProvider>
-      <div className="d-flex flex-column flex-root app-root" id="kt_app_root">
+      {/* add vh-100 for flex-grow work */}
+      <div className="d-flex flex-column flex-root app-root vh-100" id="kt_app_root">
         <div
           className="app-page flex-column flex-column-fluid"
           id="kt_app_page"
