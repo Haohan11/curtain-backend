@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react'
-import {Tab} from 'bootstrap'
+import { useEffect, useState } from 'react'
+import { Tab } from 'bootstrap'
 import {
   MenuComponent,
   DrawerComponent,
@@ -9,12 +9,13 @@ import {
   ToggleComponent,
   SwapperComponent,
 } from '../assets/ts/components'
-import {ThemeModeComponent} from '../assets/ts/layout'
+import { ThemeModeComponent } from '../assets/ts/layout'
 
-import {useLayout} from './core'
+import currentTable from '@/data-list/globalVariable/currentTable'
+import { useLayout } from './core'
 
 export function MasterInit() {
-  const {config} = useLayout()
+  const { config } = useLayout()
   const [initialized, setInitialized] = useState(false)
   const pluginsInitialization = () => {
     ThemeModeComponent.init()
@@ -35,6 +36,11 @@ export function MasterInit() {
   useEffect(() => {
     if (!initialized) {
       setInitialized(true)
+      pluginsInitialization()
+    }
+
+    if (currentTable.get() !== null) {
+      // reintialize when table page load
       pluginsInitialization()
     }
   }, [config, initialized])

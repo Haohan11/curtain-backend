@@ -11,20 +11,18 @@ const DynamicList = dynamic(
   }
 );
 
-const ProductsPage = ({ tableName }) => {
+const AccountsPage = ({ tableName }) => {
   currentTable.set(tableName);
 
   return <DynamicList />;
 };
 
+export default AccountsPage;
+
 export const getStaticPaths = async () => {
   const pageNameDict = [
-    "management",
-    "series",
-    "colors",
-    "design",
-    "material",
-    "vendor",
+    "info",
+    "role",
   ];
 
   const paths = pageNameDict.map((pageName) => ({ params: { pageName } }));
@@ -37,12 +35,8 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params: { pageName } }) => {
   const tableNameDict = {
-    management: "products",
-    series: "series",
-    colors: "colorScheme",
-    design: "design",
-    material: "material",
-    vendor: "vendor",
+    info: "accounts",
+    role: "role",
   };
   return {
     props: {
@@ -50,5 +44,3 @@ export const getStaticProps = async ({ params: { pageName } }) => {
     },
   };
 };
-
-export default ProductsPage;
