@@ -15,7 +15,7 @@ import { MetronicI18nProvider } from '@/_metronic/i18n/Metronici18n'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { LayoutProvider } from '@/_metronic/layout/core'
 
-import DefaultLayout from "@/layout/defaultLayout";
+import ScreenLoad from "@/components/loading/ScreenLoad"
 
 setupAxios(axios)
 
@@ -25,11 +25,16 @@ const DynamicMasterInit = dynamic(async () => {
   return MasterInit
 }, { ssr: false })
 
+const DynamicWrapper = dynamic(async () => {
+  const Layout = await import("@/layout/defaultLayout")
+  return Layout
+}, {ssr: false, loading: () => <ScreenLoad />})
+
 export default function App({ Component, pageProps }) {
   const queryClient = new QueryClient()
 
   const getLayout =
-    Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
+    Component.getLayout ?? ((page) => <DynamicWrapper>{page}</DynamicWrapper>);
 
   return getLayout(
     <>

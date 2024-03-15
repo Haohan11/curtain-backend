@@ -25,7 +25,7 @@ const dict = {
 }
 
 const TABLEDATAURL = `${process.env.NEXT_PUBLIC_BACKENDURL}/product`
-const fetchTableData = async ({ page = 1, size = 4 }) => {
+const fetchTableData = async ({ page = 1, size = 10 }) => {
   const res = await fetch(`${TABLEDATAURL}?page=${page}&size=${size}`)
   const { total, totalPages, data } = await res.json()
   return { total, totalPages, data }
