@@ -36,7 +36,6 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>翔宇窗飾後台</title>
       </Head>
-      <main>
         <QueryClientProvider client={queryClient}>
           <MetronicI18nProvider>
             <LayoutProvider>
@@ -47,7 +46,6 @@ export default function App({ Component, pageProps }) {
             </LayoutProvider>
           </MetronicI18nProvider>
         </QueryClientProvider>
-      </main>
     </>
   );
 }

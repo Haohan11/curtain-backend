@@ -1,5 +1,6 @@
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
+// import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {useLayout} from '../../../core'
 import {usePageData} from '../../../core/PageData'
 
@@ -67,7 +68,7 @@ const PageTitle = () => {
                   key={`${item.path}${index}`}
                 >
                   {!item.isSeparator ? (
-                    <Link className='text-muted text-hover-primary' to={item.path}>
+                    <Link className='text-muted text-hover-primary' href={item.path}>
                       {item.title}
                     </Link>
                   ) : (

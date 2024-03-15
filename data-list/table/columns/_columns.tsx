@@ -2,7 +2,6 @@ import { Column } from 'react-table'
 import { UserInfoCell } from './UserInfoCell'
 import { UserLastLoginCell } from './UserLastLoginCell'
 import { UserTwoStepsCell } from './UserTwoStepsCell'
-import { UserActionsCell } from './UserActionsCell'
 import { ActionsCell } from './ActionsCell'
 import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
@@ -19,7 +18,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
       <UserCustomHeader tableProps={props} title='Actions' className='text-start min-w-100px' />
     ),
     id: 'actions',
-    Cell: ({ ...props }) => <UserActionsCell id={props.data[props.row.index].id} />,
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   // {
   //   Header: (props) => <UserSelectionHeader tableProps={props} />,

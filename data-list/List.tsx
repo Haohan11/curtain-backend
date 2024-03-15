@@ -22,13 +22,13 @@ const List = () => {
 
 const ListWrapper = () => (
   // <QueryRequestProvider>
-    // <QueryResponseProvider>
-        <ListViewProvider>
-          <Content>
-            <List />
-          </Content>
-        </ListViewProvider>
-    // </QueryResponseProvider>
+  // <QueryResponseProvider>
+  <ListViewProvider>
+    <Content>
+      <List />
+    </Content>
+  </ListViewProvider>
+  // </QueryResponseProvider>
   // </QueryRequestProvider>
 )
 
