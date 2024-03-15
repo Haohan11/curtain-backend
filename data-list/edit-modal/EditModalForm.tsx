@@ -43,6 +43,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const config = modalConfig[tableName]
 
   const [mockImg, handleImgChoose] = useInputFilePath()
+  const [colorImg, handleColorImgChoose] = useInputFilePath()
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
   const [userForEdit] = useState<User>({
@@ -386,13 +387,13 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                     <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
                   </label>
                   <label className='ms-3 d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
-                    {mockImg ?
-                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={mockImg} alt="color image" /> :
+                    {colorImg ?
+                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={colorImg} alt="color image" /> :
                       <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
                     }
-                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
+                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleColorImgChoose} />
                   </label>
-                  {mockImg &&
+                  {(mockImg || colorImg) &&
                     <div className='ms-3'>
                       <input
                         className={clsx(
