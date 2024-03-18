@@ -1,5 +1,4 @@
 import { FC, useState } from 'react'
-import * as Yup from 'yup'
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import { isNotEmpty, toAbsoluteUrl } from '@/_metronic/helpers'
@@ -14,32 +13,54 @@ import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
 import useInputFilePath from '@/tool/hook/useInputFilePath'
+import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 
-const { modalConfig, formField } = dict
+const { modalConfig, formField, validationSchema } = dict
 
 type Props = {
   isUserLoading: boolean
   user: User
 }
 
-const editUserSchema = Yup.object().shape({
-  // email: Yup.string()
-  //   .email('Wrong email format')
-  //   .min(3, 'Minimum 3 symbols')
-  //   .max(50, 'Maximum 50 symbols')
-  //   .required('Email is required'),
-  name: Yup.string()
-    .min(3, '至少 3 個字')
-    .max(50, '至多 50 個字')
-    .required('此欄位必填'),
-  code: Yup.string()
-    .required('此欄位必填'),
-})
+const InputLabel = ({ required, text }) =>
+  <label className={clsx('fw-bold fs-6 mb-2', {
+    'required': required
+  })}>{text}</label>
+
+const ValidateInputField = ({ required = false, label, name, formik, placeholder, inputclassname = "", type = "text", readonly = false, onlynumber = false }) => (
+  <>
+    <InputLabel required={required} text={label} />
+    <input
+      {...(required && !readonly ? formik.getFieldProps(name) : {})}
+      placeholder={placeholder}
+      className={clsx(
+        'form-control form-control-solid mb-3 mb-lg-0',
+        inputclassname,
+        { 'is-invalid': formik?.touched[name] && formik?.errors[name] },
+        { 'is-valid': formik?.touched[name] && !formik?.errors[name] }
+      )}
+      type={type}
+      name={name}
+      autoComplete='off'
+      {...(onlynumber ? {
+        onKeyDown: onlyInputNumbers
+      } : {})}
+      disabled={readonly || formik?.isSubmitting}
+    />
+    {formik?.touched[name] && formik?.errors[name] && (
+      <div className='fv-plugins-message-container'>
+        <div className='fv-help-block'>
+          <span role='alert'>{formik?.errors[name]}</span>
+        </div>
+      </div>
+    )}
+  </>
+)
 
 const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
   const { setItemIdForUpdate } = useListView()
   const { refetch } = useQueryResponse()
-  const tableName  = currentTable.get()
+  const tableName = currentTable.get()
   const config = modalConfig[tableName]
 
   const [mockImg, handleImgChoose] = useInputFilePath()
@@ -69,7 +90,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
   const formik = useFormik({
     initialValues: field,
-    validationSchema: editUserSchema,
+    validationSchema: validationSchema[tableName],
     onSubmit: async (values, { setSubmitting }) => {
       console.log("mock submit:", values)
       return cancel()
@@ -106,7 +127,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
           {config.avatar &&
             <div className='fv-row mb-7'>
               {/* begin::Label */}
-              <label className='d-block fw-bold fs-6 mb-5'>Avatar</label>
+              <label className='d-block fw-bold fs-6 mb-5'>大頭貼照</label>
               {/* end::Label */}
 
               {/* begin::Image input */}
@@ -148,34 +169,13 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             <div className='d-flex mb-7'>
               {config.name_label &&
                 <div className='fv-row flex-grow-1'>
-                  {/* begin::Label */}
-                  <label className='required fw-bold fs-6 mb-2'>{config.name_label}</label>
-                  {/* end::Label */}
-
-                  {/* begin::Input */}
-                  <input
+                  <ValidateInputField
+                    required={config.name_required}
+                    name={"name"}
+                    label={config.name_label}
                     placeholder={config.name_placeholder || "請輸入"}
-                    {...formik.getFieldProps('name')}
-                    type='text'
-                    name='name'
-                    className={clsx(
-                      'form-control form-control-solid mb-3 mb-lg-0',
-                      { 'is-invalid': formik.touched.name && formik.errors.name },
-                      {
-                        'is-valid': formik.touched.name && !formik.errors.name,
-                      }
-                    )}
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
+                    formik={formik}
                   />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className='fv-plugins-message-container'>
-                      <div className='fv-help-block'>
-                        <span role='alert'>{formik.errors.name}</span>
-                      </div>
-                    </div>
-                  )}
-                  {/* end::Input */}
                 </div>
               }
 
@@ -202,60 +202,27 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             <div className='d-flex'>
               {config.code_label &&
                 <div className='fv-row mb-7 flex-grow-1'>
-                  <label className='required fw-bold fs-6 mb-2'>{config.code_label}</label>
-                  <input
-                    placeholder='輸入編號'
-                    {...formik.getFieldProps('code')}
-                    className={clsx(
-                      'form-control form-control-solid mb-3 mb-lg-0',
-                      { 'is-invalid': formik.touched.code && formik.errors.code },
-                      {
-                        'is-valid': formik.touched.code && !formik.errors.code,
-                      }
-                    )}
-                    type='text'
-                    name='code'
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
+                  <ValidateInputField
+                    required={config.code_required}
+                    label={config.code_label}
+                    placeholder={'輸入編號'}
+                    readonly={config.code_read_only}
+                    name={"code"}
+                    formik={formik}
                   />
-                  {formik.touched.code && formik.errors.code && (
-                    <div className='fv-plugins-message-container'>
-                      <div className='fv-help-block'>
-                        <span role='alert'>{formik.errors.code}</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               }
 
               {config.email &&
                 <div className='fv-row mb-7 ms-3 flex-grow-1'>
-                  {/* begin::Label */}
-                  <label className='required fw-bold fs-6 mb-2'>電子郵箱</label>
-                  {/* end::Label */}
-
-                  {/* begin::Input */}
-                  <input
-                    placeholder='Email'
-                    {...formik.getFieldProps('email')}
-                    className={clsx(
-                      'form-control form-control-solid mb-3 mb-lg-0',
-                      { 'is-invalid': formik.touched.email && formik.errors.email },
-                      {
-                        'is-valid': formik.touched.email && !formik.errors.email,
-                      }
-                    )}
+                  <ValidateInputField
+                    required={config.email_required}
+                    label={"電子郵箱"}
                     type='email'
-                    name='email'
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
+                    placeholder={'輸入 Email'}
+                    name={"email"}
+                    formik={formik}
                   />
-                  {/* end::Input */}
-                  {formik.touched.email && formik.errors.email && (
-                    <div className='fv-plugins-message-container'>
-                      <span role='alert'>{formik.errors.email}</span>
-                    </div>
-                  )}
                 </div>
               }
             </div>
@@ -265,28 +232,26 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             <div className='d-flex mb-7'>
               {config.id_code_label &&
                 <div className='fv-row flex-grow-1'>
-                  <label className='fw-bold fs-6 mb-2'>{config.id_code_label}</label>
-                  <input
+                  <ValidateInputField
+                    required={config.id_code_required}
+                    label={config.id_code_label}
                     placeholder={config.id_code_placeholder}
-                    className={"form-control form-control-solid mb-3 mb-lg-0"}
-                    type='text'
-                    name='id_code'
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
+                    inputclassname={"text-uppercase"}
+                    name={"id_code"}
+                    formik={formik}
                   />
                 </div>
               }
 
               {config.phone_number_label &&
                 <div className='fv-row flex-grow-1 ms-3'>
-                  <label className='fw-bold fs-6 mb-2'>{config.phone_number_label}</label>
-                  <input
+                  <ValidateInputField
+                    required={config.phone_number_required}
+                    label={config.phone_number_label}
                     placeholder={config.phone_number_placeholder}
-                    className={"form-control form-control-solid mb-3 mb-lg-0"}
-                    type='text'
-                    name='id_code'
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
+                    name={"phone_number"}
+                    formik={formik}
+                    onlynumber
                   />
                 </div>
               }
@@ -295,14 +260,12 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
 
           {config.password_label &&
             <div className='fv-row mb-7'>
-              <label className='fw-bold fs-6 mb-2'>{config.password_label}</label>
-              <input
+              <ValidateInputField
+                required={config.password_required}
+                label={config.password_label}
                 placeholder={config.password_placeholder}
-                className={"form-control form-control-solid mb-3 mb-lg-0"}
-                type='text'
-                name='id_code'
-                autoComplete='off'
-                disabled={formik.isSubmitting || isUserLoading}
+                name={"password"}
+                formik={formik}
               />
             </div>
           }
@@ -479,7 +442,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
               <div>
-              <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }}></textarea>
+                <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }}></textarea>
               </div>
             </div>
           }

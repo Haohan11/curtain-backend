@@ -40,3 +40,10 @@ textarea:focus-visible {
     outline: 0 !important;
     border-color: var(--bs-primary) !important;
 }
+
+.form-control.form-control-solid:disabled {
+    color: var(--bs-gray-500) !important;
+    background-color: var(--bs-gray-200) !important;
+    border-color: var(--bs-gray-200) !important;
+    opacity: 1 !important;
+}

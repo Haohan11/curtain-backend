@@ -1,3 +1,5 @@
+import * as Yup from 'yup'
+
 const enable_label = "啟用狀態";
 const comments_label = "備註";
 
@@ -119,17 +121,41 @@ export const fullData = {
     modalConfig: {
       avatar: true,
       name_label: "姓名",
+      name_required: true,
       email: true,
+      email_required: true,
       role_label: "員工角色",
       enable_label,
       code_label: "員工編號",
+      code_read_only: true,
       id_code_label: "身分證號",
       id_code_placeholder: "輸入身分證號",
+      id_code_required: true,
       phone_number_label: "手機號碼",
       phone_number_placeholder: "輸入手機號碼",
+      phone_number_required: true,
+      password_required: true,
       password_label: "登入密碼",
       password_placeholder: "輸入密碼",
     },
+    validationSchema: Yup.object().shape({
+      email: Yup.string()
+        .email('格式錯誤')
+        .required('此欄位必填'),
+      name: Yup.string()
+        .min(3, '至少 3 個字')
+        .max(50, '至多 50 個字')
+        .required('此欄位必填'),
+      id_code: Yup.string()
+      .matches(/^[A-Za-z]\d{9}$/,'僅限輸入 10 碼英數字')
+      .required('此欄位必填'),
+      phone_number: Yup.string()
+      .matches(/^\d{10}$/,'僅限輸入 10 碼數字')
+      .required('此欄位必填'),
+      password: Yup.string()
+      .matches(/^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,'至少 4 碼英數字')
+      .required('此欄位必填'),
+    }),
     formField: {
       name: "",
     },
