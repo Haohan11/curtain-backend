@@ -92,8 +92,21 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     initialValues: field,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values, { setSubmitting }) => {
-      console.log("mock submit:", values)
-      return cancel()
+      // return console.log(JSON.stringify(values))
+      try {
+        const res = await fetch("http://localhost:3005/account", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values)
+        })
+        const data = await res.json()
+        console.log("submited:", data)
+      } catch(error) {
+        console.log("error:", error)
+      }
+      return 
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
