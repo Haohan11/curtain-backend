@@ -94,7 +94,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
     onSubmit: async (values, { setSubmitting }) => {
       // return console.log(JSON.stringify(values))
       try {
-        const res = await fetch("http://localhost:3005/account", {
+        const res = await fetch("http://localhost:3005/employee", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

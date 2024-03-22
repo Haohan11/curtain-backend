@@ -6,7 +6,7 @@ const TablePagination = ({ totalPages }) => {
   const { page } = router.query
   const currentPage = parseInt(page) || 1
 
-  const pushPageToUrl = (toPage) => router.push({ ...router, query: { ...router.query, page: toPage } })
+  const pushPageToUrl = (toPage) => router.push({ query: { ...router.query, page: toPage } })
 
   return (
     <div className='row'>

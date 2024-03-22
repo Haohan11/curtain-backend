@@ -119,7 +119,6 @@ export const fullData = {
     searchPlaceholder: "員工",
     createHeaderText: "員工資料",
     modalConfig: {
-      avatar: true,
       name_label: "姓名",
       name_required: true,
       email: true,
@@ -143,7 +142,7 @@ export const fullData = {
         .email('格式錯誤')
         .required('此欄位必填'),
       name: Yup.string()
-        .min(3, '至少 3 個字')
+        .min(2, '至少 2 個字')
         .max(50, '至多 50 個字')
         .required('此欄位必填'),
       id_code: Yup.string()

@@ -13,7 +13,7 @@ import { PageTitle } from "@/_metronic/layout/core";
 
 const { pageTitle: pageTitleDict } = dict
 
-const DyToolbarWrapper = dynamic(
+const DynamicToolbarWrapper = dynamic(
   async () => {
     const { ToolbarWrapper } = await import("@/_metronic/layout/components/toolbar");
     return ToolbarWrapper;
@@ -41,7 +41,7 @@ const ListWrapper = () => {
   const tableName = currentTable.get()
   return (
     <>
-      <DyToolbarWrapper />
+      <DynamicToolbarWrapper />
       <PageTitle>{pageTitleDict[tableName]}</PageTitle>
       <ListViewProvider>
         <Content>
