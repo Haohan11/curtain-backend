@@ -2,40 +2,29 @@ import { useState, useEffect } from 'react'
 import { useTable, ColumnInstance, Row } from 'react-table'
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn'
 import { CustomRow } from './columns/CustomRow'
-import { useQueryResponseData, useQueryResponseLoading } from '../core/QueryResponseProvider'
-import { usersColumns, productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns } from './columns/_columns'
 import { User } from '../core/_models'
-import { UsersListLoading } from '../components/loading/UsersListLoading'
 import { TablePagination } from '../components/pagination/TablePagination'
+import { useTableData, TableDataProvider } from '@/data-list/core/tableDataProvider' 
 
 import { useRouter } from 'next/router'
 
 import currentTable from '../globalVariable/currentTable'
+import dict from '../dictionary/tableDictionary'
 
-const dict = {
-  products: productsColumns,
-  series: seriesColumns,
-  colorScheme: colorSchemeColumns,
-  design: designColumns,
-  material: materialColumns,
-  vendor: vendorColumns,
-  accounts: accountsColumns,
-  role: roleColumns,
-  environment: environmentColumns,
-}
+const { column, fetchUrl } = dict
 
-const TABLEDATAURL = `${process.env.NEXT_PUBLIC_BACKENDURL}/employee`
 const fetchTableData = async ({ page = 1, size = 5 }) => {
-  const res = await fetch(`${TABLEDATAURL}?page=${page}&size=${size}`)
-  const { data: { total, totalPages, employeeList } } = await res.json()
-  return { total, totalPages, data: employeeList }
+  const url = `${process.env.NEXT_PUBLIC_BACKENDURL}/${fetchUrl[currentTable.get()] || "employee"}?page=${page}&size=${size}`
+  const res = await fetch(url)
+  const { data: { total, totalPages, list } } = await res.json()
+  return { total, totalPages, data: list }
 }
 
 const Table = () => {
   const router = useRouter()
   const tableName = currentTable.get()
-  const columns = dict[tableName]
-  const [tableData, setTableData] = useState([])
+  const columns = column[tableName]
+  const { tableData, setTableData } = useTableData()
   const [totalPages, setTotalPages] = useState(null)
 
   useEffect(() => {

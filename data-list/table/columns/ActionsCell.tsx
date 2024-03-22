@@ -13,12 +13,10 @@ type Props = {
 
 const ActionsCell: FC<Props> = ({id}) => {
   const {setItemIdForUpdate} = useListView()
-  const {query} = useQueryResponse()
-  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    MenuComponent.reinitialization()
-  }, [])
+  // useEffect(() => {
+  //   MenuComponent.reinitialization()
+  // }, [])
 
   const openEditModal = () => {
     setItemIdForUpdate(id)
@@ -28,7 +26,6 @@ const ActionsCell: FC<Props> = ({id}) => {
     // 💡 response of the mutation is passed to onSuccess
     onSuccess: () => {
       // ✅ update detail view directly
-      queryClient.invalidateQueries([`${QUERIES.USERS_LIST}-${query}`])
     },
   })
 
@@ -57,7 +54,7 @@ const ActionsCell: FC<Props> = ({id}) => {
         {/* end::Menu item */}
 
         {/* begin::Menu item */}
-        <div className='menu-item px-3'>
+        {/* <div className='menu-item px-3'>
           <a
             className='menu-link px-3'
             data-kt-users-table-filter='delete_row'
@@ -65,7 +62,7 @@ const ActionsCell: FC<Props> = ({id}) => {
           >
             刪除
           </a>
-        </div>
+        </div> */}
         {/* end::Menu item */}
       </div>
       {/* end::Menu */}

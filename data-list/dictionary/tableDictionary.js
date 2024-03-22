@@ -1,5 +1,7 @@
 import * as Yup from 'yup'
 
+import { productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns } from '../table/columns/_columns'
+
 const enable_label = "啟用狀態";
 const comments_label = "備註";
 
@@ -9,6 +11,7 @@ export const fullData = {
     pageTitle: "商品維護",
     searchPlaceholder: "商品",
     createHeaderText: "商品資料",
+    column: productsColumns,
     modalConfig: {
       avatar: false,
       name_label: "商品型號",
@@ -45,6 +48,7 @@ export const fullData = {
     pageTitle: "商品系列",
     searchPlaceholder: "系列",
     createHeaderText: "商品系列",
+    column: seriesColumns,
     modalConfig: {
       enable_label,
       name_label: "系列名稱",
@@ -61,6 +65,7 @@ export const fullData = {
     pageTitle: "色系類別",
     searchPlaceholder: "色系",
     createHeaderText: "色系類別",
+    column: colorSchemeColumns,
     modalConfig: {
       enable_label,
       name_label: "色系名稱",
@@ -75,6 +80,7 @@ export const fullData = {
     pageTitle: "風格類別",
     searchPlaceholder: "風格",
     createHeaderText: "風格類別",
+    column: designColumns,
     modalConfig: {
       enable_label,
       name_label: "風格名稱",
@@ -89,6 +95,7 @@ export const fullData = {
     pageTitle: "面料材質",
     searchPlaceholder: "材質",
     createHeaderText: "面料材質",
+    column: materialColumns,
     modalConfig: {
       enable_label,
       name_label: "面料名稱",
@@ -103,6 +110,7 @@ export const fullData = {
     pageTitle: "供應商",
     searchPlaceholder: "供應商",
     createHeaderText: "供應商",
+    column: vendorColumns,
     modalConfig: {
       enable_label,
       name_label: "供應商名稱",
@@ -118,6 +126,8 @@ export const fullData = {
     pageTitle: "員工資料",
     searchPlaceholder: "員工",
     createHeaderText: "員工資料",
+    column: accountsColumns,
+    fetchUrl: "employee",
     modalConfig: {
       name_label: "姓名",
       name_required: true,
@@ -164,6 +174,7 @@ export const fullData = {
     pageTitle: "角色類別",
     searchPlaceholder: "角色類別",
     createHeaderText: "角色類別",
+    column: roleColumns,
     modalConfig: {
       name_label: "角色名稱",
       members_label: "員工列表",
@@ -180,6 +191,7 @@ export const fullData = {
     pageTitle: "場景管理",
     searchPlaceholder: "場景",
     createHeaderText: "場景",
+    column: environmentColumns,
     modalConfig: {
       enable_label,
       name_label: "場景名稱",

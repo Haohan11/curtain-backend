@@ -1,13 +1,11 @@
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
-import { isNotEmpty, toAbsoluteUrl } from '@/_metronic/helpers'
-import { initialUser, User } from '../core/_models'
+import { isNotEmpty } from '@/_metronic/helpers'
 import clsx from 'clsx'
 import { useListView } from '../core/ListViewProvider'
-import { UsersListLoading } from '../components/loading/UsersListLoading'
+import { useTableData } from '../core/tableDataProvider'
 import { createUser, updateUser } from '../core/_requests'
-import { useQueryResponse } from '../core/QueryResponseProvider'
 
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
@@ -17,17 +15,12 @@ import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 
 const { modalConfig, formField, validationSchema } = dict
 
-type Props = {
-  isUserLoading: boolean
-  user: User
-}
-
 const InputLabel = ({ required, text }) =>
   <label className={clsx('fw-bold fs-6 mb-2', {
     'required': required
   })}>{text}</label>
 
-const ValidateInputField = ({ required = false, label, name, formik, placeholder, inputclassname = "", type = "text", readonly = false, onlynumber = false }) => (
+const ValidateInputField = ({ required = false, label, name, defaultValue, formik, placeholder, inputclassname = "", type = "text", readonly = false, onlynumber = false }) => (
   <>
     <InputLabel required={required} text={label} />
     <input
@@ -39,6 +32,7 @@ const ValidateInputField = ({ required = false, label, name, formik, placeholder
         { 'is-invalid': formik?.touched[name] && formik?.errors[name] },
         { 'is-valid': formik?.touched[name] && !formik?.errors[name] }
       )}
+      defaultValue={defaultValue}
       type={type}
       name={name}
       autoComplete='off'
@@ -57,42 +51,28 @@ const ValidateInputField = ({ required = false, label, name, formik, placeholder
   </>
 )
 
-const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
-  const { setItemIdForUpdate } = useListView()
-  const { refetch } = useQueryResponse()
+const EditModalForm = ({ isUserLoading }) => {
+  const { setItemIdForUpdate, itemIdForUpdate } = useListView()
   const tableName = currentTable.get()
   const config = modalConfig[tableName]
+  const { tableData } = useTableData()
+
+  const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : {}
 
   const [mockImg, handleImgChoose] = useInputFilePath()
   const [colorImg, handleColorImgChoose] = useInputFilePath()
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
-  const [userForEdit] = useState<User>({
-    ...user,
-    avatar: user.avatar || initialUser.avatar,
-    role: user.role || initialUser.role,
-    position: user.position || initialUser.position,
-    name: user.name || initialUser.name,
-    email: user.email || initialUser.email,
-  })
+  // const [field] = useState(formField[tableName])
 
-  const [field] = useState(formField[tableName])
-
-  const cancel = (withRefresh?: boolean) => {
-    if (withRefresh) {
-      refetch()
-    }
+  const cancel = () => {
     setItemIdForUpdate(undefined)
   }
 
-  const blankImg = toAbsoluteUrl('media/svg/avatars/blank.svg')
-  const userAvatarImg = toAbsoluteUrl(`media/${userForEdit.avatar}`)
-
   const formik = useFormik({
-    initialValues: field,
+    initialValues: currentData,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values, { setSubmitting }) => {
-      // return console.log(JSON.stringify(values))
       try {
         const res = await fetch("http://localhost:3005/employee", {
           method: "POST",
@@ -103,10 +83,10 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
         })
         const data = await res.json()
         console.log("submited:", data)
-      } catch(error) {
+      } catch (error) {
         console.log("error:", error)
       }
-      return 
+      return
       setSubmitting(true)
       try {
         if (isNotEmpty(values.id)) {
@@ -147,12 +127,11 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               <div
                 className='image-input image-input-outline'
                 data-kt-image-input='true'
-                style={{ backgroundImage: `url('${blankImg}')` }}
               >
                 {/* begin::Preview existing avatar */}
                 <div
                   className='image-input-wrapper w-125px h-125px'
-                  style={{ backgroundImage: `url('${avatarSrc || userAvatarImg}')` }}
+                  style={{ backgroundImage: `url('${avatarSrc}')` }}
                 ></div>
                 {/* end::Preview existing avatar */}
 
@@ -184,7 +163,8 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 <div className='fv-row flex-grow-1'>
                   <ValidateInputField
                     required={config.name_required}
-                    name={"name"}
+                    defaultValue={currentData["name"]}
+                    name="name"
                     label={config.name_label}
                     placeholder={config.name_placeholder || "請輸入"}
                     formik={formik}
@@ -201,8 +181,9 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                   <FormCheck
                     inline
                     type='switch'
+                    defaultChecked={currentData[config.enable_label ? "enable" : "available"]}
                     id='available-switch'
-                    name='name'
+                    name={config.enable_label ? "enable" : "available"}
                     className={"ms-2"}
                     disabled={formik.isSubmitting || isUserLoading}
                   />
@@ -216,6 +197,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {config.code_label &&
                 <div className='fv-row mb-7 flex-grow-1'>
                   <ValidateInputField
+                    defaultValue={currentData["code"]}
                     required={config.code_required}
                     label={config.code_label}
                     placeholder={'輸入編號'}
@@ -230,6 +212,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
                 <div className='fv-row mb-7 ms-3 flex-grow-1'>
                   <ValidateInputField
                     required={config.email_required}
+                    defaultValue={currentData["email"]}
                     label={"電子郵箱"}
                     type='email'
                     placeholder={'輸入 Email'}
@@ -246,6 +229,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {config.id_code_label &&
                 <div className='fv-row flex-grow-1'>
                   <ValidateInputField
+                    defaultValue={currentData["id_code"]}
                     required={config.id_code_required}
                     label={config.id_code_label}
                     placeholder={config.id_code_placeholder}
@@ -259,6 +243,7 @@ const EditModalForm: FC<Props> = ({ user, isUserLoading }) => {
               {config.phone_number_label &&
                 <div className='fv-row flex-grow-1 ms-3'>
                   <ValidateInputField
+                    defaultValue={currentData["phone_number"]}
                     required={config.phone_number_required}
                     label={config.phone_number_label}
                     placeholder={config.phone_number_placeholder}
