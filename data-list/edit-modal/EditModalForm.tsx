@@ -20,7 +20,7 @@ const InputLabel = ({ required, text }) =>
     'required': required
   })}>{text}</label>
 
-const ValidateInputField = ({ required = false, label, name, defaultValue, formik, placeholder, inputclassname = "", type = "text", readonly = false, onlynumber = false }) => (
+const ValidateInputField = ({ required = false, label, name, formik, placeholder, inputclassname = "", type = "text", readonly = false, onlynumber = false }) => (
   <>
     <InputLabel required={required} text={label} />
     <input
@@ -32,7 +32,6 @@ const ValidateInputField = ({ required = false, label, name, defaultValue, formi
         { 'is-invalid': formik?.touched[name] && formik?.errors[name] },
         { 'is-valid': formik?.touched[name] && !formik?.errors[name] }
       )}
-      defaultValue={defaultValue}
       type={type}
       name={name}
       autoComplete='off'
@@ -70,7 +69,7 @@ const EditModalForm = ({ isUserLoading }) => {
   }
 
   const formik = useFormik({
-    initialValues: currentData,
+    initialValues: {...formField[tableName], ...currentData},
     validationSchema: validationSchema[tableName],
     onSubmit: async (values, { setSubmitting }) => {
       try {
@@ -163,7 +162,6 @@ const EditModalForm = ({ isUserLoading }) => {
                 <div className='fv-row flex-grow-1'>
                   <ValidateInputField
                     required={config.name_required}
-                    defaultValue={currentData["name"]}
                     name="name"
                     label={config.name_label}
                     placeholder={config.name_placeholder || "請輸入"}
@@ -197,7 +195,6 @@ const EditModalForm = ({ isUserLoading }) => {
               {config.code_label &&
                 <div className='fv-row mb-7 flex-grow-1'>
                   <ValidateInputField
-                    defaultValue={currentData["code"]}
                     required={config.code_required}
                     label={config.code_label}
                     placeholder={'輸入編號'}
@@ -212,7 +209,6 @@ const EditModalForm = ({ isUserLoading }) => {
                 <div className='fv-row mb-7 ms-3 flex-grow-1'>
                   <ValidateInputField
                     required={config.email_required}
-                    defaultValue={currentData["email"]}
                     label={"電子郵箱"}
                     type='email'
                     placeholder={'輸入 Email'}
@@ -229,7 +225,6 @@ const EditModalForm = ({ isUserLoading }) => {
               {config.id_code_label &&
                 <div className='fv-row flex-grow-1'>
                   <ValidateInputField
-                    defaultValue={currentData["id_code"]}
                     required={config.id_code_required}
                     label={config.id_code_label}
                     placeholder={config.id_code_placeholder}
@@ -243,7 +238,6 @@ const EditModalForm = ({ isUserLoading }) => {
               {config.phone_number_label &&
                 <div className='fv-row flex-grow-1 ms-3'>
                   <ValidateInputField
-                    defaultValue={currentData["phone_number"]}
                     required={config.phone_number_required}
                     label={config.phone_number_label}
                     placeholder={config.phone_number_placeholder}
@@ -666,7 +660,7 @@ const EditModalForm = ({ isUserLoading }) => {
         </div>
         {/* end::Actions */}
       </form>
-      {(formik.isSubmitting || isUserLoading) && <UsersListLoading />}
+      {/*(formik.isSubmitting || isUserLoading) && <UsersListLoading />*/}
     </>
   )
 }

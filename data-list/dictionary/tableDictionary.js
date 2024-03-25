@@ -167,6 +167,13 @@ export const fullData = {
     }),
     formField: {
       name: "",
+      enable: false,
+      id_code: "",
+      email: "",
+      phone_number: "",
+      code: "",
+      role: 1,
+      password: ""
     },
   },
   // -&anchor
