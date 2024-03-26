@@ -1,17 +1,14 @@
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
-import { isNotEmpty } from '@/_metronic/helpers'
 import clsx from 'clsx'
 import { useListView } from '../core/ListViewProvider'
 import { useTableData } from '../core/tableDataProvider'
-import { createUser, updateUser } from '../core/_requests'
 
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
 import useInputFilePath from '@/tool/hook/useInputFilePath'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
-
 import { createDataRequest, updateDataRequest } from '../core/request'
 
 const { modalConfig, formField, validationSchema, fetchUrl } = dict
@@ -55,7 +52,7 @@ const EditModalForm = ({ isUserLoading }) => {
   const { setItemIdForUpdate, itemIdForUpdate } = useListView()
   const tableName = currentTable.get()
   const config = modalConfig[tableName]
-  const { tableData } = useTableData()
+  const { tableData, setTableData } = useTableData()
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : {}
 
@@ -78,7 +75,10 @@ const EditModalForm = ({ isUserLoading }) => {
         return cancel()
       }
 
-      await updateDataRequest(fetchUrl[tableName], values)
+      const result = await updateDataRequest(fetchUrl[tableName], {...values, id: itemIdForUpdate})
+      if(result !== false) {
+        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? {...data, ...values, password: ""} : data))
+      }
       cancel()
     }
   })

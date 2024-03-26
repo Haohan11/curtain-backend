@@ -25,7 +25,7 @@ export const createDataRequest = async (url, values) => {
         body: JSON.stringify(values),
       });
       const result = await res.json();
-      console.log("submited:", result.message);
+      console.log("submited:", result);
     } catch (error) {
       console.log("error:", error);
       return false
@@ -43,7 +43,7 @@ export const updateDataRequest = async (url, values) => {
         body: JSON.stringify(values),
       });
       const result = await res.json();
-      console.log("submited:", result.message);
+      console.log("submited:", result);
     } catch (error) {
       console.log("error:", error);
       return false
