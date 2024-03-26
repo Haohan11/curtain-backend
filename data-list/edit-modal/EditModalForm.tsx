@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import { isNotEmpty } from '@/_metronic/helpers'
@@ -13,7 +12,9 @@ import Stars from '@/components/input/starsRating'
 import useInputFilePath from '@/tool/hook/useInputFilePath'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 
-const { modalConfig, formField, validationSchema } = dict
+import { createDataRequest, updateDataRequest } from '../core/request'
+
+const { modalConfig, formField, validationSchema, fetchUrl } = dict
 
 const InputLabel = ({ required, text }) =>
   <label className={clsx('fw-bold fs-6 mb-2', {
@@ -62,44 +63,24 @@ const EditModalForm = ({ isUserLoading }) => {
   const [colorImg, handleColorImgChoose] = useInputFilePath()
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
-  // const [field] = useState(formField[tableName])
-
   const cancel = () => {
     setItemIdForUpdate(undefined)
   }
 
   const formik = useFormik({
-    initialValues: {...formField[tableName], ...currentData},
+    initialValues: { ...formField[tableName], ...currentData },
     validationSchema: validationSchema[tableName],
-    onSubmit: async (values, { setSubmitting }) => {
-      try {
-        const res = await fetch("http://localhost:3005/employee", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values)
-        })
-        const data = await res.json()
-        console.log("submited:", data)
-      } catch (error) {
-        console.log("error:", error)
+    onSubmit: async (values) => {
+      if (itemIdForUpdate === undefined) return
+
+      if (itemIdForUpdate === null) {
+        await createDataRequest(fetchUrl[tableName], values)
+        return cancel()
       }
-      return
-      setSubmitting(true)
-      try {
-        if (isNotEmpty(values.id)) {
-          await updateUser(values)
-        } else {
-          await createUser(values)
-        }
-      } catch (ex) {
-        console.error(ex)
-      } finally {
-        setSubmitting(true)
-        cancel(true)
-      }
-    },
+
+      await updateDataRequest(fetchUrl[tableName], values)
+      cancel()
+    }
   })
 
   return (

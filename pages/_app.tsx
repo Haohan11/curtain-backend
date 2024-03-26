@@ -19,7 +19,7 @@ import ScreenLoad from "@/components/loading/ScreenLoad"
 
 setupAxios(axios)
 
-// need { MasterInit } to get sidebar work, but it require to control ther document node, so use dynamic import and with no ssr
+// need { MasterInit } to get sidebar work, but it require to control ther document node, so use dynamic import with no ssr
 const DynamicMasterInit = dynamic(async () => {
   const { MasterInit } = await import('@/_metronic/layout/MasterInit')
   return MasterInit

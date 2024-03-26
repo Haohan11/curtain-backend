@@ -1,6 +1,18 @@
-import * as Yup from 'yup'
+import * as Yup from "yup";
 
-import { productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, vendorColumns, accountsColumns, roleColumns, environmentColumns } from '../table/columns/_columns'
+import {
+  productsColumns,
+  seriesColumns,
+  colorSchemeColumns,
+  designColumns,
+  materialColumns,
+  vendorColumns,
+  accountsColumns,
+  roleColumns,
+  environmentColumns,
+} from "../table/columns/_columns";
+
+import { getDataRequest } from "../core/request";
 
 const enable_label = "啟用狀態";
 const comments_label = "備註";
@@ -148,22 +160,23 @@ export const fullData = {
       password_placeholder: "輸入密碼",
     },
     validationSchema: Yup.object().shape({
-      email: Yup.string()
-        .email('格式錯誤')
-        .required('此欄位必填'),
+      email: Yup.string().email("格式錯誤").required("此欄位必填"),
       name: Yup.string()
-        .min(2, '至少 2 個字')
-        .max(50, '至多 50 個字')
-        .required('此欄位必填'),
+        .min(2, "至少 2 個字")
+        .max(50, "至多 50 個字")
+        .required("此欄位必填"),
       id_code: Yup.string()
-      .matches(/^[A-Za-z]\d{9}$/,'僅限輸入 10 碼英數字')
-      .required('此欄位必填'),
+        .matches(/^[A-Za-z]\d{9}$/, "僅限輸入 10 碼英數字")
+        .required("此欄位必填"),
       phone_number: Yup.string()
-      .matches(/^\d{10}$/,'僅限輸入 10 碼數字')
-      .required('此欄位必填'),
+        .matches(/^\d{10}$/, "僅限輸入 10 碼數字")
+        .required("此欄位必填"),
       password: Yup.string()
-      .matches(/^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,'至少 4 碼英數字')
-      .required('此欄位必填'),
+        .matches(
+          /^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,
+          "至少 4 碼英數字"
+        )
+        .required("此欄位必填"),
     }),
     formField: {
       name: "",
@@ -173,7 +186,7 @@ export const fullData = {
       phone_number: "",
       code: "",
       role: 1,
-      password: ""
+      password: "",
     },
   },
   // -&anchor

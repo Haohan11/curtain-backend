@@ -4,21 +4,17 @@ import { CustomHeaderColumn } from './columns/CustomHeaderColumn'
 import { CustomRow } from './columns/CustomRow'
 import { User } from '../core/_models'
 import { TablePagination } from '../components/pagination/TablePagination'
-import { useTableData, TableDataProvider } from '@/data-list/core/tableDataProvider' 
-
+import { useTableData } from '@/data-list/core/tableDataProvider'
 import { useRouter } from 'next/router'
+
+import { getDataRequest } from "../core/request"
 
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 
 const { column, fetchUrl } = dict
 
-const fetchTableData = async ({ page = 1, size = 5 }) => {
-  const url = `${process.env.NEXT_PUBLIC_BACKENDURL}/${fetchUrl[currentTable.get()] || "employee"}?page=${page}&size=${size}`
-  const res = await fetch(url)
-  const { data: { total, totalPages, list } } = await res.json()
-  return { total, totalPages, data: list }
-}
+const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest(fetchUrl[currentTable.get()], { page, size })
 
 const Table = () => {
   const router = useRouter()
@@ -31,11 +27,11 @@ const Table = () => {
     if (!router.isReady) return
 
     const { query: { page, size } } = router;
-      (async () => {
-        const { data, totalPages } = await fetchTableData({ page, size })
-        setTableData(data)
-        setTotalPages(totalPages)
-      })()
+    (async () => {
+      const { data, totalPages } = await fetchTableData({ page, size })
+      setTableData(data)
+      setTotalPages(totalPages)
+    })()
   }, [router])
 
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } = useTable({
@@ -76,7 +72,7 @@ const Table = () => {
           </tbody>
         </table>
       </div>
-      <TablePagination totalPages={totalPages}/>
+      <TablePagination totalPages={totalPages} />
       {/* {isLoading && <UsersListLoading />} */}
     </div>
   )
