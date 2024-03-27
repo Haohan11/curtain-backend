@@ -154,7 +154,7 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
       <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
     ),
     id: 'enable',
-    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].two_steps} />,
+    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='系列編號' className='min-w-125px' />,
@@ -166,7 +166,7 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 

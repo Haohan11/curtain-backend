@@ -12,10 +12,8 @@ import {
   environmentColumns,
 } from "../table/columns/_columns";
 
-import { getDataRequest } from "../core/request";
-
 const enable_label = "啟用狀態";
-const comments_label = "備註";
+const comment_label = "備註";
 
 export const fullData = {
   // -&anchor
@@ -61,15 +59,24 @@ export const fullData = {
     searchPlaceholder: "系列",
     createHeaderText: "商品系列",
     column: seriesColumns,
+    fetchUrl: "series",
     modalConfig: {
       enable_label,
       name_label: "系列名稱",
+      name_required: true,
+      code_required: true,
       code_label: "系列編號",
-      comments_label,
+      comment_label,
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
+      code: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
+    }),
     formField: {
       name: "",
       code: "",
+      enable: true,
+      comment: "",
     },
   },
   // -&anchor
@@ -81,7 +88,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "色系名稱",
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",
@@ -96,7 +103,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "風格名稱",
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",
@@ -111,7 +118,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "面料名稱",
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",
@@ -127,7 +134,7 @@ export const fullData = {
       enable_label,
       name_label: "供應商名稱",
       code_label: "供應商編號",
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",
@@ -180,7 +187,7 @@ export const fullData = {
     }),
     formField: {
       name: "",
-      enable: false,
+      enable: true,
       id_code: "",
       email: "",
       phone_number: "",
@@ -200,7 +207,7 @@ export const fullData = {
       members_label: "員工列表",
       auth_label: "權限設定",
       auth_list: ["顯示模組", "顯示操作項", "勾選修改/檢視"],
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",
@@ -215,7 +222,7 @@ export const fullData = {
     modalConfig: {
       enable_label,
       name_label: "場景名稱",
-      comments_label,
+      comment_label,
     },
     formField: {
       name: "",

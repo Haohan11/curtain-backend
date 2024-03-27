@@ -54,7 +54,7 @@ const EditModalForm = ({ isUserLoading }) => {
   const config = modalConfig[tableName]
   const { tableData, setTableData } = useTableData()
 
-  const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : {}
+  const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
 
   const [mockImg, handleImgChoose] = useInputFilePath()
   const [colorImg, handleColorImgChoose] = useInputFilePath()
@@ -65,7 +65,7 @@ const EditModalForm = ({ isUserLoading }) => {
   }
 
   const formik = useFormik({
-    initialValues: { ...formField[tableName], ...currentData },
+    initialValues: { ...formField[tableName], ...(currentData === null ? {} : currentData) },
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
       if (itemIdForUpdate === undefined) return
@@ -75,9 +75,9 @@ const EditModalForm = ({ isUserLoading }) => {
         return cancel()
       }
 
-      const result = await updateDataRequest(fetchUrl[tableName], {...values, id: itemIdForUpdate})
-      if(result !== false) {
-        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? {...data, ...values, password: ""} : data))
+      const result = await updateDataRequest(fetchUrl[tableName], { ...values, id: itemIdForUpdate })
+      if (result !== false) {
+        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
       }
       cancel()
     }
@@ -158,10 +158,10 @@ const EditModalForm = ({ isUserLoading }) => {
                   </label>
 
                   <FormCheck
-                    { ...formik.getFieldProps(config.enable_label ? "enable" : "available")}
+                    {...formik.getFieldProps(config.enable_label ? "enable" : "available")}
                     inline
                     type='switch'
-                    defaultChecked={currentData[config.enable_label ? "enable" : "available"]}
+                    defaultChecked={currentData === null ? formik.getFieldProps(config.enable_label ? "enable" : "available").value : currentData[config.enable_label ? "enable" : "available"]}
                     id='available-switch'
                     name={config.enable_label ? "enable" : "available"}
                     className={"ms-2"}
@@ -444,11 +444,11 @@ const EditModalForm = ({ isUserLoading }) => {
             </div>
           }
 
-          {config.comments_label &&
+          {config.comment_label &&
             <div className='mb-7'>
-              <label className='fw-bold fs-6 mb-2'>{config.comments_label}</label>
+              <label className='fw-bold fs-6 mb-2'>{config.comment_label}</label>
               <div>
-                <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }}></textarea>
+                <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }} {...formik.getFieldProps("comment")} name='comment'></textarea>
               </div>
             </div>
           }
