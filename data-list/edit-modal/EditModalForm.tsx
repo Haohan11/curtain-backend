@@ -158,6 +158,7 @@ const EditModalForm = ({ isUserLoading }) => {
                   </label>
 
                   <FormCheck
+                    { ...formik.getFieldProps(config.enable_label ? "enable" : "available")}
                     inline
                     type='switch'
                     defaultChecked={currentData[config.enable_label ? "enable" : "available"]}

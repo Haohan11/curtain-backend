@@ -283,16 +283,19 @@ const accountsColumns: ReadonlyArray<Column<Account>> = [
     Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
   },
   {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
+    ),
+    id: 'enable',
+    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
+  },
+  {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工角色' className='min-w-125px' />,
     accessor: 'role',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工編號' className='min-w-125px' />,
     accessor: 'code',
-  },
-  {
-    Header: (props) => <UserCustomHeader tableProps={props} title='大頭貼圖' className='min-w-125px' />,
-    accessor: 'avatar',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工姓名' className='min-w-125px' />,
