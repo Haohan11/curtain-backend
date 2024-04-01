@@ -59,7 +59,6 @@ export const fullData = {
     searchPlaceholder: "系列",
     createHeaderText: "商品系列",
     column: seriesColumns,
-    fetchUrl: "series",
     modalConfig: {
       enable_label,
       name_label: "系列名稱",
@@ -68,6 +67,7 @@ export const fullData = {
       code_label: "系列編號",
       comment_label,
     },
+    fetchUrl: "series",
     validationSchema: Yup.object().shape({
       name: Yup.string()
         .min(2, "至少 2 個字")
@@ -166,8 +166,19 @@ export const fullData = {
       code_label: "供應商編號",
       comment_label,
     },
+    fetchUrl: "supplier",
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+      code: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
+    }),
     formField: {
       name: "",
+      code: "",
+      enable: true,
+      comment: "",
     },
   },
   // -&anchor
