@@ -69,7 +69,10 @@ export const fullData = {
       comment_label,
     },
     validationSchema: Yup.object().shape({
-      name: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
       code: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
     }),
     formField: {
@@ -90,8 +93,17 @@ export const fullData = {
       name_label: "色系名稱",
       comment_label,
     },
+    fetchUrl: "color-scheme",
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+    }),
     formField: {
       name: "",
+      enable: true,
+      comment: "",
     },
   },
   // -&anchor
@@ -234,7 +246,7 @@ export const fullData = {
     formField: {
       name: "",
       enable: true,
-      comment: ""
+      comment: "",
     },
   },
 };

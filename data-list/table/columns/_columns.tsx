@@ -183,7 +183,7 @@ const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
       <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
     ),
     id: 'enable',
-    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].two_steps} />,
+    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='色系名稱' className='min-w-125px' />,
