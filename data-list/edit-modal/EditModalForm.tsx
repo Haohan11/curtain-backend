@@ -71,11 +71,11 @@ const EditModalForm = ({ isUserLoading }) => {
       if (itemIdForUpdate === undefined) return
 
       if (itemIdForUpdate === null) {
-        await createDataRequest(fetchUrl[tableName], values)
+        await createDataRequest(values)
         return cancel()
       }
 
-      const result = await updateDataRequest(fetchUrl[tableName], { ...values, id: itemIdForUpdate })
+      const result = await updateDataRequest({ ...values, id: itemIdForUpdate })
       if (result !== false) {
         setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
       }

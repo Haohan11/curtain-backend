@@ -1,7 +1,12 @@
-const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
+import currentTable from "../globalVariable/currentTable";
+import dict from "../dictionary/tableDictionary"
 
-export const getDataRequest = async (url, { page, size }) => {
-  const URL = `${BASEURL}/${url}?page=${page}&size=${size}`;
+const { fetchUrl } = dict
+const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
+const getTableUrl = () => fetchUrl[currentTable.get()]
+
+export const getDataRequest = async ({ page, size }) => {
+  const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
     const res = await fetch(URL);
     const {
@@ -14,8 +19,8 @@ export const getDataRequest = async (url, { page, size }) => {
   }
 };
 
-export const createDataRequest = async (url, values) => {
-  const URL = `${BASEURL}/${url}`;
+export const createDataRequest = async (values) => {
+  const URL = `${BASEURL}/${getTableUrl()}`;
     try {
       const res = await fetch(URL, {
         method: "POST",
@@ -32,8 +37,8 @@ export const createDataRequest = async (url, values) => {
     }
 };
 
-export const updateDataRequest = async (url, values) => {
-  const URL = `${BASEURL}/${url}`;
+export const updateDataRequest = async (values) => {
+  const URL = `${BASEURL}/${getTableUrl()}`;
     try {
       const res = await fetch(URL, {
         method: "PUT",

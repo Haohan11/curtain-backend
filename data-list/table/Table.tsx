@@ -14,7 +14,7 @@ import dict from '../dictionary/tableDictionary'
 
 const { column, fetchUrl } = dict
 
-const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest(fetchUrl[currentTable.get()], { page, size })
+const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest({ page, size })
 
 const Table = () => {
   const router = useRouter()
