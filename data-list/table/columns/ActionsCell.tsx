@@ -14,9 +14,9 @@ type Props = {
 const ActionsCell: FC<Props> = ({id}) => {
   const {setItemIdForUpdate} = useListView()
 
-  // useEffect(() => {
-  //   MenuComponent.reinitialization()
-  // }, [])
+  useEffect(() => {
+    MenuComponent.reinitialization()
+  }, [])
 
   const openEditModal = () => {
     setItemIdForUpdate(id)
