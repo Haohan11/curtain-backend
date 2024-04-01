@@ -11,7 +11,7 @@ import useInputFilePath from '@/tool/hook/useInputFilePath'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 import { createDataRequest, updateDataRequest } from '../core/request'
 
-const { modalConfig, formField, validationSchema, fetchUrl } = dict
+const { modalConfig, formField, validationSchema } = dict
 
 const InputLabel = ({ required, text }) =>
   <label className={clsx('fw-bold fs-6 mb-2', {

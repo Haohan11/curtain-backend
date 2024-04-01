@@ -12,7 +12,7 @@ import { getDataRequest } from "../core/request"
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 
-const { column, fetchUrl } = dict
+const { column } = dict
 
 const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest({ page, size })
 
