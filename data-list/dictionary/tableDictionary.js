@@ -117,8 +117,17 @@ export const fullData = {
       name_label: "風格名稱",
       comment_label,
     },
+    fetchUrl: "design",
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+    }),
     formField: {
       name: "",
+      enable: true,
+      comment: "",
     },
   },
   // -&anchor
