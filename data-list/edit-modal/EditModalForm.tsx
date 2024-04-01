@@ -22,7 +22,7 @@ const ValidateInputField = ({ required = false, label, name, formik, placeholder
   <>
     <InputLabel required={required} text={label} />
     <input
-      {...(required && !readonly ? formik.getFieldProps(name) : {})}
+      {...formik.getFieldProps(name)}
       placeholder={placeholder}
       className={clsx(
         'form-control form-control-solid mb-3 mb-lg-0',

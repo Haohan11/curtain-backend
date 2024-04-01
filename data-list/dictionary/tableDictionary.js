@@ -224,8 +224,17 @@ export const fullData = {
       name_label: "場景名稱",
       comment_label,
     },
+    fetchUrl: "environment",
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+    }),
     formField: {
       name: "",
+      enable: true,
+      comment: ""
     },
   },
 };
