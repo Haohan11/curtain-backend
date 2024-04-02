@@ -355,38 +355,10 @@ const environmentColumns: ReadonlyArray<Column<Environment>> = [
   },
   {
     Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Two steps' className='min-w-125px' />
-    ),
-    id: 'two_steps',
-    Cell: ({ ...props }) => <UserTwoStepsCell two_steps={props.data[props.row.index].enable} />,
-  },
-  {
-    Header: (props) => (
       <UserCustomHeader tableProps={props} title='上架狀態' className='min-w-125px' />
     ),
-    id: 'available',
+    id: 'enable',
     Cell: ({ ...props }) => <ProductAvaliableCell enable={props.data[props.row.index].enable} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
-    ),
-    id: 'enable',
-    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
-    ),
-    id: 'enable',
-    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
-    ),
-    id: 'enable',
-    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='場景名稱' className='min-w-125px' />,
