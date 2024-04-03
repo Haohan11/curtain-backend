@@ -15,7 +15,7 @@ const SidebarMenuMain = () => {
         <SidebarMenuItem to='/products/colors' title='色系類別' hasBullet={true} />
         <SidebarMenuItem to='/products/design' title='風格類別' hasBullet={true} />
         <SidebarMenuItem to='/products/material' title='面料材質' hasBullet={true} />
-        <SidebarMenuItem to='/products/vendor' title='供應商' hasBullet={true} />
+        <SidebarMenuItem to='/products/supplier' title='供應商' hasBullet={true} />
       </SidebarMenuItemWithSub>
       <SidebarMenuItemWithSub
         to='/accounts'

@@ -22,7 +22,7 @@ export type Products = {
   name?: string
   style?: string
   series?: string
-  vendor?: string
+  supplier?: string
   color?: string
   color_scheme?: string
   material?: string
@@ -62,7 +62,7 @@ export type Material = {
   comments?: string
 }
 
-export type Vendor = {
+export type Supplier = {
   id?: ID
   code: string
   enable?: boolean

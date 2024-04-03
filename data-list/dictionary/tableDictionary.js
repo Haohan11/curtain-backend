@@ -6,7 +6,7 @@ import {
   colorSchemeColumns,
   designColumns,
   materialColumns,
-  vendorColumns,
+  supplierColumns,
   accountsColumns,
   roleColumns,
   environmentColumns,
@@ -24,11 +24,11 @@ export const fullData = {
     column: productsColumns,
     modalConfig: {
       avatar: false,
-      name_label: "商品型號",
-      name_placeholder: "請輸入商品型號",
-      style_label: "商品樣式",
-      style_placeholder: "請輸入商品樣式",
-      vendor_label: "供應廠商",
+      name_label: "商品樣式",
+      name_placeholder: "請輸入商品樣式",
+      code_label: "商品型號",
+      code_placeholder: "請輸入商品型號",
+      supplier_label: "供應廠商",
       available_label: "上架狀態",
       series_label: "商品系列",
       color_label: "商品顏色",
@@ -39,12 +39,20 @@ export const fullData = {
       block_label: "遮光效果",
       description_label: "商品描述",
     },
+    fetchUrl: "product",
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+      code: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
+    }),
     formField: {
       name: "",
-      style: "",
-      vendor: "",
+      code: "",
+      supplier: undefined,
       avaliable: "",
-      series: "",
+      series: undefined,
       color: "",
       material: "",
       design: "",
@@ -155,11 +163,11 @@ export const fullData = {
     },
   },
   // -&anchor
-  vendor: {
+  supplier: {
     pageTitle: "供應商",
     searchPlaceholder: "供應商",
     createHeaderText: "供應商",
-    column: vendorColumns,
+    column: supplierColumns,
     modalConfig: {
       enable_label,
       name_label: "供應商名稱",

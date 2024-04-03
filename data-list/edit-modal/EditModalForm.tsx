@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import clsx from 'clsx'
@@ -9,7 +11,8 @@ import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
 import useInputFilePath from '@/tool/hook/useInputFilePath'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
-import { createDataRequest, updateDataRequest } from '../core/request'
+
+import { createDataRequest, updateDataRequest, getDataByTable } from '../core/request'
 
 const { modalConfig, formField, validationSchema } = dict
 
@@ -56,6 +59,12 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
 
+  const [series, setSeries] = useState([])
+  const seriesIsEmpty = series.length === 0
+
+  const [supplier, setSupplier] = useState([])
+  const supplierIsEmpty = supplier.length === 0
+
   const [mockImg, handleImgChoose] = useInputFilePath()
   const [colorImg, handleColorImgChoose] = useInputFilePath()
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
@@ -82,6 +91,22 @@ const EditModalForm = ({ isUserLoading }) => {
       cancel()
     }
   })
+
+  useEffect(() => {
+    (async () => {
+      if (config.series_label) {
+        const { data: list } = await getDataByTable("series")
+        const enableList = list.filter(item => item.enable)
+        setSeries(enableList)
+      }
+
+      if (config.supplier_label) {
+        const { data: list } = await getDataByTable("supplier")
+        const enableList = list.filter(item => item.enable)
+        setSupplier(enableList)
+      }
+    })()
+  }, [])
 
   return (
     <>
@@ -172,14 +197,14 @@ const EditModalForm = ({ isUserLoading }) => {
             </div>
           }
 
-          {(config.code_label || config.email) &&
+          {(config.code_label || config.email || config.series_label) &&
             <div className='d-flex'>
               {config.code_label &&
                 <div className='fv-row mb-7 flex-grow-1'>
                   <ValidateInputField
                     required={config.code_required}
                     label={config.code_label}
-                    placeholder={'輸入編號'}
+                    placeholder={config.code_placeholder || '輸入編號'}
                     readonly={config.code_read_only}
                     name={"code"}
                     formik={formik}
@@ -197,6 +222,24 @@ const EditModalForm = ({ isUserLoading }) => {
                     name={"email"}
                     formik={formik}
                   />
+                </div>
+              }
+
+              {config.series_label &&
+                <div className='fv-row flex-grow-1 ms-5'>
+                  <label className='fw-bold fs-6 mb-2'>{config.series_label}</label>
+                  <select
+                    {...formik.getFieldProps("series")}
+                    className={clsx(
+                      'form-select form-select-solid mb-3 mb-lg-0'
+                    )}
+                    name='series'
+                    disabled={formik.isSubmitting || isUserLoading}
+                  >
+                    {seriesIsEmpty ? <option disabled>目前沒有資料</option> : series.map(item =>
+                      <option key={item.id} value={item.id}>{item.name}</option>
+                    )}
+                  </select>
                 </div>
               }
             </div>
@@ -261,52 +304,21 @@ const EditModalForm = ({ isUserLoading }) => {
             </div>
           }
 
-          {(config.style_label || config.series_label) &&
-            <div className='d-flex mb-7'>
-              {config.style_label &&
-                <div className='fv-row flex-grow-1'>
-                  <label className='fw-bold fs-6 mb-2'>{config.style_label}</label>
-                  <input
-                    className={clsx(
-                      'form-control form-control-solid mb-3 mb-lg-0'
-                    )}
-                    type='text'
-                    name='style'
-                    autoComplete='off'
-                    disabled={formik.isSubmitting || isUserLoading}
-                  />
-                </div>
-              }
-
-              {config.series_label &&
-                <div className='fv-row flex-grow-1 ms-5'>
-                  <label className='fw-bold fs-6 mb-2'>{config.series_label}</label>
-                  <select
-                    className={clsx(
-                      'form-select form-select-solid mb-3 mb-lg-0'
-                    )}
-                    name='series'
-                    disabled={formik.isSubmitting || isUserLoading}
-                  >
-                    <option>遮光簾</option>
-                  </select>
-                </div>
-              }
-            </div>
-          }
-
-          {config.vendor_label &&
+          {config.supplier_label &&
             <div className='fv-row mb-7'>
-              <label className='fw-bold fs-6 mb-2'>{config.vendor_label}</label>
+              <label className='fw-bold fs-6 mb-2'>{config.supplier_label}</label>
 
               <select
+                {...formik.getFieldProps("supplier")}
                 className={clsx(
                   'form-select form-select-solid mb-3 mb-lg-0'
                 )}
-                name='vendor'
+                name='supplier'
                 disabled={formik.isSubmitting || isUserLoading}
               >
-                <option>OOOXXX</option>
+                {supplierIsEmpty ? <option disabled>目前沒有資料</option> : supplier.map(item =>
+                  <option key={item.id} value={item.id}>{item.name}</option>
+                )}
               </select>
             </div>
           }

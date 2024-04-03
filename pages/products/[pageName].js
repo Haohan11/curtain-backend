@@ -24,7 +24,7 @@ export const getStaticPaths = async () => {
     "colors",
     "design",
     "material",
-    "vendor",
+    "supplier",
   ];
 
   const paths = pageNameDict.map((pageName) => ({ params: { pageName } }));
@@ -42,7 +42,7 @@ export const getStaticProps = async ({ params: { pageName } }) => {
     colors: "colorScheme",
     design: "design",
     material: "material",
-    vendor: "vendor",
+    supplier: "supplier",
   };
   return {
     props: {
