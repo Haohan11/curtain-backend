@@ -45,14 +45,15 @@ export const fullData = {
         .min(2, "至少 2 個字")
         .max(15, "至多 15 個字")
         .required("此欄位必填"),
+      series: Yup.string().required(),
       code: Yup.string().max(15, "至多 15 個字").required("此欄位必填"),
     }),
     formField: {
       name: "",
       code: "",
       available: true,
-      series: undefined,
-      supplier: undefined,
+      series: "",
+      supplier: "",
       material: "",
       design: "",
       absorption: 1,

@@ -150,16 +150,18 @@ const EditModalForm = ({ isUserLoading }) => {
     })()
   }, [])
 
-  // re assign inital value with keep old color input fields value 
+  // re assign inital value with keep old input fields values
   useEffect(() => {
     setInitialValues(prev => ({
-      ...prev, ...([...Array(parseInt(colorImagePathGroup.length / 2) + 1)].reduce((dict, path, index) => {
+      ...prev, 
+      ...([...Array(parseInt(colorImagePathGroup.length / 2) + 1)].reduce((dict, path, index) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || ""
         dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || ""
         return dict
-      }, {}))
+      }, {})),
+      series: series[0]?.id || ""
     }))
-  }, [colorImagePathGroup, colorScheme])
+  }, [colorImagePathGroup, colorScheme, series])
 
   return (
     <>
