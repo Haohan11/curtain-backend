@@ -73,6 +73,15 @@ const EditModalForm = ({ isUserLoading }) => {
   const [colorScheme, setColorScheme] = useState([])
   const colorSchemeIsEmpty = colorScheme.length === 0
 
+  const [material, setMaterial] = useState([])
+  const materialIsEmpty = material.length === 0
+
+  const [design, setDesign] = useState([])
+  const designIsEmpty = design.length === 0
+
+  const [environment, setEnvironment] = useState([])
+  const environmentIsEmpty = environment.length === 0
+
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
   const cancel = () => {
@@ -120,16 +129,36 @@ const EditModalForm = ({ isUserLoading }) => {
         const enableList = list.filter(item => item.enable)
         setColorScheme(enableList)
       }
+
+      if (config.material_label) {
+        const { data: list } = await getDataByTable("material")
+        const enableList = list.filter(item => item.enable)
+        setMaterial(enableList)
+      }
+
+      if (config.design_label) {
+        const { data: list } = await getDataByTable("design")
+        const enableList = list.filter(item => item.enable)
+        setDesign(enableList)
+      }
+
+      if (config.environment_label) {
+        const { data: list } = await getDataByTable("environment")
+        const enableList = list.filter(item => item.enable)
+        setEnvironment(enableList)
+      }
     })()
   }, [])
 
   // re assign inital value with keep old color input fields value 
   useEffect(() => {
-    setInitialValues(prev => ({...prev, ...([...Array(parseInt(colorImagePathGroup.length / 2) + 1)].reduce((dict, path, index) => {
-      dict[`color_${index}`] = formik.values[`color_${index}`] || ""
-      dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || ""
-      return dict
-    }, {}))}))
+    setInitialValues(prev => ({
+      ...prev, ...([...Array(parseInt(colorImagePathGroup.length / 2) + 1)].reduce((dict, path, index) => {
+        dict[`color_${index}`] = formik.values[`color_${index}`] || ""
+        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || ""
+        return dict
+      }, {}))
+    }))
   }, [colorImagePathGroup, colorScheme])
 
   return (
@@ -403,10 +432,12 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.material_label}</div>
               <div className='d-flex flex-wrap justify-content-start'>
-                {["OOOXXO", "OOXXYY", "布的", "紙的", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "布布的", "紙布布的", "CCV",].map((item, index) =>
-                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
-                    <input type='checkbox' hidden />
-                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+                {materialIsEmpty ? <div className='w-100 text-center bg-secondary p-2 rounded-2'>目前沒有資料</div> : material.map((item) =>
+                  <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input
+                      {...formik.getFieldProps("material")}
+                      type='checkbox' name='material' value={item.name} hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
                 )}
               </div>
@@ -417,10 +448,12 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.design_label}</div>
               <div className='d-flex flex-wrap justify-content-start'>
-                {["OOOXXO", "OOXXYY", "布的", "紙的", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "布布的", "紙布布的", "CCV",].map((item, index) =>
-                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
-                    <input type='checkbox' hidden />
-                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+                {designIsEmpty ? <div className='w-100 text-center bg-secondary p-2 rounded-2'>目前沒有資料</div> : design.map((item) =>
+                  <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input
+                      {...formik.getFieldProps("material")}
+                      type='checkbox' name='design' value={item.name} hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
                 )}
               </div>
@@ -431,11 +464,15 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='row mb-7'>
               <div className='col'>
                 <label className='fw-bold fs-6 mb-2'>{config.absorption_label}</label>
-                <Stars width={50} name="absorption" />
+                <Stars
+                  {...formik.getFieldProps("absorption")}
+                  width={50} name="absorption" />
               </div>
               <div className='col'>
                 <label className='fw-bold fs-6 mb-2'>{config.block_label}</label>
-                <Stars width={50} name="block" />
+                <Stars 
+                  {...formik.getFieldProps("block")}
+                  width={50} name="block" />
               </div>
             </div>
           }
@@ -444,10 +481,12 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.environment_label}</div>
               <div className='d-flex flex-wrap justify-content-start'>
-                {["OOOXXO", "OOXXYY", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "CCV",].map((item, index) =>
-                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
-                    <input type='checkbox' hidden />
-                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
+              {environmentIsEmpty ? <div className='w-100 text-center bg-secondary p-2 rounded-2'>目前沒有資料</div> : environment.map((item) =>
+                  <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
+                    <input
+                      {...formik.getFieldProps("material")}
+                      type='checkbox' name='environment' value={item.name} hidden />
+                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
                 )}
               </div>
@@ -458,7 +497,7 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
               <div>
-                <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }}></textarea>
+                <textarea className='w-100 border border-1 border-gray-400 rounded-2 px-4 py-2 fs-3' style={{ minHeight: "120px" }} {...formik.getFieldProps("description")}></textarea>
               </div>
             </div>
           }
