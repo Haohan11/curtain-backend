@@ -486,7 +486,7 @@ const EditModalForm = ({ isUserLoading }) => {
               {environmentIsEmpty ? <div className='w-100 text-center bg-secondary p-2 rounded-2'>目前沒有資料</div> : environment.map((item) =>
                   <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
                     <input
-                      {...formik.getFieldProps("material")}
+                      {...formik.getFieldProps("environment")}
                       type='checkbox' name='environment' value={item.name} hidden />
                     <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>

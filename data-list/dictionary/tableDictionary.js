@@ -54,11 +54,12 @@ export const fullData = {
       available: true,
       series: "",
       supplier: "",
-      material: "",
-      design: "",
+      material: [],
+      design: [],
       absorption: 1,
       block: 1,
       description: "",
+      environment: []
     },
   },
   // -&anchor
