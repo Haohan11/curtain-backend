@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+import Image from 'next/image'
+
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import clsx from 'clsx'
@@ -9,7 +11,7 @@ import { useTableData } from '../core/tableDataProvider'
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
-import useInputFilePath from '@/tool/hook/useInputFilePath'
+import { useInputFilePath, useGroupInputFilePath } from '@/tool/hooks'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 
 import { createDataRequest, updateDataRequest, getDataByTable } from '../core/request'
@@ -59,22 +61,29 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
 
+  const [colorImagePathGroup, handleImageChoose] = useGroupInputFilePath()
+  const colorImageLength = colorImagePathGroup.length
+
   const [series, setSeries] = useState([])
   const seriesIsEmpty = series.length === 0
 
   const [supplier, setSupplier] = useState([])
   const supplierIsEmpty = supplier.length === 0
 
-  const [mockImg, handleImgChoose] = useInputFilePath()
-  const [colorImg, handleColorImgChoose] = useInputFilePath()
+  const [colorScheme, setColorScheme] = useState([])
+  const colorSchemeIsEmpty = colorScheme.length === 0
+
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
   const cancel = () => {
     setItemIdForUpdate(undefined)
   }
 
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData) })
+
   const formik = useFormik({
-    initialValues: { ...formField[tableName], ...(currentData === null ? {} : currentData) },
+    initialValues,
+    enableReinitialize: true,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
       if (itemIdForUpdate === undefined) return
@@ -105,8 +114,23 @@ const EditModalForm = ({ isUserLoading }) => {
         const enableList = list.filter(item => item.enable)
         setSupplier(enableList)
       }
+
+      if (config.color_label) {
+        const { data: list } = await getDataByTable("colorScheme")
+        const enableList = list.filter(item => item.enable)
+        setColorScheme(enableList)
+      }
     })()
   }, [])
+
+  // re assign inital value with keep old color input fields value 
+  useEffect(() => {
+    setInitialValues(prev => ({...prev, ...([...Array(parseInt(colorImagePathGroup.length / 2) + 1)].reduce((dict, path, index) => {
+      dict[`color_${index}`] = formik.values[`color_${index}`] || ""
+      dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || ""
+      return dict
+    }, {}))}))
+  }, [colorImagePathGroup, colorScheme])
 
   return (
     <>
@@ -327,44 +351,50 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='fv-row mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
               <div className='row row-cols-2 gy-4'>
-                <div className='col d-flex align-items-center'>
-                  <label className='d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
-                    {mockImg ?
-                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={mockImg} alt="color image" /> :
-                      <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
+                {[...Array(parseInt(colorImagePathGroup.length / 2) + (colorImageLength <= 1 ? 1 : colorImagePathGroup[colorImageLength - 2] ? 1 : 0))].map((_, index) =>
+                  <div key={index} className='d-flex'>
+                    <label className='d-block h-100px w-100px cursor-pointer position-relative' style={{ aspectRatio: '1' }}>
+                      {colorImagePathGroup[2 * index] ?
+                        <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[2 * index]} alt="color image" /> :
+                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>商品圖片</div>
+                      }
+                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => handleImageChoose(event, 2 * index)} />
+                    </label>
+                    <label className='ms-3 d-block h-100px w-100px cursor-pointer position-relative' style={{ aspectRatio: '1' }}>
+                      {colorImagePathGroup[2 * index + 1] ?
+                        <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[2 * index + 1]} alt="color image" /> :
+                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>顏色圖片</div>
+                      }
+                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={event => handleImageChoose(event, 2 * index + 1)} />
+                    </label>
+                    {(colorImagePathGroup[2 * index] || colorImagePathGroup[2 * index + 1]) &&
+                      <div className='ms-3'>
+                        <input
+                          {...formik.getFieldProps(`color_${index}`)}
+                          className={clsx(
+                            'form-control form-control-solid mb-3'
+                          )}
+                          type='text'
+                          name={`color_${index}`}
+                          autoComplete='off'
+                          disabled={formik.isSubmitting || isUserLoading}
+                        />
+                        <select
+                          {...formik.getFieldProps(`colorScheme_${index}`)}
+                          className={clsx(
+                            'form-select form-select-solid'
+                          )}
+                          name={`colorScheme_${index}`}
+                          disabled={formik.isSubmitting || isUserLoading}
+                        >
+                          {colorSchemeIsEmpty ? <option disabled>目前沒有資料</option> : colorScheme.map(item =>
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                          )}
+                        </select>
+                      </div>
                     }
-                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
-                  </label>
-                  <label className='ms-3 d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
-                    {colorImg ?
-                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={colorImg} alt="color image" /> :
-                      <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
-                    }
-                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleColorImgChoose} />
-                  </label>
-                  {(mockImg || colorImg) &&
-                    <div className='ms-3'>
-                      <input
-                        className={clsx(
-                          'form-control form-control-solid mb-3'
-                        )}
-                        type='text'
-                        name='color'
-                        autoComplete='off'
-                        disabled={formik.isSubmitting || isUserLoading}
-                      />
-                      <select
-                        className={clsx(
-                          'form-select form-select-solid'
-                        )}
-                        name='colorScheme'
-                        disabled={formik.isSubmitting || isUserLoading}
-                      >
-                        <option>色系類別</option>
-                      </select>
-                    </div>
-                  }
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           }

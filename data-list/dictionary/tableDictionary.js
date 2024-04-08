@@ -50,10 +50,9 @@ export const fullData = {
     formField: {
       name: "",
       code: "",
-      supplier: undefined,
       avaliable: "",
       series: undefined,
-      color: "",
+      supplier: undefined,
       material: "",
       design: "",
       absorption: 1,
