@@ -424,43 +424,8 @@ const EditModalForm = ({ isUserLoading }) => {
                         </select>
                       </div>
                     }
-<<<<<<< HEAD:src/app/modules/data-list/edit-modal/EditModalForm.tsx
-                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
-                  </label>
-                  <label className='ms-3 d-block h-100px w-100px cursor-pointer' style={{ aspectRatio: '1' }}>
-                    {mockImg ?
-                      <img className='h-100px w-100 rounded-4 object-fit-cover' src={mockImg} alt="color image" /> :
-                      <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>新增顏色</div>
-                    }
-                    <input type="file" accept="image/png, image/jpeg" hidden onChange={handleImgChoose} />
-                  </label>
-                  {mockImg &&
-                    <div className='ms-3'>
-                      <input
-                        className={clsx(
-                          'form-control form-control-solid mb-3'
-                        )}
-                        type='text'
-                        name='color'
-                        autoComplete='off'
-                        disabled={formik.isSubmitting || isUserLoading}
-                      />
-                      <select
-                        className={clsx(
-                          'form-select form-select-solid'
-                        )}
-                        name='colorScheme'
-                        disabled={formik.isSubmitting || isUserLoading}
-                      >
-                        <option>色系類別</option>
-                      </select>
-                    </div>
-                  }
-                </div>
-=======
                   </div>
                 )}
->>>>>>> dev:data-list/edit-modal/EditModalForm.tsx
               </div>
             </div>
           }
