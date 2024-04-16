@@ -160,15 +160,15 @@ const EditModalForm = ({ isUserLoading }) => {
 
   // re assign inital value with keep old input fields values
   useEffect(() => {
-    setInitialValues(prev => ({
-      ...prev,
+    setInitialValues({
+      ...formik.values,
       ...([...Array(parseInt(colorImagePathGroup.length / 3) + 1)].reduce((dict, path, index) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || []
-        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || []
+        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || [colorScheme[0]?.id] || []
         return dict
       }, {})),
       series: series[0]?.id || ""
-    }))
+    })
   }, [colorImagePathGroup, colorScheme, series])
 
   return (
@@ -419,6 +419,7 @@ const EditModalForm = ({ isUserLoading }) => {
                           className={clsx(
                             // 'form-select form-select-solid'
                           )}
+                          defaultValue={colorScheme[0] && {label: colorScheme[0].name, value: colorScheme[0].id}}
                           // value={formik.getFieldProps(`colorScheme_${index}`).value}
                           isMulti
                           options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
