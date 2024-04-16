@@ -381,30 +381,26 @@ const EditModalForm = ({ isUserLoading }) => {
           {config.color_label &&
             <div className='fv-row mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
-              <div className='row row-cols-2 gy-4'>
-                {[...Array(parseInt(colorImagePathGroup.length / 2) + (colorImageLength <= 1 ? 1 : colorImagePathGroup[colorImageLength - 2] ? 1 : 0))].map((_, index) =>
+              <div className='row gy-4'>
+                {[...Array(parseInt(colorImageLength / 3) + (colorImageLength <= 2 ? 1 : (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2]) ? 1 : 0))].map((_, index) =>
                   <div key={index} className='d-flex'>
-                    <label className='d-block h-100px w-100px cursor-pointer position-relative' style={{ aspectRatio: '1' }}>
-                      {colorImagePathGroup[2 * index] ?
-                        <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[2 * index]} alt="color image" /> :
-                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>商品圖片</div>
+                    {["商品圖片","顏色圖片","去背圖片"].map((text, input_index) => 
+                    <label key={input_index} className={`d-block ${input_index !== 0 ? "ms-3 ": ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
+                      {colorImagePathGroup[3 * index + input_index] ?
+                        <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[3 * index + input_index]} alt="color image" /> :
+                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
                       }
-                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => handleImageChoose(event, 2 * index)} />
+                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => handleImageChoose(event, 3 * index + input_index)} />
                     </label>
-                    <label className='ms-3 d-block h-100px w-100px cursor-pointer position-relative' style={{ aspectRatio: '1' }}>
-                      {colorImagePathGroup[2 * index + 1] ?
-                        <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[2 * index + 1]} alt="color image" /> :
-                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>顏色圖片</div>
-                      }
-                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={event => handleImageChoose(event, 2 * index + 1)} />
-                    </label>
-                    {(colorImagePathGroup[2 * index] || colorImagePathGroup[2 * index + 1]) &&
-                      <div className='ms-3'>
+                    )}
+                    {(colorImagePathGroup[3 * index] || colorImagePathGroup[3 * index + 1] || colorImagePathGroup[3 * index + 2]) &&
+                      <div className='ms-3 w-100'>
                         <input
                           {...formik.getFieldProps(`color_${index}`)}
                           className={clsx(
                             'form-control form-control-solid mb-3'
                           )}
+                          placeholder={config.color_placeholder}
                           type='text'
                           name={`color_${index}`}
                           autoComplete='off'

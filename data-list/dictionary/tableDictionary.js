@@ -32,6 +32,7 @@ export const fullData = {
       available_label: "上架狀態",
       series_label: "商品系列",
       color_label: "商品顏色",
+      color_placeholder: "輸入商品顏色名稱",
       material_label: "面料材質",
       environment_label: "適用場景",
       design_label: "商品風格",
