@@ -163,8 +163,8 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues(prev => ({
       ...prev,
       ...([...Array(parseInt(colorImagePathGroup.length / 3) + 1)].reduce((dict, path, index) => {
-        dict[`color_${index}`] = formik.values[`color_${index}`] || ""
-        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || ""
+        dict[`color_${index}`] = formik.values[`color_${index}`] || []
+        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || colorScheme[0]?.id || []
         return dict
       }, {})),
       series: series[0]?.id || ""
@@ -388,9 +388,6 @@ const EditModalForm = ({ isUserLoading }) => {
 
           {config.color_label &&
             <div className='fv-row mb-7'>
-              <pre>
-                {JSON.stringify(colorImagePathGroup, null, 4)}
-              </pre>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
               <div className='row gy-4'>
                 {[...Array(colorInputFieldRowCount)].map((_, index) =>
@@ -417,19 +414,17 @@ const EditModalForm = ({ isUserLoading }) => {
                           autoComplete='off'
                           disabled={formik.isSubmitting || isUserLoading}
                         />
-                        {/* {JSON.stringify(colorScheme.map(cs => ({label: cs.name, value: cs.id})))} */}
                         <Select
                           // {...formik.getFieldProps(`colorScheme_${index}`)}
                           className={clsx(
                             // 'form-select form-select-solid'
                           )}
                           // value={formik.getFieldProps(`colorScheme_${index}`).value}
-                          // multiple
+                          isMulti
                           options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
                           name={`colorScheme_${index}`}
                           onChange={colorss => {
-                            console.log(colorss)
-                            formik.setFieldValue(`colorScheme_${index}`, colorss.value)
+                            formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
                           }}
                           disabled={formik.isSubmitting || isUserLoading}
                         />
