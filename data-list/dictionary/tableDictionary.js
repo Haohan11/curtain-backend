@@ -40,7 +40,7 @@ export const fullData = {
       block_label: "遮光效果",
       description_label: "商品描述",
     },
-    fetchUrl: "product",
+    fetchUrl: "stock",
     validationSchema: Yup.object().shape({
       name: Yup.string()
         .min(2, "至少 2 個字")
