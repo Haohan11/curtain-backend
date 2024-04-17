@@ -162,8 +162,8 @@ const EditModalForm = ({ isUserLoading }) => {
   // re assign inital value with keep old input fields values
   useEffect(() => {
     setInitialValues({
-      series: series[0]?.id || "",
       ...formik.values,
+      series: series[0]?.id || "",
       ...([...Array(parseInt(colorImagePathGroup.length / 3) + 1)].reduce((dict, path, index) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || []
         dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || [colorScheme[0]?.id] || []
@@ -418,7 +418,6 @@ const EditModalForm = ({ isUserLoading }) => {
                         <Select
                           className={clsx(
                             'react-select-styled react-select-solid'
-                            //grid-template-columns: min-content
                           )}
                           classNamePrefix="react-select"
                           defaultValue={colorScheme[0] && { label: colorScheme[0].name, value: colorScheme[0].id }}
@@ -430,9 +429,6 @@ const EditModalForm = ({ isUserLoading }) => {
                           }}
                           disabled={formik.isSubmitting || isUserLoading}
                         />
-                        {/* {colorSchemeIsEmpty ? <option disabled>目前沒有資料</option> : colorScheme.map(item =>
-                            <option key={item.id} value={item.id}>{item.name}</option>
-                          )} */}
                       </div>
                     }
                   </div>
