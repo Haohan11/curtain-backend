@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 
 import Image from 'next/image'
@@ -68,8 +69,8 @@ const EditModalForm = ({ isUserLoading }) => {
     if (colorImageLength <= 2) return 1
 
     const rowNo = parseInt(colorImageLength / 3)
-    if(colorImageLength % 3 !== 0) return rowNo + 1
-    return rowNo + (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2] && colorImagePathGroup[colorImageLength - 1] ? 1 : 0) 
+    if (colorImageLength % 3 !== 0) return rowNo + 1
+    return rowNo + (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2] && colorImagePathGroup[colorImageLength - 1] ? 1 : 0)
   })()
 
   const [series, setSeries] = useState([])
@@ -415,12 +416,12 @@ const EditModalForm = ({ isUserLoading }) => {
                           disabled={formik.isSubmitting || isUserLoading}
                         />
                         <Select
-                          // {...formik.getFieldProps(`colorScheme_${index}`)}
                           className={clsx(
-                            // 'form-select form-select-solid'
+                            'react-select-styled react-select-solid'
+                            //grid-template-columns: min-content
                           )}
-                          defaultValue={colorScheme[0] && {label: colorScheme[0].name, value: colorScheme[0].id}}
-                          // value={formik.getFieldProps(`colorScheme_${index}`).value}
+                          classNamePrefix="react-select"
+                          defaultValue={colorScheme[0] && { label: colorScheme[0].name, value: colorScheme[0].id }}
                           isMulti
                           options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
                           name={`colorScheme_${index}`}
