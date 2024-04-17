@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 
 import Image from 'next/image'
 
+import { KTSVG } from '@/_metronic/helpers/index.ts'
+
 import { FormCheck } from 'react-bootstrap'
 import { useFormik } from 'formik'
 import clsx from 'clsx'
@@ -65,13 +67,14 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const [colorImagePathGroup, handleImageChoose] = useGroupInputFilePath()
   const colorImageLength = colorImagePathGroup.length
-  const colorInputFieldRowCount = (() => {
-    if (colorImageLength <= 2) return 1
+  const [colorFieldRow, setColorFieldRow] = useState(1)
+  // const colorInputFieldRowCount = (() => {
+  //   if (colorImageLength <= 2) return 1
 
-    const rowNo = parseInt(colorImageLength / 3)
-    if (colorImageLength % 3 !== 0) return rowNo + 1
-    return rowNo + (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2] && colorImagePathGroup[colorImageLength - 1] ? 1 : 0)
-  })()
+  //   const rowNo = parseInt(colorImageLength / 3)
+  //   if (colorImageLength % 3 !== 0) return rowNo + 1
+  //   return rowNo + (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2] && colorImagePathGroup[colorImageLength - 1] ? 1 : 0)
+  // })()
 
   const [series, setSeries] = useState([])
   const seriesIsEmpty = series.length === 0
@@ -400,9 +403,9 @@ const EditModalForm = ({ isUserLoading }) => {
           {config.color_label &&
             <div className='fv-row mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
-              <div className='row gy-4'>
-                {[...Array(colorInputFieldRowCount)].map((_, index) =>
-                  <div key={index} className='d-flex'>
+              <div className='row gy-4 mb-3'>
+                {[...Array(colorFieldRow)].map((_, index) =>
+                  <div key={index} className='d-flex align-items-center'>
                     {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
                       <label key={`color-image_${index * 3 + input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
                         {colorImagePathGroup[3 * index + input_index] ?
@@ -412,7 +415,6 @@ const EditModalForm = ({ isUserLoading }) => {
                         <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => handleImageChoose(event, 3 * index + input_index)} />
                       </label>
                     )}
-                    {(colorImagePathGroup[3 * index] || colorImagePathGroup[3 * index + 1] || colorImagePathGroup[3 * index + 2]) &&
                       <div className='ms-3 w-100'>
                         <select
                           {...formik.getFieldProps(`color_${index}`)}
@@ -441,10 +443,12 @@ const EditModalForm = ({ isUserLoading }) => {
                           disabled={formik.isSubmitting || isUserLoading}
                         />
                       </div>
-                    }
+                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx cursor-pointer"/>
                   </div>
                 )}
               </div>
+                <div className='flex-center h-100 border border-2 rounded-4 bg-light-secondary p-8 cursor-pointer' onClick={() => setColorFieldRow(prev => prev + 1)}>
+                <KTSVG path="/media/icons/duotune/general/gen035.svg" className="svg-icon-muted svg-icon-2hx me-2" />新增商品圖片</div>
             </div>
           }
 
