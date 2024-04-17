@@ -82,6 +82,9 @@ const EditModalForm = ({ isUserLoading }) => {
   const [colorScheme, setColorScheme] = useState([])
   const colorSchemeIsEmpty = colorScheme.length === 0
 
+  const [color, setColor] = useState([])
+  const colorIsEmpty = color.length === 0
+
   const [material, setMaterial] = useState([])
   const materialIsEmpty = material.length === 0
 
@@ -134,9 +137,16 @@ const EditModalForm = ({ isUserLoading }) => {
       }
 
       if (config.color_label) {
-        const { data: list } = await getDataByTable("colorScheme")
-        const enableList = list.filter(item => item.enable)
-        setColorScheme(enableList)
+        {
+          const { data: list } = await getDataByTable("colorScheme")
+          const enableList = list.filter(item => item.enable)
+          setColorScheme(enableList)
+        }
+        {
+          const { data: list } = await getDataByTable("color")
+          const enableList = list.filter(item => item.enable)
+          setColor(enableList)
+        }
       }
 
       if (config.material_label) {
@@ -164,13 +174,13 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues({
       ...formik.values,
       series: series[0]?.id || "",
-      ...([...Array(parseInt(colorImagePathGroup.length / 3) + 1)].reduce((dict, path, index) => {
-        dict[`color_${index}`] = formik.values[`color_${index}`] || []
-        dict[`colorScheme_${index}`] = formik.values[`colorScheme_${index}`] || [colorScheme[0]?.id] || []
+      ...([...Array(parseInt(colorImagePathGroup.length / 3))].reduce((dict, path, index) => {
+        dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id || ""
+        dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
     })
-  }, [colorImagePathGroup, colorScheme, series])
+  }, [colorImagePathGroup, colorScheme, series, color])
 
   return (
     <>
@@ -394,7 +404,7 @@ const EditModalForm = ({ isUserLoading }) => {
                 {[...Array(colorInputFieldRowCount)].map((_, index) =>
                   <div key={index} className='d-flex'>
                     {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
-                      <label key={input_index} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
+                      <label key={`color-image_${index * 3 + input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
                         {colorImagePathGroup[3 * index + input_index] ?
                           <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[3 * index + input_index]} alt="color image" /> :
                           <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
@@ -404,17 +414,18 @@ const EditModalForm = ({ isUserLoading }) => {
                     )}
                     {(colorImagePathGroup[3 * index] || colorImagePathGroup[3 * index + 1] || colorImagePathGroup[3 * index + 2]) &&
                       <div className='ms-3 w-100'>
-                        <input
+                        <select
                           {...formik.getFieldProps(`color_${index}`)}
                           className={clsx(
-                            'form-control form-control-solid mb-3'
+                            'form-select form-select-solid mb-3'
                           )}
-                          placeholder={config.color_placeholder}
-                          type='text'
                           name={`color_${index}`}
-                          autoComplete='off'
                           disabled={formik.isSubmitting || isUserLoading}
-                        />
+                        >
+                          {colorIsEmpty ? <option disabled>目前沒有資料</option> : color.map(item =>
+                            <option key={item.id} value={item.id}>{item.name}</option>
+                          )}
+                        </select>
                         <Select
                           className={clsx(
                             'react-select-styled react-select-solid'
