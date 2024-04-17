@@ -10,6 +10,7 @@ import {
   accountsColumns,
   roleColumns,
   environmentColumns,
+  colorColumns,
 } from "../table/columns/_columns";
 
 const enable_label = "啟用狀態";
@@ -92,6 +93,29 @@ export const fullData = {
       code: "",
       enable: true,
       comment: "",
+    },
+  },
+  // -&anchor
+  color: {
+    pageTitle: "顏色",
+    searchPlaceholder: "顏色",
+    createHeaderText: "顏色",
+    column: colorColumns,
+    modalConfig: {
+      enable_label,
+      name_label: "顏色名稱",
+      comment_label,
+    },
+    fetchUrl: "color",
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+    }),
+    formField: {
+      name: "",
+      enable: true,
     },
   },
   // -&anchor
