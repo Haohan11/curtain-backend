@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Image from 'next/image'
 
@@ -14,7 +14,8 @@ import { useTableData } from '../core/tableDataProvider'
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
-import { useInputFilePath, useGroupInputFilePath } from '@/tool/hooks'
+import { useInputFilePath } from '@/tool/hooks'
+import { getFileUrl } from '@/tool/getFileUrl'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 import Select from "react-select"
 
@@ -65,16 +66,24 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
 
-  const [colorImagePathGroup, handleImageChoose] = useGroupInputFilePath()
-  const colorImageLength = colorImagePathGroup.length
-  const [colorFieldRow, setColorFieldRow] = useState(1)
-  // const colorInputFieldRowCount = (() => {
-  //   if (colorImageLength <= 2) return 1
+  const colorRowCount = useRef(0)
+  const [colorImagePath, setColorImagePath] = useState([{ index: 0, imagePath: [...Array(3)] }])
 
-  //   const rowNo = parseInt(colorImageLength / 3)
-  //   if (colorImageLength % 3 !== 0) return rowNo + 1
-  //   return rowNo + (colorImagePathGroup[colorImageLength - 3] && colorImagePathGroup[colorImageLength - 2] && colorImagePathGroup[colorImageLength - 1] ? 1 : 0)
-  // })()
+  const addColorRow = () => {
+    setColorImagePath((prev) => [...prev, { index: colorRowCount.current += 1, imagePath: [...Array(3)] }])
+  }
+  const removeColorRow = (index) => {
+    setColorImagePath((prev) => prev.filter(item => item.index !== index))
+  }
+
+  const addImageUrl = (event, index, input_index) => {
+    const url = getFileUrl(event)
+    setColorImagePath(prev => prev.map(item => item.index === index ? {
+      ...item, imagePath: item.imagePath.map((path, pathIndex) => pathIndex === input_index ? url : path
+      )
+    } : item)
+    )
+  }
 
   const [series, setSeries] = useState([])
   const seriesIsEmpty = series.length === 0
@@ -177,13 +186,13 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues({
       ...formik.values,
       series: series[0]?.id || "",
-      ...([...Array(parseInt(colorImagePathGroup.length / 3))].reduce((dict, path, index) => {
+      ...(colorImagePath.reduce((dict, path, index) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id || ""
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
     })
-  }, [colorImagePathGroup, colorScheme, series, color])
+  }, [colorImagePath, colorScheme, series, color])
 
   return (
     <>
@@ -404,50 +413,52 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='fv-row mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
               <div className='row gy-4 mb-3'>
-                {[...Array(colorFieldRow)].map((_, index) =>
+                {colorImagePath.map(({ index, imagePath }) =>
                   <div key={index} className='d-flex align-items-center'>
                     {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
-                      <label key={`color-image_${index * 3 + input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
-                        {colorImagePathGroup[3 * index + input_index] ?
-                          <Image className='rounded-4 object-fit-cover' fill src={colorImagePathGroup[3 * index + input_index]} alt="color image" /> :
+                      <label key={`color-image_${index}_${input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
+                        {imagePath[input_index] ?
+                          <Image className='rounded-4 object-fit-cover' fill src={imagePath[input_index]} alt="color image" /> :
                           <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
                         }
-                        <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => handleImageChoose(event, 3 * index + input_index)} />
+                        <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => addImageUrl(event, index, input_index)} />
                       </label>
                     )}
-                      <div className='ms-3 w-100'>
-                        <select
-                          {...formik.getFieldProps(`color_${index}`)}
-                          className={clsx(
-                            'form-select form-select-solid mb-3'
-                          )}
-                          name={`color_${index}`}
-                          disabled={formik.isSubmitting || isUserLoading}
-                        >
-                          {colorIsEmpty ? <option disabled>目前沒有資料</option> : color.map(item =>
-                            <option key={item.id} value={item.id}>{item.name}</option>
-                          )}
-                        </select>
-                        <Select
-                          className={clsx(
-                            'react-select-styled react-select-solid'
-                          )}
-                          classNamePrefix="react-select"
-                          defaultValue={colorScheme[0] && { label: colorScheme[0].name, value: colorScheme[0].id }}
-                          isMulti
-                          options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
-                          name={`colorScheme_${index}`}
-                          onChange={colorss => {
-                            formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
-                          }}
-                          disabled={formik.isSubmitting || isUserLoading}
-                        />
-                      </div>
-                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx cursor-pointer"/>
+                    <div className='ms-3 w-100'>
+                      <select
+                        {...formik.getFieldProps(`color_${index}`)}
+                        className={clsx(
+                          'form-select form-select-solid mb-3'
+                        )}
+                        name={`color_${index}`}
+                        disabled={formik.isSubmitting || isUserLoading}
+                      >
+                        {colorIsEmpty ? <option disabled>目前沒有資料</option> : color.map(item =>
+                          <option key={item.id} value={item.id}>{item.name}</option>
+                        )}
+                      </select>
+                      <Select
+                        className={clsx(
+                          'react-select-styled react-select-solid'
+                        )}
+                        classNamePrefix="react-select"
+                        defaultValue={colorScheme[0] && { label: colorScheme[0].name, value: colorScheme[0].id }}
+                        isMulti
+                        options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
+                        name={`colorScheme_${index}`}
+                        onChange={colorss => {
+                          formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
+                        }}
+                        disabled={formik.isSubmitting || isUserLoading}
+                      />
+                    </div>
+                    <div onClick={() => removeColorRow(index)}>
+                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx cursor-pointer" />
+                    </div>
                   </div>
                 )}
               </div>
-                <div className='flex-center h-100 border border-2 rounded-4 bg-light-secondary p-8 cursor-pointer' onClick={() => setColorFieldRow(prev => prev + 1)}>
+              <div className='flex-center h-100 border border-2 rounded-4 bg-light-secondary p-8 cursor-pointer' onClick={addColorRow}>
                 <KTSVG path="/media/icons/duotune/general/gen035.svg" className="svg-icon-muted svg-icon-2hx me-2" />新增商品圖片</div>
             </div>
           }
