@@ -63,17 +63,50 @@ const EditModalForm = ({ isUserLoading }) => {
   const tableName = currentTable.get()
   const config = modalConfig[tableName]
   const { tableData, setTableData } = useTableData()
-
+  
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData) })
+
+  const formik = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    validationSchema: validationSchema[tableName],
+    onSubmit: async (values) => {
+      if (itemIdForUpdate === undefined) return
+
+      if (itemIdForUpdate === null) {
+        await createDataRequest(values)
+        return cancel()
+      }
+
+      const result = await updateDataRequest({ ...values, id: itemIdForUpdate })
+      if (result !== false) {
+        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
+      }
+      cancel()
+    }
+  })
 
   const colorRowCount = useRef(0)
   const [colorImagePath, setColorImagePath] = useState([{ index: 0, imagePath: [...Array(3)] }])
 
   const addColorRow = () => {
-    setColorImagePath((prev) => [...prev, { index: colorRowCount.current += 1, imagePath: [...Array(3)] }])
+    const newIndex = colorRowCount.current += 1
+    setColorImagePath((prev) => [...prev, { index: newIndex, imagePath: [...Array(3)] }])
+    formik.setValues(prev => ({
+      ...prev, 
+      [`color_${newIndex}`]: color[0]?.id,
+      [`colorScheme_${newIndex}`]: colorScheme[0]?.id,
+    }))
   }
   const removeColorRow = (index) => {
     setColorImagePath((prev) => prev.filter(item => item.index !== index))
+    formik.setValues(prev => {
+      const newValues = {...prev}
+      delete newValues[`colorScheme_${index}`]
+      delete newValues[`color_${index}`]
+      return newValues
+    })
   }
 
   const addImageUrl = (event, index, input_index) => {
@@ -111,28 +144,6 @@ const EditModalForm = ({ isUserLoading }) => {
   const cancel = () => {
     setItemIdForUpdate(undefined)
   }
-
-  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData) })
-
-  const formik = useFormik({
-    initialValues,
-    enableReinitialize: true,
-    validationSchema: validationSchema[tableName],
-    onSubmit: async (values) => {
-      if (itemIdForUpdate === undefined) return
-
-      if (itemIdForUpdate === null) {
-        await createDataRequest(values)
-        return cancel()
-      }
-
-      const result = await updateDataRequest({ ...values, id: itemIdForUpdate })
-      if (result !== false) {
-        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
-      }
-      cancel()
-    }
-  })
 
   useEffect(() => {
     (async () => {
@@ -185,14 +196,14 @@ const EditModalForm = ({ isUserLoading }) => {
   useEffect(() => {
     setInitialValues({
       ...formik.values,
-      series: series[0]?.id || "",
-      ...(colorImagePath.reduce((dict, path, index) => {
-        dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id || ""
+      series: formik.values["series"] || series[0]?.id || "",
+      ...(colorImagePath.reduce((dict, {index}) => {
+        dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id 
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
     })
-  }, [colorImagePath, colorScheme, series, color])
+  }, [colorScheme, series, color])
 
   return (
     <>
@@ -414,7 +425,7 @@ const EditModalForm = ({ isUserLoading }) => {
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
               <div className='row gy-4 mb-3'>
                 {colorImagePath.map(({ index, imagePath }) =>
-                  <div key={index} className='d-flex align-items-center'>
+                  <div key={index} className='d-flex'>
                     {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
                       <label key={`color-image_${index}_${input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
                         {imagePath[input_index] ?
@@ -453,8 +464,8 @@ const EditModalForm = ({ isUserLoading }) => {
                       /> : <div className='form-select form-select-solid'>目前沒有資料</div>
                       }
                     </div>
-                    <div onClick={() => removeColorRow(index)}>
-                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx cursor-pointer" />
+                    <div className='cursor-pointer align-self-center' onClick={() => removeColorRow(index)}>
+                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx" />
                     </div>
                   </div>
                 )}
