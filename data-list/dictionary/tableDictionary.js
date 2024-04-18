@@ -106,7 +106,7 @@ export const fullData = {
       name_label: "顏色名稱",
       comment_label,
     },
-    fetchUrl: "color",
+    fetchUrl: "color-name",
     validationSchema: Yup.object({
       name: Yup.string()
         .min(2, "至少 2 個字")

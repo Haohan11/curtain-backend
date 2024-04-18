@@ -1,1 +1,0 @@
-### color row create button and remove and init show input field 

@@ -471,7 +471,7 @@ const EditModalForm = ({ isUserLoading }) => {
                 )}
               </div>
               <div className='flex-center h-100 border border-2 rounded-4 bg-light-secondary p-8 cursor-pointer' onClick={addColorRow}>
-                <KTSVG path="/media/icons/duotune/general/gen035.svg" className="svg-icon-muted svg-icon-2hx me-2" />新增商品圖片</div>
+                <KTSVG path="/media/icons/duotune/general/gen035.svg" className="svg-icon-muted svg-icon-2hx me-2" />新增商品顏色</div>
             </div>
           }
 
