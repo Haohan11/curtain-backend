@@ -437,12 +437,12 @@ const EditModalForm = ({ isUserLoading }) => {
                           <option key={item.id} value={item.id}>{item.name}</option>
                         )}
                       </select>
-                      <Select
+                      {colorScheme[0] ? <Select
                         className={clsx(
                           'react-select-styled react-select-solid'
                         )}
                         classNamePrefix="react-select"
-                        defaultValue={colorScheme[0] && { label: colorScheme[0].name, value: colorScheme[0].id }}
+                        defaultValue={{ label: colorScheme[0].name, value: colorScheme[0].id }}
                         isMulti
                         options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
                         name={`colorScheme_${index}`}
@@ -450,7 +450,8 @@ const EditModalForm = ({ isUserLoading }) => {
                           formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
                         }}
                         disabled={formik.isSubmitting || isUserLoading}
-                      />
+                      /> : <div className='form-select form-select-solid'>目前沒有資料</div>
+                      }
                     </div>
                     <div onClick={() => removeColorRow(index)}>
                       <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx cursor-pointer" />
