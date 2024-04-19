@@ -197,13 +197,14 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues({
       ...formik.values,
       series: formik.values["series"] || series[0]?.id || "",
+      supplier: formik.values["supplier"] || supplier[0]?.id || "",
       ...(colorImagePath.reduce((dict, {index}) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id 
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
     })
-  }, [colorScheme, series, color])
+  }, [colorScheme, series, supplier, color])
 
   return (
     <>
