@@ -413,7 +413,7 @@ const EditModalForm = ({ isUserLoading }) => {
                 name='supplier'
                 disabled={formik.isSubmitting || isUserLoading}
               >
-                {supplierIsEmpty ? <option disabled>目前沒有資料</option> : [<option key={"choose_supplier"} defaultChecked value="">請選擇</option>, ...supplier.map(item =>
+                {supplierIsEmpty ? <option disabled>目前沒有資料</option> : [<option key={"choose_supplier"} value="">請選擇</option>, ...supplier.map(item =>
                   <option key={item.id} value={item.id}>{item.name}</option>
                 )]}
               </select>
