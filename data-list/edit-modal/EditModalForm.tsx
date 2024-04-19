@@ -197,14 +197,13 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues({
       ...formik.values,
       series: formik.values["series"] || series[0]?.id || "",
-      supplier: formik.values["supplier"] || supplier[0]?.id || "",
       ...(colorImagePath.reduce((dict, {index}) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id 
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
     })
-  }, [colorScheme, series, supplier, color])
+  }, [colorScheme, series, color])
 
   return (
     <>
@@ -414,9 +413,9 @@ const EditModalForm = ({ isUserLoading }) => {
                 name='supplier'
                 disabled={formik.isSubmitting || isUserLoading}
               >
-                {supplierIsEmpty ? <option disabled>目前沒有資料</option> : supplier.map(item =>
+                {supplierIsEmpty ? <option disabled>目前沒有資料</option> : [<option key={"choose_supplier"} defaultChecked value="">請選擇</option>, ...supplier.map(item =>
                   <option key={item.id} value={item.id}>{item.name}</option>
-                )}
+                )]}
               </select>
             </div>
           }
