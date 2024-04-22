@@ -22,8 +22,7 @@ export const getDataRequest = async ({ page, size }) => {
 export const getDataByTable = async (tableName) => {
   const tableUrl = fetchUrl[tableName];
   if (tableUrl === undefined)
-    throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`)
-  ;
+    throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`);
 
   const URL = `${BASEURL}/${tableUrl}`;
 
@@ -41,13 +40,24 @@ export const getDataByTable = async (tableName) => {
 
 export const createDataRequest = async (values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
+
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key];
+    if (!Array.isArray(value)) {
+      formData.append(key, value);
+      continue;
+    }
+
+    value.forEach((item) => {
+      formData.append(key, item);
+    });
+  }
+
   try {
     const res = await fetch(URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
+      body: formData,
     });
     const result = await res.json();
     console.log("submited:", result);

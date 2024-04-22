@@ -63,7 +63,8 @@ export const fullData = {
       absorption: 1,
       block: 1,
       description: "",
-      environment: []
+      environment: [],
+      colorImages: [],
     },
   },
   // -&anchor

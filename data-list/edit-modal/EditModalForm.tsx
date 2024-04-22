@@ -58,14 +58,21 @@ const ValidateInputField = ({ required = false, label, name, formik, placeholder
   </>
 )
 
+const mockAuthor = {
+  create_name: "han",
+  create_id: "admin",
+  modify_name: "han",
+  modify_id: "admin",
+}
+
 const EditModalForm = ({ isUserLoading }) => {
   const { setItemIdForUpdate, itemIdForUpdate } = useListView()
   const tableName = currentTable.get()
   const config = modalConfig[tableName]
   const { tableData, setTableData } = useTableData()
-  
+
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
-  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData) })
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? mockAuthor : {...currentData, ...mockAuthor}) })
 
   const formik = useFormik({
     initialValues,
@@ -75,6 +82,7 @@ const EditModalForm = ({ isUserLoading }) => {
       if (itemIdForUpdate === undefined) return
 
       if (itemIdForUpdate === null) {
+        // return console.log(values)
         await createDataRequest(values)
         return cancel()
       }
@@ -94,7 +102,7 @@ const EditModalForm = ({ isUserLoading }) => {
     const newIndex = colorRowCount.current += 1
     setColorImagePath((prev) => [...prev, { index: newIndex, imagePath: [...Array(3)] }])
     formik.setValues(prev => ({
-      ...prev, 
+      ...prev,
       [`color_${newIndex}`]: color[0]?.id,
       [`colorScheme_${newIndex}`]: colorScheme[0]?.id,
     }))
@@ -102,7 +110,7 @@ const EditModalForm = ({ isUserLoading }) => {
   const removeColorRow = (index) => {
     setColorImagePath((prev) => prev.filter(item => item.index !== index))
     formik.setValues(prev => {
-      const newValues = {...prev}
+      const newValues = { ...prev }
       delete newValues[`colorScheme_${index}`]
       delete newValues[`color_${index}`]
       return newValues
@@ -111,6 +119,7 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const addImageUrl = (event, index, input_index) => {
     const url = getFileUrl(event)
+    if (!url) return
     setColorImagePath(prev => prev.map(item => item.index === index ? {
       ...item, imagePath: item.imagePath.map((path, pathIndex) => pathIndex === input_index ? url : path
       )
@@ -197,8 +206,8 @@ const EditModalForm = ({ isUserLoading }) => {
     setInitialValues({
       ...formik.values,
       series: formik.values["series"] || series[0]?.id || "",
-      ...(colorImagePath.reduce((dict, {index}) => {
-        dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id 
+      ...(colorImagePath.reduce((dict, { index }) => {
+        dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
         return dict
       }, {})),
@@ -207,7 +216,7 @@ const EditModalForm = ({ isUserLoading }) => {
 
   return (
     <>
-      <form id='kt_modal_add_user_form' className='form' onSubmit={formik.handleSubmit} noValidate>
+      <form id='kt_modal_add_user_form' className='form' onSubmit={formik.handleSubmit} noValidate >
         {/* begin::Scroll */}
         <div
           className='d-flex flex-column scroll-y-auto'
@@ -432,7 +441,15 @@ const EditModalForm = ({ isUserLoading }) => {
                           <Image className='rounded-4 object-fit-cover' fill src={imagePath[input_index]} alt="color image" /> :
                           <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
                         }
-                        <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => addImageUrl(event, index, input_index)} />
+                        <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => {
+                          const file = event.target.files[0]
+                          if(!file) return;
+                          addImageUrl(event, index, input_index)
+                          const files = formik.values["colorImages"] || []
+                          files[index * 3 + input_index] = file
+                          formik.setFieldValue("colorImages", files)
+                        }
+                        } />
                       </label>
                     )}
                     <div className='ms-3 w-100'>
