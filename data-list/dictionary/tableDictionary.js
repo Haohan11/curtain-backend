@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import {
-  productsColumns,
+  stockColumns,
   seriesColumns,
   colorSchemeColumns,
   designColumns,
@@ -22,7 +22,7 @@ export const fullData = {
     pageTitle: "商品維護",
     searchPlaceholder: "商品",
     createHeaderText: "商品資料",
-    column: productsColumns,
+    column: stockColumns,
     modalConfig: {
       avatar: false,
       name_label: "商品樣式",

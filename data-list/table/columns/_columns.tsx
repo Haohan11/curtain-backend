@@ -6,6 +6,7 @@ import { ActionsCell } from './ActionsCell'
 import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
+import { ColorsCell } from './ColorsCell'
 import {
   User, Products, Series, ColorScheme, Design, Material, Supplier, Account, Role, Environment
 } from '../../core/_models'
@@ -56,7 +57,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
   },
 ]
 
-export const productsColumns: ReadonlyArray<Column<Products>> = [
+export const stockColumns: ReadonlyArray<Column<Products>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -68,7 +69,7 @@ export const productsColumns: ReadonlyArray<Column<Products>> = [
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='上架狀態' className='min-w-125px' />
     ),
-    id: 'available',
+    id: 'enable',
     Cell: ({ ...props }) => <ProductAvaliableCell enable={props.data[props.row.index].enable} />,
   },
   {
@@ -77,37 +78,32 @@ export const productsColumns: ReadonlyArray<Column<Products>> = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='商品樣式' className='min-w-125px' />,
-    accessor: 'style',
+    accessor: 'code',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品系列' className='min-w-125px' />
     ),
-    accessor: 'series',
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='創建時間' className='min-w-125px' />
-    ),
-    accessor: 'created_time',
+    accessor: 'series.name',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='供應商' className='min-w-125px' />
     ),
-    accessor: 'supplier',
+    accessor: 'supplier.name',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品顏色' className='min-w-125px' />
     ),
-    accessor: 'color',
+    id: "colors",
+    Cell: ({ ...props }) => <ColorsCell colorList={props.data[props.row.index].colorList} />,
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='色系類別' className='min-w-125px' />
     ),
-    accessor: 'color_scheme',
+    accessor: 'colorScheme',
   },
   {
     Header: (props) => (
@@ -138,6 +134,12 @@ export const productsColumns: ReadonlyArray<Column<Products>> = [
       <UserCustomHeader tableProps={props} title='商品描述' className='min-w-125px' />
     ),
     accessor: 'description',
+  },
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='創建時間' className='min-w-125px' />
+    ),
+    accessor: 'create_time',
   },
 ]
 
