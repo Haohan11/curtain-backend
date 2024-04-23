@@ -72,7 +72,8 @@ const EditModalForm = ({ isUserLoading }) => {
   const { tableData, setTableData } = useTableData()
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
-  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? mockAuthor : {...currentData, ...mockAuthor}) })
+  console.log({ ...formField[tableName]})
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData), ...mockAuthor })
 
   const formik = useFormik({
     initialValues,
@@ -445,11 +446,10 @@ const EditModalForm = ({ isUserLoading }) => {
                           const file = event.target.files[0]
                           if(!file) return;
                           addImageUrl(event, index, input_index)
-                          const files = formik.values["colorImages"] || []
+                          const files = [...formik.values["colorImages"]] || []
                           files[index * 3 + input_index] = file
                           formik.setFieldValue("colorImages", files)
-                        }
-                        } />
+                        }} />
                       </label>
                     )}
                     <div className='ms-3 w-100'>
