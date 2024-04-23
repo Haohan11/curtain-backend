@@ -72,7 +72,6 @@ const EditModalForm = ({ isUserLoading }) => {
   const { tableData, setTableData } = useTableData()
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
-  console.log({ ...formField[tableName]})
   const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData), ...mockAuthor })
 
   const formik = useFormik({

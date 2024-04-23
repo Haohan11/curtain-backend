@@ -29,7 +29,6 @@ const Table = () => {
     const { query: { page, size } } = router;
     (async () => {
       const { data, totalPages } = await fetchTableData({ page, size })
-      console.log(data)
       setTableData(data)
       setTotalPages(totalPages)
     })()
