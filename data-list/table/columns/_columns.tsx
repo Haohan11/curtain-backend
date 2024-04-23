@@ -7,6 +7,7 @@ import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
 import { ColorsCell } from './ColorsCell'
+import { ColorSchemeCell } from './ColorSchemeCell'
 import {
   User, Products, Series, ColorScheme, Design, Material, Supplier, Account, Role, Environment
 } from '../../core/_models'
@@ -104,6 +105,7 @@ export const stockColumns: ReadonlyArray<Column<Products>> = [
       <UserCustomHeader tableProps={props} title='色系類別' className='min-w-125px' />
     ),
     accessor: 'colorScheme',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].colorScheme} />,
   },
   {
     Header: (props) => (
