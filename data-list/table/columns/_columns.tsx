@@ -112,12 +112,21 @@ export const stockColumns: ReadonlyArray<Column<Products>> = [
       <UserCustomHeader tableProps={props} title='面料材質' className='min-w-125px' />
     ),
     accessor: 'material',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].material} />,
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品風格' className='min-w-125px' />
     ),
     accessor: 'design',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].design} />,
+  },
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='適用場景' className='min-w-125px' />
+    ),
+    accessor: 'environment',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].environment} />,
   },
   {
     Header: (props) => (
