@@ -16,6 +16,7 @@ import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
 import { useInputFilePath } from '@/tool/hooks'
 import { getFileUrl } from '@/tool/getFileUrl'
+import { loopObject } from '@/tool/loopObject'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 import Select from "react-select"
 
@@ -72,7 +73,27 @@ const EditModalForm = ({ isUserLoading }) => {
   const { tableData, setTableData } = useTableData()
 
   const currentData = itemIdForUpdate ? tableData.find(data => data.id === itemIdForUpdate) : null
-  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : currentData), ...mockAuthor })
+  const handleCurrentData = (data) => {
+    const { series, supplier, design, material, environment, description, colorList } = data
+    return {
+      ...data,
+      series: series.id || series,
+      supplier: supplier?.id || supplier,
+      ...(loopObject({ design, material, environment }, (field) =>
+        Array.isArray(field) ? field.map(item => `${item.id}`) : field
+      )),
+      description: description || "",
+      colorList: colorList.map(({ stock_image, color_image, removal_image, colorSchemeList, ...color }) => ({
+        ...color,
+        colorSchemeList: colorSchemeList.map(scheme => ({label: scheme.name, value: scheme.id})),
+        ...(loopObject({ stock_image, color_image, removal_image }, (image) => `${process.env.NEXT_PUBLIC_BACKENDURL}/${image}`.replace(/\\/g, '/')))
+      }))
+    }
+  }
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)), ...mockAuthor })
+
+  // console.log(currentData)
+
 
   const formik = useFormik({
     initialValues,
@@ -80,17 +101,17 @@ const EditModalForm = ({ isUserLoading }) => {
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
       if (itemIdForUpdate === undefined) return
+      return console.log(values)
 
       if (itemIdForUpdate === null) {
-        // return console.log(values)
         await createDataRequest(values)
         return cancel()
       }
 
       const result = await updateDataRequest({ ...values, id: itemIdForUpdate })
-      if (result !== false) {
-        setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
-      }
+      // if (result !== false) {
+      //   setTableData(prev => prev.map(data => data.id === itemIdForUpdate ? { ...data, ...values, password: "" } : data))
+      // }
       cancel()
     }
   })
@@ -433,57 +454,77 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className='fv-row mb-7'>
               <div className='fw-bold fs-6 mb-2'>{config.color_label}</div>
               <div className='row gy-4 mb-3'>
-                {colorImagePath.map(({ index, imagePath }) =>
-                  <div key={index} className='d-flex'>
-                    {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
-                      <label key={`color-image_${index}_${input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
-                        {imagePath[input_index] ?
-                          <Image className='rounded-4 object-fit-cover' fill src={imagePath[input_index]} alt="color image" /> :
-                          <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
-                        }
-                        <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => {
-                          const file = event.target.files[0]
-                          if(!file) return;
-                          addImageUrl(event, index, input_index)
-                          const files = [...formik.values["colorImages"]] || []
-                          files[index * 3 + input_index] = file
-                          formik.setFieldValue("colorImages", files)
-                        }} />
-                      </label>
-                    )}
-                    <div className='ms-3 w-100'>
-                      <select
-                        {...formik.getFieldProps(`color_${index}`)}
-                        className={clsx(
-                          'form-select form-select-solid mb-3'
-                        )}
-                        name={`color_${index}`}
-                        disabled={formik.isSubmitting || isUserLoading}
-                      >
-                        {colorIsEmpty ? <option disabled>目前沒有資料</option> : color.map(item =>
-                          <option key={item.id} value={item.id}>{item.name}</option>
-                        )}
-                      </select>
-                      {colorScheme[0] ? <Select
-                        className={clsx(
-                          'react-select-styled react-select-solid'
-                        )}
-                        classNamePrefix="react-select"
-                        defaultValue={{ label: colorScheme[0].name, value: colorScheme[0].id }}
-                        isMulti
-                        options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
-                        name={`colorScheme_${index}`}
-                        onChange={colorss => {
-                          formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
-                        }}
-                        disabled={formik.isSubmitting || isUserLoading}
-                      /> : <div className='form-select form-select-solid'>目前沒有資料</div>
+                {(formik.values['colorList'] || colorImagePath).map(({ id, index, imagePath, stock_image, color_image, removal_image, colorSchemeList, name, color_name_id }) => <div key={id ?? index} className='d-flex'>
+                  {["商品圖片", "顏色圖片", "去背圖片"].map((text, input_index) =>
+                    <label key={`color-image_${id ?? index}_${input_index}`} className={`d-block ${input_index !== 0 ? "ms-3 " : ""}h-100px w-100px cursor-pointer position-relative`} style={{ aspectRatio: '1' }}>
+                      {(color_image || imagePath[input_index]) ?
+                        <Image className='rounded-4 object-fit-cover' fill sizes="100px" src={
+                          color_image ? [stock_image, color_image, removal_image][input_index] : imagePath[input_index]
+                        } alt="color image" /> :
+                        <div className='flex-center h-100 border border-2 rounded-4 bg-secondary'>{text}</div>
                       }
-                    </div>
-                    <div className='cursor-pointer align-self-center' onClick={() => removeColorRow(index)}>
-                      <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx" />
-                    </div>
+                      <input type="file" accept=".png, .jpg, .jpeg" hidden onChange={(event) => {
+                        const file = event.target.files[0]
+                        if (!file) return;
+                        if (color_image) {
+                          const colorList = formik.values['colorList']
+                          const url = getFileUrl(event)
+                          formik.setFieldValue("colorList", colorList.map(color =>
+                            color.id === id ? {
+                              ...color,
+                              stock_image: input_index === 0 ? url : stock_image,
+                              color_image: input_index === 1 ? url : color_image,
+                              removal_image: input_index === 2 ? url : removal_image,
+                            } : color)
+                          )
+
+                          formik.setFieldValue(`colorImages_${id}`, (Array.isArray(formik.values[`colorImages_${id}`]) ? formik.values[`colorImages_${id}`] : [...Array(3)]).map((imageFile, index) => index === input_index ? file : imageFile))
+                          return
+                        }
+                        addImageUrl(event, index, input_index)
+                        const files = [...formik.values["colorImages"]] || []
+                        files[index * 3 + input_index] = file
+                        formik.setFieldValue("colorImages", files)
+                      }} />
+                    </label>
+                  )}
+                  <div className='ms-3 w-100'>
+                    {!colorIsEmpty ? <Select
+                      className={clsx(
+                        'react-select-styled react-select-solid mb-3'
+                      )}
+                      classNamePrefix="react-select"
+                      defaultValue={color_image ? {label: name, value: color_name_id} : { label: color[0].name, value: color[0].id }}
+                      options={color.map(c => ({ label: c.name, value: c.id }))}
+                      name={`color_${index}`}
+                      onChange={colorName => {
+                        color_image ? formik.setFieldValue('colorList', formik.values['colorList'].map(color => color.id === id ? {...color, color_name_id: colorName.value} : color)) :
+                        formik.setFieldValue(`color_${index}`, colorName.value)
+                      }}
+                      disabled={formik.isSubmitting || isUserLoading}
+                    /> : <div className='form-select form-select-solid mb-3'>目前沒有資料</div>
+                    }
+                    {colorScheme[0] ? <Select
+                      className={clsx(
+                        'react-select-styled react-select-solid'
+                      )}
+                      classNamePrefix="react-select"
+                      defaultValue={color_image ? colorSchemeList : { label: colorScheme[0].name, value: colorScheme[0].id }}
+                      isMulti
+                      options={colorScheme.map(cs => ({ label: cs.name, value: cs.id }))}
+                      name={`colorScheme_${index}`}
+                      onChange={colorss => {
+                        color_image ? formik.setFieldValue('colorList', formik.values['colorList'].map(color => color.id === id ? {...color, colorSchemeList: [...colorss.map(colors => colors.value)]} : color)) :
+                        formik.setFieldValue(`colorScheme_${index}`, [...colorss.map(colors => colors.value)])
+                      }}
+                      disabled={formik.isSubmitting || isUserLoading}
+                    /> : <div className='form-select form-select-solid'>目前沒有資料</div>
+                    }
                   </div>
+                  <div className='cursor-pointer align-self-center' onClick={() => removeColorRow(index)}>
+                    <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx" />
+                  </div>
+                </div>
                 )}
               </div>
               <div className='flex-center h-100 border border-2 rounded-4 bg-light-secondary p-8 cursor-pointer' onClick={addColorRow}>
@@ -499,6 +540,7 @@ const EditModalForm = ({ isUserLoading }) => {
                   <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
                     <input
                       {...formik.getFieldProps("material")}
+                      defaultChecked={formik.values['material'].includes(`${item.id}`)}
                       type='checkbox' name='material' value={item.id} hidden />
                     <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
@@ -514,7 +556,8 @@ const EditModalForm = ({ isUserLoading }) => {
                 {designIsEmpty ? <div className='w-100 text-center bg-secondary p-2 rounded-2'>目前沒有資料</div> : design.map((item) =>
                   <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
                     <input
-                      {...formik.getFieldProps("material")}
+                      {...formik.getFieldProps("design")}
+                      defaultChecked={formik.values['design'].includes(`${item.id}`)}
                       type='checkbox' name='design' value={item.id} hidden />
                     <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
@@ -548,6 +591,7 @@ const EditModalForm = ({ isUserLoading }) => {
                   <label key={item.id} className='me-2 mb-2 tags-label cursor-pointer'>
                     <input
                       {...formik.getFieldProps("environment")}
+                      defaultChecked={formik.values['environment'].includes(`${item.id}`)}
                       type='checkbox' name='environment' value={item.id} hidden />
                     <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item.name}</div>
                   </label>
