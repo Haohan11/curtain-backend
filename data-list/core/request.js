@@ -68,14 +68,26 @@ export const createDataRequest = async (values) => {
 };
 
 export const updateDataRequest = async (values) => {
+  console.log("submitvalues", values)
   const URL = `${BASEURL}/${getTableUrl()}`;
+
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key];
+    if (!Array.isArray(value)) {
+      formData.append(key, value);
+      continue;
+    }
+
+    value.forEach((item) => {
+      formData.append(key, (typeof item === 'object' && !(item instanceof File)) ? JSON.stringify(item) : item);
+    });
+  }
+
   try {
     const res = await fetch(URL, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
+      body: formData,
     });
     const result = await res.json();
     console.log("submited:", result);

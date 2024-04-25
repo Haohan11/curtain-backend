@@ -66,6 +66,20 @@ const mockAuthor = {
   modify_id: "admin",
 }
 
+const flatColorImagesField = (stockData) => 
+  Object.entries(stockData).reduce((dict, [key, value]) => {
+    if(!key.includes("colorImages")) return {...dict, [key]: value}
+    if(!key.split("_")[1]) return {...dict, [key]: value}
+    return {
+      ...dict,
+      ...({
+        [`${key}_0`]: value[0],
+        [`${key}_1`]: value[1],
+        [`${key}_2`]: value[2],
+      })
+    }
+  }, {})
+
 const EditModalForm = ({ isUserLoading }) => {
   const { setItemIdForUpdate, itemIdForUpdate } = useListView()
   const currentMode = (() => {
@@ -108,7 +122,7 @@ const EditModalForm = ({ isUserLoading }) => {
     enableReinitialize: true,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
-      return console.log(values);
+      // return console.log(values);
 
       await ({
         async create() {
@@ -116,7 +130,7 @@ const EditModalForm = ({ isUserLoading }) => {
           cancel()
         },
         async edit() {
-          await updateDataRequest({ ...values, id: itemIdForUpdate })
+          await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
           cancel()
         },
         close() {}
