@@ -103,9 +103,6 @@ const EditModalForm = ({ isUserLoading }) => {
   }
   const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)), ...mockAuthor })
 
-  // console.log(currentData)
-
-
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -149,7 +146,18 @@ const EditModalForm = ({ isUserLoading }) => {
       [`colorScheme_${newIndex}`]: colorScheme[0]?.id,
     }))
   }
+
   const removeColorRow = (index) => {
+    if (editMode) {
+      formik.setValues(prev => {
+        const newValues = { ...prev }
+        delete newValues[`colorImage_${index}`]
+        newValues['colorList'] = newValues['colorList'].filter(color => color.id !== index)
+        return newValues
+      })
+      return
+    }
+
     setColorImagePath((prev) => prev.filter(item => item.index !== index))
     formik.setValues(prev => {
       const newValues = { ...prev }
@@ -247,7 +255,7 @@ const EditModalForm = ({ isUserLoading }) => {
   useEffect(() => {
     setInitialValues({
       ...formik.values,
-      ...(createMode && {series: formik.values["series"] || series[0]?.id || ""}),
+      ...(createMode && { series: formik.values["series"] || series[0]?.id || "" }),
       ...(createMode && colorImagePath.reduce((dict, { index }) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
@@ -501,7 +509,7 @@ const EditModalForm = ({ isUserLoading }) => {
                           formik.setFieldValue("colorList", colorList.map(color =>
                             color.id === id ? {
                               ...color,
-                              ...([{ stock_image:url }, { color_image:url }, { removal_image:url }][input_index]),
+                              ...([{ stock_image: url }, { color_image: url }, { removal_image: url }][input_index]),
                             } : color)
                           )
 
@@ -549,7 +557,7 @@ const EditModalForm = ({ isUserLoading }) => {
                     /> : <div className='form-select form-select-solid'>目前沒有資料</div>
                     }
                   </div>
-                  <div className='cursor-pointer align-self-center' onClick={() => removeColorRow(index)}>
+                  <div className='cursor-pointer align-self-center' onClick={() => removeColorRow(id ?? index)}>
                     <KTSVG path={"/media/icons/duotune/general/gen034.svg"} className="ms-2 svg-icon-muted svg-icon-2hx" />
                   </div>
                 </div>
