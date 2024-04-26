@@ -99,20 +99,20 @@ const EditModalForm = ({ isUserLoading }) => {
     const { series, supplier, design, material, environment, description, colorList } = data
     return {
       ...data,
-      series: series.id || series,
+      series: series?.id || series,
       supplier: supplier?.id || supplier,
       ...(loopObject({ design, material, environment }, (field) =>
         Array.isArray(field) ? field.map(item => `${item.id}`) : field
       )),
       description: description || "",
-      colorList: colorList.map(({ stock_image, color_image, removal_image, colorSchemeList, ...color }) => ({
+      ...(colorList ? {colorList: colorList.map(({ stock_image, color_image, removal_image, colorSchemeList, ...color }) => ({
         ...color,
         // for default colorScheme select
         colorSchemeList: colorSchemeList.map(scheme => ({ label: scheme.name, value: scheme.id })),
         // for submit colorSchemes data
         colorSchemes: colorSchemeList.map(scheme => scheme.id),
         ...(loopObject({ stock_image, color_image, removal_image }, (image) => `${process.env.NEXT_PUBLIC_BACKENDURL}/${image}`.replace(/\\/g, '/')))
-      }))
+      }))} : {})
     }
   }
   const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)), ...mockAuthor })
@@ -275,7 +275,7 @@ const EditModalForm = ({ isUserLoading }) => {
   useEffect(() => {
     setInitialValues({
       ...formik.values,
-      ...(createMode && { series: formik.values["series"] || series[0]?.id || "" }),
+      series: formik.values["series"] || series[0]?.id || "",
       ...(createMode && colorImagePath.reduce((dict, { index }) => {
         dict[`color_${index}`] = formik.values[`color_${index}`] || color[0]?.id
         dict[`colorScheme_${index}`] = [formik.values[`colorScheme_${index}`]?.[0] || colorScheme[0]?.id]
