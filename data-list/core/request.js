@@ -9,6 +9,7 @@ export const getDataRequest = async ({ page, size }) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
     const res = await fetch(URL);
+    if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
     } = await res.json();
@@ -28,6 +29,7 @@ export const getDataByTable = async (tableName) => {
 
   try {
     const res = await fetch(URL);
+    if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
     } = await res.json();
@@ -68,7 +70,7 @@ export const createDataRequest = async (values) => {
 };
 
 export const updateDataRequest = async (values) => {
-  console.log("submitvalues", values)
+  console.log("submitvalues", values);
   const URL = `${BASEURL}/${getTableUrl()}`;
 
   const formData = new FormData();
@@ -80,7 +82,12 @@ export const updateDataRequest = async (values) => {
     }
 
     value.forEach((item) => {
-      formData.append(key, (typeof item === 'object' && !(item instanceof File)) ? JSON.stringify(item) : item);
+      formData.append(
+        key,
+        typeof item === "object" && !(item instanceof File)
+          ? JSON.stringify(item)
+          : item
+      );
     });
   }
 
