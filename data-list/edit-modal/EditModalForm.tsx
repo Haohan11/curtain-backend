@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 import { KTSVG } from '@/_metronic/helpers/index.ts'
 
@@ -66,10 +67,10 @@ const mockAuthor = {
   modify_id: "admin",
 }
 
-const flatColorImagesField = (stockData) => 
+const flatColorImagesField = (stockData) =>
   Object.entries(stockData).reduce((dict, [key, value]) => {
-    if(!key.includes("colorImages")) return {...dict, [key]: value}
-    if(!key.split("_")[1]) return {...dict, [key]: value}
+    if (!key.includes("colorImages")) return { ...dict, [key]: value }
+    if (!key.split("_")[1]) return { ...dict, [key]: value }
     return {
       ...dict,
       ...({
@@ -81,7 +82,9 @@ const flatColorImagesField = (stockData) =>
   }, {})
 
 const EditModalForm = ({ isUserLoading }) => {
+  const router = useRouter()
   const { setItemIdForUpdate, itemIdForUpdate } = useListView()
+
   const currentMode = (() => {
     if (itemIdForUpdate === null) return "create"
     if (!isNaN(parseInt(itemIdForUpdate))) return "edit"
@@ -105,14 +108,16 @@ const EditModalForm = ({ isUserLoading }) => {
         Array.isArray(field) ? field.map(item => `${item.id}`) : field
       )),
       description: description || "",
-      ...(colorList ? {colorList: colorList.map(({ stock_image, color_image, removal_image, colorSchemeList, ...color }) => ({
-        ...color,
-        // for default colorScheme select
-        colorSchemeList: colorSchemeList.map(scheme => ({ label: scheme.name, value: scheme.id })),
-        // for submit colorSchemes data
-        colorSchemes: colorSchemeList.map(scheme => scheme.id),
-        ...(loopObject({ stock_image, color_image, removal_image }, (image) => `${process.env.NEXT_PUBLIC_BACKENDURL}/${image}`.replace(/\\/g, '/')))
-      }))} : {})
+      ...(colorList ? {
+        colorList: colorList.map(({ stock_image, color_image, removal_image, colorSchemeList, ...color }) => ({
+          ...color,
+          // for default colorScheme select
+          colorSchemeList: colorSchemeList.map(scheme => ({ label: scheme.name, value: scheme.id })),
+          // for submit colorSchemes data
+          colorSchemes: colorSchemeList.map(scheme => scheme.id),
+          ...(loopObject({ stock_image, color_image, removal_image }, (image) => `${process.env.NEXT_PUBLIC_BACKENDURL}/${image}`.replace(/\\/g, '/')))
+        }))
+      } : {})
     }
   }
   const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)), ...mockAuthor })
@@ -127,13 +132,15 @@ const EditModalForm = ({ isUserLoading }) => {
       await ({
         async create() {
           await createDataRequest(values)
-          cancel()
+          router.push(router.asPath.split('?')[0])
+          closeModal()
         },
         async edit() {
           await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
-          cancel()
+          router.push(router.asPath.split('?')[0])
+          closeModal()
         },
-        close() {}
+        close() { }
       })[currentMode]()
     }
   })
@@ -220,52 +227,73 @@ const EditModalForm = ({ isUserLoading }) => {
 
   const [avatarSrc, handleAvatarChoose] = useInputFilePath()
 
-  const cancel = () => {
+  const closeModal = () => {
     setItemIdForUpdate(undefined)
   }
 
   useEffect(() => {
     (async () => {
-      if (config.series_label) {
-        const { data: list } = await getDataByTable("series")
-        const enableList = list.filter(item => item.enable)
+      fetchSeries: if (config.series_label) {
+        const res = await getDataByTable("series")
+        if (res === false) break fetchSeries
+
+        const { data: list } = res
+        const enableList = list?.filter(item => item.enable)
         setSeries(enableList)
       }
 
-      if (config.supplier_label) {
-        const { data: list } = await getDataByTable("supplier")
-        const enableList = list.filter(item => item.enable)
+      fetchSupplier: if (config.supplier_label) {
+        const res = await getDataByTable("supplier")
+        if (res === false) break fetchSupplier
+
+        const { data: list } = res
+        const enableList = list?.filter(item => item.enable)
         setSupplier(enableList)
       }
 
       if (config.color_label) {
-        {
-          const { data: list } = await getDataByTable("colorScheme")
-          const enableList = list.filter(item => item.enable)
+        fetchColorScheme: {
+          const res = await getDataByTable("colorScheme")
+          if (res === false) break fetchColorScheme
+
+          const { data: list } = res
+          const enableList = list?.filter(item => item.enable)
           setColorScheme(enableList)
         }
-        {
-          const { data: list } = await getDataByTable("color")
-          const enableList = list.filter(item => item.enable)
+        fetchColor: {
+          const res = await getDataByTable("color")
+          if (res === false) break fetchColor
+
+          const { data: list } = res
+          const enableList = list?.filter(item => item.enable)
           setColor(enableList)
         }
       }
 
-      if (config.material_label) {
-        const { data: list } = await getDataByTable("material")
-        const enableList = list.filter(item => item.enable)
+      fetchMaterial: if (config.material_label) {
+        const res = await getDataByTable("material")
+        if (res === false) break fetchMaterial
+
+        const { data: list } = res
+        const enableList = list?.filter(item => item.enable)
         setMaterial(enableList)
       }
 
-      if (config.design_label) {
-        const { data: list } = await getDataByTable("design")
-        const enableList = list.filter(item => item.enable)
+      fetchDesign: if (config.design_label) {
+        const res = await getDataByTable("design")
+        if (res === false) break fetchDesign
+
+        const { data: list } = res
+        const enableList = list?.filter(item => item.enable)
         setDesign(enableList)
       }
 
-      if (config.environment_label) {
-        const { data: list } = await getDataByTable("environment")
-        const enableList = list.filter(item => item.enable)
+      fetchEnvironment: if (config.environment_label) {
+        const res = await getDataByTable("environment")
+        if (res === false) break fetchEnvironment
+
+        const { data: list } = res
+        const enableList = list?.filter(item => item.enable)
         setEnvironment(enableList)
       }
     })()
@@ -881,7 +909,7 @@ const EditModalForm = ({ isUserLoading }) => {
         <div className='text-center pt-15'>
           <button
             type='reset'
-            onClick={() => cancel()}
+            onClick={() => closeModal()}
             className='btn btn-secondary me-3'
             data-kt-users-modal-action='cancel'
             disabled={formik.isSubmitting || isUserLoading}

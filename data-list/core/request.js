@@ -61,6 +61,7 @@ export const createDataRequest = async (values) => {
       method: "POST",
       body: formData,
     });
+    if(!res.ok) return false
     const result = await res.json();
     console.log("submited:", result);
   } catch (error) {
@@ -96,6 +97,7 @@ export const updateDataRequest = async (values) => {
       method: "PUT",
       body: formData,
     });
+    if(!res.ok) return false
     const result = await res.json();
     console.log("submited:", result);
   } catch (error) {
