@@ -41,10 +41,14 @@ const EnvironmentPage = () => {
         </Col>
         <Col>
           <div className="p-4 h-100 fw-bold">
-            <div
-              className="rounded-4 border-gray-300"
+            <label
+              className="rounded-4 border-gray-300 flex-center flex-column cursor-pointer"
               style={{ height: "60%", border: "dashed" }}
-            ></div>
+            >
+              <KTSVG path="media/icons/duotune/files/fil022.svg" className="svg-icon-muted svg-icon-4hx" />
+              <span className="fs-3 text-gray-500">上傳場景圖片</span>
+              <input hidden type="file"/>
+            </label>
             <div className="d-flex fs-2 pt-8 pb-4">
               <span className="text-gray-500 me-4">場景名稱:</span>
               <span className="text-primary me-2">客廳場景</span>
