@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Row, Col, FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import Image from "next/image";
-
+import { Stage, Layer, Line } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
 
 const envName = "客廳場景";
@@ -16,6 +16,36 @@ const EnvironmentPage = () => {
 
   const [envImage, setEnvImage] = useState(null);
   const hasEnvImage = envImage !== null;
+
+  const [lines, setLines] = useState([]);
+  const isDrawing = useRef(false);
+
+  const handleMouseDown = (e) => {
+    isDrawing.current = true;
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { points: [pos.x, pos.y] }]);
+  };
+
+  const handleMouseMove = (e) => {
+    console.log('moving')
+    // no drawing - skipping
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
+
+  const handleMouseUp = () => {
+    isDrawing.current = false;
+  };
 
   useEffect(() => {
     const el = document.createElement("span");
@@ -66,11 +96,44 @@ const EnvironmentPage = () => {
         <Col>
           <form
             onSubmit={(e) => e.preventDefault()}
-            className="p-4 h-100 fw-bold"
+            className="p-4 h-100 fw-bold d-flex flex-column"
           >
             {hasEnvImage ? (
-              <div className="position-relative border border-2 rounded-4 border-gray-300" style={{height: "60%"}}>
-                <Image fill alt="edit env image" src={envImage} className=" object-fit-contain" />
+              <div
+                className="position-relative border border-2 rounded-4 border-gray-300 align-self-center"
+                style={{
+                  width: "100%",
+                  maxWidth: "1024px",
+                  aspectRatio: "16 / 9",
+                }}
+              >
+                <Image
+                  fill
+                  alt="edit env image"
+                  src={envImage}
+                  className="object-fit-contain pe-none"
+                />
+                <Stage
+                  className="position-absolute top-0 left-0 h-100 w-100"
+                  onMouseDown={handleMouseDown}
+                  onMousemove={handleMouseMove}
+                  onMouseup={handleMouseUp}
+                >
+                  <Layer>
+                    {lines.map((line, i) => (
+                      <Line
+                        key={i}
+                        points={line.points}
+                        stroke="#df4b26"
+                        strokeWidth={5}
+                        tension={0.5}
+                        lineCap="round"
+                        lineJoin="round"
+                        globalCompositeOperation={"source-over"}
+                      />
+                    ))}
+                  </Layer>
+                </Stage>
               </div>
             ) : (
               <label
@@ -89,7 +152,7 @@ const EnvironmentPage = () => {
                   onChange={(e) => {
                     const path = getFileUrl(e);
                     if (!path) return;
-                    setEnvImage(path)
+                    setEnvImage(path);
                   }}
                 />
               </label>
@@ -140,7 +203,7 @@ const EnvironmentPage = () => {
             <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
             <textarea
               id="comment"
-              className="w-100 h-150px p-4 fs-3 border-gray-300 border-2 rounded-2"
+              className="w-100 p-4 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
             ></textarea>
             <div className="d-flex mt-4">
               <button className="w-100 btn btn-secondary me-12">取消</button>
