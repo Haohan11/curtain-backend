@@ -38,10 +38,10 @@ const EnvironmentPage = () => {
                   >
                     <Image
                       fill
+                      sizes="200px"
                       alt="env image"
                       src="/livingroom.jpg"
-                      objectFit="cover"
-                    ></Image>
+                    />
                   </div>
                   <div className="fs-3 fw-bold text-primary text-center py-2">
                     客廳場景

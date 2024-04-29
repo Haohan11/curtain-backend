@@ -50,7 +50,7 @@ const SidebarLogo = (props: PropsType) => {
 
   return (
     <div className='app-sidebar-logo px-6 border-bottom border-2' id='kt_app_sidebar_logo'>
-      <Link href='/products/management'>
+      <Link href='/'>
         {config.layoutType === 'dark-sidebar' ? (
           <img
             alt='Logo'
