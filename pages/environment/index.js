@@ -4,6 +4,8 @@ import { Row, Col, FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import Image from "next/image";
 
+import { getFileUrl } from "@/tool/getFileUrl";
+
 const envName = "客廳場景";
 
 const EnvironmentPage = () => {
@@ -11,6 +13,9 @@ const EnvironmentPage = () => {
   const [inputDisable, setInputDisable] = useState(true);
   const allowInput = () => setInputDisable(false);
   const disableInput = () => setInputDisable(true);
+
+  const [envImage, setEnvImage] = useState(null);
+  const hasEnvImage = envImage !== null;
 
   useEffect(() => {
     const el = document.createElement("span");
@@ -63,21 +68,36 @@ const EnvironmentPage = () => {
             onSubmit={(e) => e.preventDefault()}
             className="p-4 h-100 fw-bold"
           >
-            <label
-              className="rounded-4 border-gray-300 flex-center flex-column cursor-pointer"
-              style={{ height: "60%", border: "dashed" }}
-            >
-              <KTSVG
-                path="media/icons/duotune/files/fil022.svg"
-                className="svg-icon-muted svg-icon-4hx"
-              />
-              <span className="fs-3 text-gray-500">上傳場景圖片</span>
-              <input hidden type="file" />
-            </label>
+            {hasEnvImage ? (
+              <div className="position-relative border border-2 rounded-4 border-gray-300" style={{height: "60%"}}>
+                <Image fill alt="edit env image" src={envImage} className=" object-fit-contain" />
+              </div>
+            ) : (
+              <label
+                className="rounded-4 border-gray-300 flex-center flex-column cursor-pointer"
+                style={{ height: "60%", border: "dashed" }}
+              >
+                <KTSVG
+                  path="media/icons/duotune/files/fil022.svg"
+                  className="svg-icon-muted svg-icon-4hx"
+                />
+                <span className="fs-3 text-gray-500">上傳場景圖片</span>
+                <input
+                  hidden
+                  type="file"
+                  accept=".png, .jpg, .jpeg"
+                  onChange={(e) => {
+                    const path = getFileUrl(e);
+                    if (!path) return;
+                    setEnvImage(path)
+                  }}
+                />
+              </label>
+            )}
             <div className="d-flex fs-2 pt-8 pb-4">
               <span className="text-gray-500 me-4">場景名稱:</span>
               <input
-              onBlur={disableInput}
+                onBlur={disableInput}
                 onInput={(e) => {
                   const text = e.currentTarget.value;
                   const el = document.createElement("span");
@@ -97,7 +117,11 @@ const EnvironmentPage = () => {
                 defaultValue={envName || ""}
                 disabled={inputDisable}
               />
-              <label htmlFor="name" className="cursor-pointer" onClick={allowInput}>
+              <label
+                htmlFor="name"
+                className="cursor-pointer"
+                onClick={allowInput}
+              >
                 <KTSVG
                   path="media/icons/duotune/art/art005.svg"
                   className="svg-icon-muted svg-icon-1"
@@ -116,7 +140,7 @@ const EnvironmentPage = () => {
             <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
             <textarea
               id="comment"
-              className="w-100 h-200px p-4 fs-3 border-gray-300 border-2 rounded-2"
+              className="w-100 h-150px p-4 fs-3 border-gray-300 border-2 rounded-2"
             ></textarea>
             <div className="d-flex mt-4">
               <button className="w-100 btn btn-secondary me-12">取消</button>
