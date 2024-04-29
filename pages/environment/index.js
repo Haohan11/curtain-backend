@@ -17,6 +17,8 @@ const EnvironmentPage = () => {
   const [envImage, setEnvImage] = useState(null);
   const hasEnvImage = envImage !== null;
 
+  const [canvasFrame, setCanvasFrame] = useState();
+
   const [lines, setLines] = useState([]);
   const isDrawing = useRef(false);
 
@@ -27,7 +29,7 @@ const EnvironmentPage = () => {
   };
 
   const handleMouseMove = (e) => {
-    console.log('moving')
+    console.log("moving");
     // no drawing - skipping
     if (!isDrawing.current) {
       return;
@@ -56,6 +58,10 @@ const EnvironmentPage = () => {
     setInitInputWidth(el.clientWidth * 2 + "px");
     el.remove();
   }, []);
+
+  useEffect(() => {
+    
+  }, [canvasFrame])
 
   return (
     <>
@@ -100,6 +106,7 @@ const EnvironmentPage = () => {
           >
             {hasEnvImage ? (
               <div
+                ref={setCanvasFrame}
                 className="position-relative border border-2 rounded-4 border-gray-300 align-self-center"
                 style={{
                   width: "100%",
@@ -114,7 +121,9 @@ const EnvironmentPage = () => {
                   className="object-fit-contain pe-none"
                 />
                 <Stage
-                  className="position-absolute top-0 left-0 h-100 w-100"
+                  className="position-absolute top-0 left-0"
+                  width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
+                  height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
                   onMouseDown={handleMouseDown}
                   onMousemove={handleMouseMove}
                   onMouseup={handleMouseUp}
@@ -138,7 +147,11 @@ const EnvironmentPage = () => {
             ) : (
               <label
                 className="rounded-4 border-gray-300 flex-center flex-column cursor-pointer"
-                style={{ height: "60%", border: "dashed" }}
+                style={{
+                  width: "100%",
+                  border: "dashed",
+                  aspectRatio: "16 / 9",
+                }}
               >
                 <KTSVG
                   path="media/icons/duotune/files/fil022.svg"
