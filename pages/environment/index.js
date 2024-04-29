@@ -1,8 +1,27 @@
+import { useState, useEffect } from "react";
+
 import { Row, Col, FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import Image from "next/image";
 
+const envName = "客廳場景";
+
 const EnvironmentPage = () => {
+  const [initInputWidth, setInitInputWidth] = useState("fit-content");
+  const [inputDisable, setInputDisable] = useState(true);
+  const allowInput = () => setInputDisable(false);
+  const disableInput = () => setInputDisable(true);
+
+  useEffect(() => {
+    const el = document.createElement("span");
+    document.body.appendChild(el);
+    el.innerHTML = envName;
+    el.style.position = "absolute";
+
+    setInitInputWidth(el.clientWidth * 2 + "px");
+    el.remove();
+  }, []);
+
   return (
     <>
       <Row className="m-0 h-100">
@@ -40,39 +59,70 @@ const EnvironmentPage = () => {
           </div>
         </Col>
         <Col>
-          <div className="p-4 h-100 fw-bold">
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="p-4 h-100 fw-bold"
+          >
             <label
               className="rounded-4 border-gray-300 flex-center flex-column cursor-pointer"
               style={{ height: "60%", border: "dashed" }}
             >
-              <KTSVG path="media/icons/duotune/files/fil022.svg" className="svg-icon-muted svg-icon-4hx" />
+              <KTSVG
+                path="media/icons/duotune/files/fil022.svg"
+                className="svg-icon-muted svg-icon-4hx"
+              />
               <span className="fs-3 text-gray-500">上傳場景圖片</span>
-              <input hidden type="file"/>
+              <input hidden type="file" />
             </label>
             <div className="d-flex fs-2 pt-8 pb-4">
               <span className="text-gray-500 me-4">場景名稱:</span>
-              <span className="text-primary me-2">客廳場景</span>
-              <KTSVG
-                path="media/icons/duotune/art/art005.svg"
-                className="svg-icon-muted svg-icon-1 cursor-pointer"
+              <input
+              onBlur={disableInput}
+                onInput={(e) => {
+                  const text = e.currentTarget.value;
+                  const el = document.createElement("span");
+                  document.body.appendChild(el);
+                  el.innerHTML = text;
+                  el.style.position = "absolute";
+
+                  e.currentTarget.style.width = el.clientWidth * 2 + "px";
+                  el.remove();
+                }}
+                id="name"
+                name="name"
+                style={{ width: initInputWidth, minWidth: "50px" }}
+                className={`fs-2 p-0 form-control form-control-flush text-primary me-2 border-bottom text-center ${
+                  inputDisable ? "" : "border-primary"
+                }`}
+                defaultValue={envName || ""}
+                disabled={inputDisable}
               />
+              <label htmlFor="name" className="cursor-pointer" onClick={allowInput}>
+                <KTSVG
+                  path="media/icons/duotune/art/art005.svg"
+                  className="svg-icon-muted svg-icon-1"
+                />
+              </label>
               <FormGroup className="ms-auto d-flex">
                 <FormLabel
                   className="fs-4 fw-bold me-2 cursor-pointer"
-                  htmlFor="env-enable"
+                  htmlFor="enable"
                 >
                   啟用狀態
                 </FormLabel>
-                <FormCheck inline type="switch" id="env-enable" name="enable" />
+                <FormCheck inline type="switch" id="enable" name="enable" />
               </FormGroup>
             </div>
             <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
-            <textarea id="env-comment" className="w-100 h-200px p-4 fs-3 border-gray-300 border-2 rounded-2"></textarea>
+            <textarea
+              id="comment"
+              className="w-100 h-200px p-4 fs-3 border-gray-300 border-2 rounded-2"
+            ></textarea>
             <div className="d-flex mt-4">
               <button className="w-100 btn btn-secondary me-12">取消</button>
               <button className="w-100 btn btn-primary">儲存</button>
             </div>
-          </div>
+          </form>
         </Col>
       </Row>
     </>
