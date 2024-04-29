@@ -1,4 +1,4 @@
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import Image from "next/image";
 
@@ -24,7 +24,9 @@ const EnvironmentPage = () => {
                       objectFit="cover"
                     ></Image>
                   </div>
-                  <div className="fs-3 fw-bold text-primary text-center py-2">客廳場景</div>
+                  <div className="fs-3 fw-bold text-primary text-center py-2">
+                    客廳場景
+                  </div>
                   <div className="separator border-3"></div>
                 </div>
               ))}
@@ -37,7 +39,37 @@ const EnvironmentPage = () => {
             </div>
           </div>
         </Col>
-        <Col></Col>
+        <Col>
+          <div className="p-4 h-100 fw-bold">
+            <div
+              className="rounded-4 border-gray-300"
+              style={{ height: "60%", border: "dashed" }}
+            ></div>
+            <div className="d-flex fs-2 pt-8 pb-4">
+              <span className="text-gray-500 me-4">場景名稱:</span>
+              <span className="text-primary me-2">客廳場景</span>
+              <KTSVG
+                path="media/icons/duotune/art/art005.svg"
+                className="svg-icon-muted svg-icon-1 cursor-pointer"
+              />
+              <FormGroup className="ms-auto d-flex">
+                <FormLabel
+                  className="fs-4 fw-bold me-2 cursor-pointer"
+                  htmlFor="env-enable"
+                >
+                  啟用狀態
+                </FormLabel>
+                <FormCheck inline type="switch" id="env-enable" name="enable" />
+              </FormGroup>
+            </div>
+            <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
+            <textarea id="env-comment" className="w-100 h-200px p-4 fs-3 border-gray-300 border-2 rounded-2"></textarea>
+            <div className="d-flex mt-4">
+              <button className="w-100 btn btn-secondary me-12">取消</button>
+              <button className="w-100 btn btn-primary">儲存</button>
+            </div>
+          </div>
+        </Col>
       </Row>
     </>
   );
