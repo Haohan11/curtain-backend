@@ -38,7 +38,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
   const [lines, setLines] = useState([]);
   const [allowDraw, setAllowDraw] = useState(false);
   const isDrawing = useRef(false);
-  const toggleAllowDraw = () => setAllowDraw(prev => !prev)
+  const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
   const stopDraw = () => {
     isDrawing.current = false;
   };
@@ -46,7 +46,78 @@ export const EnvModal = ({ currentMode, initValue }) => {
     isDrawing.current = true;
   };
 
-  const resetLine = () => setLines([])
+  const cutImage = () => {
+    // const canvas = canvasFrame.querySelector("canvas")
+    if (!lines || lines.length === 0 || !envImage) return;
+
+    // return console.log("== begin cut ==:", canvasFrame.querySelector("canvas"));
+    const { points } = lines[0];
+    const lineLength = points.length;
+    const canvas = document.createElement("canvas");
+    canvas.width = canvasFrame.clientWidth;
+    canvas.height = canvasFrame.clientHeight;
+    const ctx = canvas.getContext("2d");
+    const imgObj = document.createElement("img");
+    imgObj.src = envImage;
+    ctx.save();
+    ctx.fillStyle = "skyblue";
+    ctx.fillRect(0, 0, canvasFrame.clientWidth, canvasFrame.clientHeight);
+    ctx.restore();
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(points[0], points[1]);
+    for (let i = 2; i < lineLength; i += 2) {
+      ctx.lineTo(points[i], points[i + 1]);
+    }
+    ctx.closePath();
+    ctx.clip();
+    ctx.clearRect(0, 0, canvasFrame.clientWidth, canvasFrame.clientHeight);
+    ctx.restore();
+    // ctx.drawImage(
+    //   imgObj,
+    //   0,
+    //   0,
+    //   canvasFrame.clientWidth,
+    //   canvasFrame.clientHeight
+    // );
+    const dataUrl = canvas.toDataURL();
+    const aEl = document.createElement("a");
+    aEl.href = dataUrl;
+    aEl.download = "crop_image.png";
+    aEl.click();
+    imgObj.onLoad = () => {
+      // console.log("img load")
+      // ctx.save();
+      // ctx.beginPath();
+      // ctx.moveTo(points[0], points[1]);
+      // for (let i = 2; i < lineLength; i += 2) {
+      //   ctx.lineTo(points[i], points[i + 1]);
+      // }
+      // ctx.closePath();
+      // ctx.clip();
+      // ctx.drawImage(
+      //   imgObj,
+      //   0,
+      //   0,
+      //   canvasFrame.clientWidth,
+      //   canvasFrame.clientHeight
+      // );
+      // ctx.restore();
+      // const dataUrl = canvas.toDataURL();
+      // const aEl = document.createElement("a");
+      // aEl.href = dataUrl;
+      // aEl.download = "crop_image.png";
+      // aEl.click();
+      // aEl.remove();
+      // canvas.remove();
+    };
+    // console.log(envImage)
+    // imgObj.src = envImage
+  };
+  //                    筆跡一,           筆跡二,          ...
+  // line structrue: [ {points: [...]}, {points: [...]}, ... ]
+  const resetLine = () => setLines([]);
 
   const handleMouseDown = (e) => {
     if (!allowDraw) return;
@@ -129,8 +200,21 @@ export const EnvModal = ({ currentMode, initValue }) => {
             </Stage>
           </div>
           <div className="d-flex">
-            <button className="btn btn-light-primary w-100 me-5" onClick={resetLine}>清除筆跡</button>
-            <button className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`} onClick={toggleAllowDraw}>{!allowDraw ? "開始" : "停止"}繪製</button>
+            <button
+              className="btn btn-light-primary w-100 me-5"
+              onClick={resetLine}
+            >
+              清除筆跡
+            </button>
+            <button
+              className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
+              onClick={() => {
+                toggleAllowDraw();
+                console.log(lines);
+              }}
+            >
+              {!allowDraw ? "開始" : "停止"}繪製
+            </button>
           </div>
         </>
       ) : (
@@ -215,7 +299,9 @@ export const EnvModal = ({ currentMode, initValue }) => {
         <button className="w-100 btn btn-secondary me-12" onClick={goNoneMode}>
           取消
         </button>
-        <button className="w-100 btn btn-primary">儲存</button>
+        <button className="w-100 btn btn-primary" onClick={cutImage}>
+          儲存
+        </button>
       </div>
     </form>
   );
