@@ -17,7 +17,12 @@ export const EnvModal = ({ currentMode, initValue }) => {
     image,
     enable,
     description,
-  } = initValue || { name: "新場景", image: null, enable: true, description: "" };
+  } = initValue || {
+    name: "新場景",
+    image: null,
+    enable: true,
+    description: "",
+  };
 
   // handle env name input
   const [initInputWidth, setInitInputWidth] = useState("fit-content");
@@ -31,10 +36,21 @@ export const EnvModal = ({ currentMode, initValue }) => {
   const [canvasFrame, setCanvasFrame] = useState();
 
   const [lines, setLines] = useState([]);
+  const [allowDraw, setAllowDraw] = useState(false);
   const isDrawing = useRef(false);
+  const toggleAllowDraw = () => setAllowDraw(prev => !prev)
+  const stopDraw = () => {
+    isDrawing.current = false;
+  };
+  const startDraw = () => {
+    isDrawing.current = true;
+  };
+
+  const resetLine = () => setLines([])
 
   const handleMouseDown = (e) => {
-    isDrawing.current = true;
+    if (!allowDraw) return;
+    startDraw();
     const pos = e.target.getStage().getPointerPosition();
     setLines([...lines, { points: [pos.x, pos.y] }]);
   };
@@ -55,10 +71,6 @@ export const EnvModal = ({ currentMode, initValue }) => {
     setLines(lines.concat());
   };
 
-  const handleMouseUp = () => {
-    isDrawing.current = false;
-  };
-
   useEffect(() => {
     const el = document.createElement("span");
     document.body.appendChild(el);
@@ -75,45 +87,52 @@ export const EnvModal = ({ currentMode, initValue }) => {
       className="p-4 h-100 fw-bold d-flex flex-column"
     >
       {hasEnvImage ? (
-        <div
-          ref={setCanvasFrame}
-          className="position-relative border border-2 rounded-4 border-gray-300 align-self-center"
-          style={{
-            width: "100%",
-            maxWidth: "1024px",
-            aspectRatio: "16 / 9",
-          }}
-        >
-          <Image
-            fill
-            alt="edit env image"
-            src={envImage}
-            className="object-fit-contain pe-none"
-          />
-          <Stage
-            className="position-absolute top-0 left-0"
-            width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
-            height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
-            onMouseDown={handleMouseDown}
-            onMousemove={handleMouseMove}
-            onMouseup={handleMouseUp}
+        <>
+          <div
+            ref={setCanvasFrame}
+            className="position-relative border border-2 rounded-4 border-gray-300 mb-4 align-self-center"
+            style={{
+              width: "100%",
+              maxWidth: "1024px",
+              aspectRatio: "16 / 9",
+            }}
           >
-            <Layer>
-              {lines.map((line, i) => (
-                <Line
-                  key={i}
-                  points={line.points}
-                  stroke="#df4b26"
-                  strokeWidth={5}
-                  tension={0.5}
-                  lineCap="round"
-                  lineJoin="round"
-                  globalCompositeOperation={"source-over"}
-                />
-              ))}
-            </Layer>
-          </Stage>
-        </div>
+            <Image
+              fill
+              alt="edit env image"
+              src={envImage}
+              className="object-fit-contain pe-none"
+            />
+            <Stage
+              className="position-absolute top-0 left-0"
+              width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
+              height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
+              onMouseDown={handleMouseDown}
+              onMousemove={handleMouseMove}
+              onMouseup={stopDraw}
+              onMouseLeave={stopDraw}
+            >
+              <Layer>
+                {lines.map((line, i) => (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    stroke="#df4b26"
+                    strokeWidth={5}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+                    globalCompositeOperation={"source-over"}
+                  />
+                ))}
+              </Layer>
+            </Stage>
+          </div>
+          <div className="d-flex">
+            <button className="btn btn-light-primary w-100 me-5" onClick={resetLine}>清除筆跡</button>
+            <button className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`} onClick={toggleAllowDraw}>{!allowDraw ? "開始" : "停止"}繪製</button>
+          </div>
+        </>
       ) : (
         <label
           className="rounded-4 border-gray-300 flex-center flex-column align-self-center cursor-pointer"
@@ -141,7 +160,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
           />
         </label>
       )}
-      <div className="d-flex fs-2 pt-8 pb-4">
+      <div className="d-flex fs-2 pt-6 pb-4">
         <span className="text-gray-500 me-4">場景名稱:</span>
         <input
           onBlur={disableInput}
@@ -189,10 +208,10 @@ export const EnvModal = ({ currentMode, initValue }) => {
       <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
       <textarea
         id="comment"
-        className="w-100 p-4 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
+        className="w-100 p-4 mb-8 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
         defaultValue={description || ""}
       ></textarea>
-      <div className="d-flex mt-4">
+      <div className="d-flex">
         <button className="w-100 btn btn-secondary me-12" onClick={goNoneMode}>
           取消
         </button>
@@ -200,6 +219,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
       </div>
     </form>
   );
+
   return (
     <>
       {
