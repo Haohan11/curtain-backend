@@ -54,6 +54,8 @@ export const EnvModal = ({ currentMode, initValue }) => {
     setAnchors((prev) => [...prev, { x, y }]);
   };
 
+  const clearCanvas = () => setAnchors([]);
+
   const cutImage = () => {
     // const canvas = canvasFrame.querySelector("canvas")
     return console.log("Currently not accept cutting image.");
@@ -121,6 +123,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
     // imgObj.src = envImage
   };
 
+  // init env name input width
   useEffect(() => {
     const el = document.createElement("span");
     document.body.appendChild(el);
@@ -137,7 +140,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
       if (timerId !== null) clearTimeout(timerId);
       timerId = setTimeout(() => {
         timerId = null;
-        setRenderCount(prev => prev + 1)
+        anchors.length > 0 ? clearCanvas() : setRenderCount((prev) => prev + 1);
         clearTimeout(timerId);
       }, 100);
     };
@@ -185,7 +188,10 @@ export const EnvModal = ({ currentMode, initValue }) => {
             </Stage>
           </div>
           <div className="d-flex">
-            <button className="btn btn-light-primary w-100 me-5">
+            <button
+              className="btn btn-light-primary w-100 me-5"
+              onClick={clearCanvas}
+            >
               清除筆跡
             </button>
             <button
