@@ -58,12 +58,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
     canvas.height = canvasFrame.clientHeight;
     const ctx = canvas.getContext("2d");
     const imgObj = document.createElement("img");
-    imgObj.src = envImage;
-    ctx.save();
-    ctx.fillStyle = "skyblue";
-    ctx.fillRect(0, 0, canvasFrame.clientWidth, canvasFrame.clientHeight);
-    ctx.restore();
-
+    imgObj.src = envImage
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(points[0], points[1]);
@@ -72,8 +67,8 @@ export const EnvModal = ({ currentMode, initValue }) => {
     }
     ctx.closePath();
     ctx.clip();
-    ctx.clearRect(0, 0, canvasFrame.clientWidth, canvasFrame.clientHeight);
-    ctx.restore();
+    ctx.fillStyle = "pink";
+    ctx.fill();
     // ctx.drawImage(
     //   imgObj,
     //   0,
@@ -81,6 +76,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
     //   canvasFrame.clientWidth,
     //   canvasFrame.clientHeight
     // );
+    ctx.restore();
     const dataUrl = canvas.toDataURL();
     const aEl = document.createElement("a");
     aEl.href = dataUrl;
@@ -299,9 +295,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
         <button className="w-100 btn btn-secondary me-12" onClick={goNoneMode}>
           取消
         </button>
-        <button className="w-100 btn btn-primary" onClick={cutImage}>
-          儲存
-        </button>
+        <button className="w-100 btn btn-primary" onClick={cutImage}>儲存</button>
       </div>
     </form>
   );
