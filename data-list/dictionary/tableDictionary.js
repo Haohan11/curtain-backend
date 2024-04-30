@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import {
-  productsColumns,
+  stockColumns,
   seriesColumns,
   colorSchemeColumns,
   designColumns,
@@ -10,6 +10,7 @@ import {
   accountsColumns,
   roleColumns,
   environmentColumns,
+  colorColumns,
 } from "../table/columns/_columns";
 
 const enable_label = "啟用狀態";
@@ -21,17 +22,20 @@ export const fullData = {
     pageTitle: "商品維護",
     searchPlaceholder: "商品",
     createHeaderText: "商品資料",
-    column: productsColumns,
+    column: stockColumns,
     modalConfig: {
       avatar: false,
       name_label: "商品樣式",
       name_placeholder: "請輸入商品樣式",
+      name_required: true,
       code_label: "商品型號",
+      code_required: true,
       code_placeholder: "請輸入商品型號",
       supplier_label: "供應廠商",
-      available_label: "上架狀態",
+      enable_label: "上架狀態",
       series_label: "商品系列",
       color_label: "商品顏色",
+      color_placeholder: "輸入商品顏色名稱",
       material_label: "面料材質",
       environment_label: "適用場景",
       design_label: "商品風格",
@@ -39,7 +43,7 @@ export const fullData = {
       block_label: "遮光效果",
       description_label: "商品描述",
     },
-    fetchUrl: "product",
+    fetchUrl: "stock",
     validationSchema: Yup.object().shape({
       name: Yup.string()
         .min(2, "至少 2 個字")
@@ -51,7 +55,7 @@ export const fullData = {
     formField: {
       name: "",
       code: "",
-      available: true,
+      enable: true,
       series: "",
       supplier: "",
       material: [],
@@ -59,7 +63,8 @@ export const fullData = {
       absorption: 1,
       block: 1,
       description: "",
-      environment: []
+      environment: [],
+      colorImages: [],
     },
   },
   // -&anchor
@@ -89,6 +94,29 @@ export const fullData = {
       code: "",
       enable: true,
       comment: "",
+    },
+  },
+  // -&anchor
+  color: {
+    pageTitle: "顏色",
+    searchPlaceholder: "顏色",
+    createHeaderText: "顏色",
+    column: colorColumns,
+    modalConfig: {
+      enable_label,
+      name_label: "顏色名稱",
+      comment_label,
+    },
+    fetchUrl: "color-name",
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(15, "至多 15 個字")
+        .required("此欄位必填"),
+    }),
+    formField: {
+      name: "",
+      enable: true,
     },
   },
   // -&anchor

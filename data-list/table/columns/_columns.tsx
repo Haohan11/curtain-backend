@@ -6,6 +6,8 @@ import { ActionsCell } from './ActionsCell'
 import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
 import { UserSelectionHeader } from './UserSelectionHeader'
+import { ColorsCell } from './ColorsCell'
+import { ColorSchemeCell } from './ColorSchemeCell'
 import {
   User, Products, Series, ColorScheme, Design, Material, Supplier, Account, Role, Environment
 } from '../../core/_models'
@@ -56,7 +58,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
   },
 ]
 
-const productsColumns: ReadonlyArray<Column<Products>> = [
+export const stockColumns: ReadonlyArray<Column<Products>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -68,7 +70,7 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='上架狀態' className='min-w-125px' />
     ),
-    id: 'available',
+    id: 'enable',
     Cell: ({ ...props }) => <ProductAvaliableCell enable={props.data[props.row.index].enable} />,
   },
   {
@@ -77,49 +79,54 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='商品樣式' className='min-w-125px' />,
-    accessor: 'style',
+    accessor: 'code',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品系列' className='min-w-125px' />
     ),
-    accessor: 'series',
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='創建時間' className='min-w-125px' />
-    ),
-    accessor: 'created_time',
+    accessor: 'series.name',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='供應商' className='min-w-125px' />
     ),
-    accessor: 'supplier',
+    accessor: 'supplier.name',
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品顏色' className='min-w-125px' />
     ),
-    accessor: 'color',
+    id: "colors",
+    Cell: ({ ...props }) => <ColorsCell colorList={props.data[props.row.index].colorList} />,
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='色系類別' className='min-w-125px' />
     ),
-    accessor: 'color_scheme',
+    accessor: 'colorScheme',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].colorScheme} />,
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='面料材質' className='min-w-125px' />
     ),
     accessor: 'material',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].material} />,
   },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='商品風格' className='min-w-125px' />
     ),
     accessor: 'design',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].design} />,
+  },
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='適用場景' className='min-w-125px' />
+    ),
+    accessor: 'environment',
+    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].environment} />,
   },
   {
     Header: (props) => (
@@ -139,9 +146,15 @@ const productsColumns: ReadonlyArray<Column<Products>> = [
     ),
     accessor: 'description',
   },
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='創建時間' className='min-w-125px' />
+    ),
+    accessor: 'create_time',
+  },
 ]
 
-const seriesColumns: ReadonlyArray<Column<Series>> = [
+export const seriesColumns: ReadonlyArray<Column<Series>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -170,7 +183,28 @@ const seriesColumns: ReadonlyArray<Column<Series>> = [
   },
 ]
 
-const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
+export const colorColumns = [
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
+    ),
+    id: 'actions',
+    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
+  },
+  {
+    Header: (props) => (
+      <UserCustomHeader tableProps={props} title='啟用狀態' className='min-w-125px' />
+    ),
+    id: 'enable',
+    Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='顏色名稱' className='min-w-125px' />,
+    accessor: 'name',
+  }
+]
+
+export const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -195,7 +229,7 @@ const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
   },
 ]
 
-const designColumns: ReadonlyArray<Column<Design>> = [
+export const designColumns: ReadonlyArray<Column<Design>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -220,7 +254,7 @@ const designColumns: ReadonlyArray<Column<Design>> = [
   },
 ]
 
-const materialColumns: ReadonlyArray<Column<Material>> = [
+export const materialColumns: ReadonlyArray<Column<Material>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -245,7 +279,7 @@ const materialColumns: ReadonlyArray<Column<Material>> = [
   },
 ]
 
-const supplierColumns: ReadonlyArray<Column<Supplier>> = [
+export const supplierColumns: ReadonlyArray<Column<Supplier>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -274,7 +308,7 @@ const supplierColumns: ReadonlyArray<Column<Supplier>> = [
   },
 ]
 
-const accountsColumns: ReadonlyArray<Column<Account>> = [
+export const accountsColumns: ReadonlyArray<Column<Account>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -319,7 +353,7 @@ const accountsColumns: ReadonlyArray<Column<Account>> = [
   },
 ]
 
-const roleColumns: ReadonlyArray<Column<Role>> = [
+export const roleColumns: ReadonlyArray<Column<Role>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -345,7 +379,7 @@ const roleColumns: ReadonlyArray<Column<Role>> = [
   },
 ]
 
-const environmentColumns: ReadonlyArray<Column<Environment>> = [
+export const environmentColumns: ReadonlyArray<Column<Environment>> = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -365,8 +399,3 @@ const environmentColumns: ReadonlyArray<Column<Environment>> = [
     accessor: 'name',
   },
 ]
-
-
-export {
-  usersColumns, productsColumns, seriesColumns, colorSchemeColumns, designColumns, materialColumns, supplierColumns, accountsColumns, roleColumns, environmentColumns
-}

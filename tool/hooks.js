@@ -12,17 +12,17 @@ export const useInputFilePath = () => {
   return [src, handleChooseFile];
 };
 
-export const useGroupInputFilePath = () => {
-  const [srcArray, setSrcArray] = useState([]);
+export const useGroupInputFilePath = (init) => {
+  const [srcArray, setSrcArray] = useState(init);
 
   const handleChooseFile = (event, index) => {
     const [file] = event.target.files;
     if (!file) return;
-    setSrcArray((prev) => { 
+    setSrcArray((prev) => {
         prev[index] = URL.createObjectURL(file) 
         return [...prev]
     });
   };
 
-  return [srcArray, handleChooseFile];
+  return [srcArray, setSrcArray, handleChooseFile];
 };

@@ -142,7 +142,7 @@ $react-select-dropdown-option-margin: 0 0;
     }
 
     &__input-container::after {
-      content: "";    
+      content: attr(data-value) " ";
     }
   
     &__menu {

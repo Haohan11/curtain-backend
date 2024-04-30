@@ -3,6 +3,7 @@ import { useTable, ColumnInstance, Row } from 'react-table'
 import { CustomHeaderColumn } from './columns/CustomHeaderColumn'
 import { CustomRow } from './columns/CustomRow'
 import { User } from '../core/_models'
+import { useListView } from '../core/ListViewProvider'
 import { TablePagination } from '../components/pagination/TablePagination'
 import { useTableData } from '@/data-list/core/tableDataProvider'
 import { useRouter } from 'next/router'
@@ -18,17 +19,26 @@ const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest({ 
 
 const Table = () => {
   const router = useRouter()
+  const { setItemIdForUpdate} = useListView()
+  const closeModal = () => setItemIdForUpdate(undefined)
   const tableName = currentTable.get()
   const columns = column[tableName]
   const { tableData, setTableData } = useTableData()
   const [totalPages, setTotalPages] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return
+    closeModal()
 
     const { query: { page, size } } = router;
     (async () => {
-      const { data, totalPages } = await fetchTableData({ page, size })
+      setIsLoading(true)
+      const result = await fetchTableData({ page, size })
+      setIsLoading(false)
+      if (result === false) return
+
+      const { data, totalPages } = result
       setTableData(data)
       setTotalPages(totalPages)
     })()
@@ -64,7 +74,11 @@ const Table = () => {
               <tr>
                 <td colSpan={7}>
                   <div className='d-flex text-center w-100 align-content-center justify-content-center'>
-                    No matching records found
+                    <span className=''>
+                      {
+                        isLoading ? "載入中..." : "目前沒有資料"
+                      }
+                    </span>
                   </div>
                 </td>
               </tr>

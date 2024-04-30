@@ -9,6 +9,7 @@ export const getDataRequest = async ({ page, size }) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
     const res = await fetch(URL);
+    if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
     } = await res.json();
@@ -22,13 +23,13 @@ export const getDataRequest = async ({ page, size }) => {
 export const getDataByTable = async (tableName) => {
   const tableUrl = fetchUrl[tableName];
   if (tableUrl === undefined)
-    throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`)
-  ;
+    throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`);
 
   const URL = `${BASEURL}/${tableUrl}`;
 
   try {
     const res = await fetch(URL);
+    if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
     } = await res.json();
@@ -41,14 +42,26 @@ export const getDataByTable = async (tableName) => {
 
 export const createDataRequest = async (values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
+
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key];
+    if (!Array.isArray(value)) {
+      formData.append(key, value);
+      continue;
+    }
+
+    value.forEach((item) => {
+      formData.append(key, item);
+    });
+  }
+
   try {
     const res = await fetch(URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
+      body: formData,
     });
+    if(!res.ok) return false
     const result = await res.json();
     console.log("submited:", result);
   } catch (error) {
@@ -58,15 +71,33 @@ export const createDataRequest = async (values) => {
 };
 
 export const updateDataRequest = async (values) => {
+  console.log("submitvalues", values);
   const URL = `${BASEURL}/${getTableUrl()}`;
+
+  const formData = new FormData();
+  for (const key in values) {
+    const value = values[key];
+    if (!Array.isArray(value)) {
+      formData.append(key, value);
+      continue;
+    }
+
+    value.forEach((item) => {
+      formData.append(
+        key,
+        typeof item === "object" && !(item instanceof File)
+          ? JSON.stringify(item)
+          : item
+      );
+    });
+  }
+
   try {
     const res = await fetch(URL, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
+      body: formData,
     });
+    if(!res.ok) return false
     const result = await res.json();
     console.log("submited:", result);
   } catch (error) {
