@@ -7,27 +7,32 @@ $primary: #19315e;
 $primary-active: rgba(#19315e, 0.75);
 $primary-clarity: rgba(#19315e, 0.2);
 
-$danger: #DC1C16;
-$danger-active: rgba(#DC1C16, 0.75);
-$danger-clarity: rgba(#DC1C16, 0.2);
+$danger: #dc1c16;
+$danger-active: rgba(#dc1c16, 0.75);
+$danger-clarity: rgba(#dc1c16, 0.2);
 
-$checkBlue: #6898D9;
-$star: #FFBD12;
+$checkBlue: #6898d9;
+$star: #ffbd12;
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bs-scrollbar-hover-color) transparent;
+}
 
 .flex-center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-.tags-label input[type='checkbox']:checked ~ div {
-    background-color: $checkBlue;
-    color: white;
-    border-color: transparent !important;
+.tags-label input[type="checkbox"]:checked ~ div {
+  background-color: $checkBlue;
+  color: white;
+  border-color: transparent !important;
 }
 
 .rating label:hover .star-bg,
