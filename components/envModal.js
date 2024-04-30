@@ -48,11 +48,24 @@ export const EnvModal = ({ currentMode, initValue }) => {
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
 
   const [anchors, setAnchors] = useState([]);
+  const lines = anchors.reduce(
+    (lineArray, anchor) => [...lineArray, anchor.x, anchor.y],
+    []
+  );
   const addAnchor = (e) => {
     if (!allowDraw) return;
     const { x, y } = e.target.getStage().getPointerPosition();
     setAnchors((prev) => [...prev, { x, y }]);
   };
+  const moveAnchor = (e, index) => {
+    if (!allowDraw) return;
+    const { x, y } = e.target.getStage().getPointerPosition();
+    setAnchors((prev) => {
+      const newArray = [...prev]
+      newArray[index] = { x, y }
+      return newArray
+    });
+  }
 
   const clearCanvas = () => setAnchors([]);
 
@@ -175,15 +188,25 @@ export const EnvModal = ({ currentMode, initValue }) => {
             />
             <Stage
               key={`${renderCount}`}
-              className="position-absolute top-0 left-0 border border-3 border-black"
+              className="position-absolute top-0 left-0 border border-3 border-danger"
               width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
               height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
               onClick={addAnchor}
             >
               <Layer>
                 {anchors.map((anchor, index) => (
-                  <Circle key={index} {...{ ...anchorConfig, ...anchor }} />
+                  <Circle key={index} {...{ ...anchorConfig, ...anchor }} onDragMove={(e) => moveAnchor(e, index)}/>
                 ))}
+                {lines.length > 0 && (
+                  <Line
+                    dash={[0, 0, 10, 10]}
+                    points={lines}
+                    stroke="#df4b26"
+                    strokeWidth={5}
+                    lineCap="round"
+                    lineJoin="round"
+                  />
+                )}
               </Layer>
             </Stage>
           </div>
