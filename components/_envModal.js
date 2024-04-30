@@ -4,23 +4,14 @@ import Image from "next/image";
 
 import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
-import { Stage, Layer, Line, Circle } from "react-konva";
+import { Stage, Layer, Line } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
-
-const anchorConfig = {
-  radius: 20,
-  stroke: "#FFFFFF",
-  fill: "#87CEEB",
-  strokeWidth: 2,
-  draggable: true,
-};
 
 export const EnvModal = ({ currentMode, initValue }) => {
   const router = useRouter();
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
 
-  const [renderCount, setRenderCount] = useState(0);
   const {
     name: envName,
     image,
@@ -44,19 +35,20 @@ export const EnvModal = ({ currentMode, initValue }) => {
 
   const [canvasFrame, setCanvasFrame] = useState();
 
+  const [lines, setLines] = useState([]);
   const [allowDraw, setAllowDraw] = useState(false);
+  const isDrawing = useRef(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
-
-  const [anchors, setAnchors] = useState([]);
-  const addAnchor = (e) => {
-    if (!allowDraw) return;
-    const { x, y } = e.target.getStage().getPointerPosition();
-    setAnchors((prev) => [...prev, { x, y }]);
+  const stopDraw = () => {
+    isDrawing.current = false;
+  };
+  const startDraw = () => {
+    isDrawing.current = true;
   };
 
   const cutImage = () => {
     // const canvas = canvasFrame.querySelector("canvas")
-    return console.log("Currently not accept cutting image.");
+    return console.log("Currently not accept cutting image.")
     if (!lines || lines.length === 0 || !envImage) return;
 
     // return console.log("== begin cut ==:", canvasFrame.querySelector("canvas"));
@@ -67,7 +59,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
     canvas.height = canvasFrame.clientHeight;
     const ctx = canvas.getContext("2d");
     const imgObj = document.createElement("img");
-    imgObj.src = envImage;
+    imgObj.src = envImage
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(points[0], points[1]);
@@ -120,6 +112,32 @@ export const EnvModal = ({ currentMode, initValue }) => {
     // console.log(envImage)
     // imgObj.src = envImage
   };
+  //                    筆跡一,           筆跡二,          ...
+  // line structrue: [ {points: [...]}, {points: [...]}, ... ]
+  const resetLine = () => setLines([]);
+
+  const handleMouseDown = (e) => {
+    if (!allowDraw) return;
+    startDraw();
+    const pos = e.target.getStage().getPointerPosition();
+    setLines([...lines, { points: [pos.x, pos.y] }]);
+  };
+
+  const handleMouseMove = (e) => {
+    // no drawing - skipping
+    if (!isDrawing.current) {
+      return;
+    }
+    const stage = e.target.getStage();
+    const point = stage.getPointerPosition();
+    let lastLine = lines[lines.length - 1];
+    // add point
+    lastLine.points = lastLine.points.concat([point.x, point.y]);
+
+    // replace last
+    lines.splice(lines.length - 1, 1, lastLine);
+    setLines(lines.concat());
+  };
 
   useEffect(() => {
     const el = document.createElement("span");
@@ -129,23 +147,6 @@ export const EnvModal = ({ currentMode, initValue }) => {
 
     setInitInputWidth(el.clientWidth * 2 + "px");
     el.remove();
-  }, []);
-
-  useEffect(() => {
-    let timerId = null;
-    const handleResize = () => {
-      if (timerId !== null) clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        timerId = null;
-        setRenderCount(prev => prev + 1)
-        clearTimeout(timerId);
-      }, 100);
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
   }, []);
 
   const Panel = (
@@ -171,27 +172,39 @@ export const EnvModal = ({ currentMode, initValue }) => {
               className="object-fit-contain pe-none"
             />
             <Stage
-              key={`${renderCount}`}
-              className="position-absolute top-0 left-0 border border-3 border-black"
+              className="position-absolute top-0 left-0"
               width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
               height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
               onClick={addAnchor}
             >
               <Layer>
-                {anchors.map((anchor, index) => (
-                  <Circle key={index} {...{ ...anchorConfig, ...anchor }} />
+                {lines.map((line, i) => (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    stroke="#df4b26"
+                    strokeWidth={5}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+                    globalCompositeOperation={"source-over"}
+                  />
                 ))}
               </Layer>
             </Stage>
           </div>
           <div className="d-flex">
-            <button className="btn btn-light-primary w-100 me-5">
+            <button
+              className="btn btn-light-primary w-100 me-5"
+              onClick={resetLine}
+            >
               清除筆跡
             </button>
             <button
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
               onClick={() => {
                 toggleAllowDraw();
+                console.log(lines);
               }}
             >
               {!allowDraw ? "開始" : "停止"}繪製
@@ -280,9 +293,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
         <button className="w-100 btn btn-secondary me-12" onClick={goNoneMode}>
           取消
         </button>
-        <button className="w-100 btn btn-primary" onClick={cutImage}>
-          儲存
-        </button>
+        <button className="w-100 btn btn-primary" onClick={cutImage}>儲存</button>
       </div>
     </form>
   );
