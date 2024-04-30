@@ -7,16 +7,88 @@ import { Row, Col } from "react-bootstrap";
 
 import { EnvModal } from "../../components/envModal";
 
-const mockInitValue = { name: "客廳場景", enable: true, description: "" }
+const mockEnvList = [
+  {
+    id: 1,
+    name: "客廳",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+  {
+    id: 2,
+    name: "書房",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+  {
+    id: 3,
+    name: "小寶房間",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "Where Siao bao live.",
+  },
+  {
+    id: 4,
+    name: "阿桂房間",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+  {
+    id: 5,
+    name: "會議室",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "It's a conference room.",
+  },
+  {
+    id: 6,
+    name: "臥室A",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+  {
+    id: 7,
+    name: "臥室B",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+  {
+    id: 8,
+    name: "臥室C",
+    image: "/livingroom.jpg",
+    enable: false,
+    description: "",
+  },
+  {
+    id: 9,
+    name: "臥室D",
+    image: "/livingroom.jpg",
+    enable: true,
+    description: "",
+  },
+];
 
 const EnvironmentPage = () => {
   const router = useRouter();
   const { mode } = router.query;
   const currentMode = ["create", "edit"].includes(mode) ? mode : "none";
 
-  const goCreateMode = () => router.push("?mode=create");
-  const goEditMode = () => router.push("?mode=edit");
-  const goNoneMode = () => router.push("");
+  const goCreateMode = () => {
+    setEditEnvId(undefined)
+    router.push("?mode=create")
+  };
+  const goEditMode = (id) => {
+    setEditEnvId(id)
+    router.push("?mode=edit");
+  };
+
+  const [editEnvId, setEditEnvId] = useState();
+  const editEnvData = mockEnvList.find(item => item.id === editEnvId)
 
   return (
     <>
@@ -26,8 +98,12 @@ const EnvironmentPage = () => {
             <h1 className="my-5 fs-1 text-center text-primary">場景列表</h1>
             <div className="separator border-3"></div>
             <div className="mt-5 mh-750px overflow-y-scroll px-2">
-              {[...Array(10)].map((_, index) => (
-                <div key={index} className="mb-5">
+              {mockEnvList.map((item) => (
+                <div
+                  key={item.id}
+                  className="mb-5 cursor-pointer"
+                  onClick={() => goEditMode(item.id)}
+                >
                   <div
                     className="position-relative w-100 rounded-2 overflow-hidden"
                     style={{ aspectRatio: "16 / 9" }}
@@ -36,11 +112,11 @@ const EnvironmentPage = () => {
                       fill
                       sizes="200px"
                       alt="env image"
-                      src="/livingroom.jpg"
+                      src={item.image}
                     />
                   </div>
                   <div className="fs-3 fw-bold text-primary text-center py-2">
-                    客廳場景
+                    {item.name}
                   </div>
                   <div className="separator border-3"></div>
                 </div>
@@ -58,7 +134,10 @@ const EnvironmentPage = () => {
           </div>
         </Col>
         <Col>
-        <EnvModal key={currentMode} {...{currentMode, initValue: mockInitValue}} />
+          <EnvModal
+            key={`${currentMode}_${editEnvId}`}
+            {...{ currentMode, ...(currentMode === "edit" ? ({initValue: editEnvData}) : {}) }}
+          />
         </Col>
       </Row>
     </>
