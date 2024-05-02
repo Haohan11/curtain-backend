@@ -8,9 +8,9 @@ import { Stage, Layer, Line, Circle } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
 
 const anchorConfig = {
-  radius: 20,
+  radius: 10,
   stroke: "#FFFFFF",
-  fill: "#87CEEB",
+  fill: "#87CEEB88",
   strokeWidth: 2,
   draggable: true,
 };
@@ -52,88 +52,73 @@ export const EnvModal = ({ currentMode, initValue }) => {
     (lineArray, anchor) => [...lineArray, anchor.x, anchor.y],
     []
   );
+  const clearCircle = () => setAnchors([]);
+
+  const [cropLines, setCropLines] = useState([]);
+  const clearCropLines = () => setCropLines([]);
+
+  const clearCanvas = () => {
+    clearCircle();
+    clearCropLines();
+  };
+
   const addAnchor = (e) => {
     if (!allowDraw) return;
-    const { x, y } = e.target.getStage().getPointerPosition();
-    setAnchors((prev) => [...prev, { x, y }]);
+    const state = `clickOn${
+      e.target.className === "Circle" ? "Circle" : "NotCircle"
+    }`;
+    ({
+      clickOnCircle() {
+        const { x, y } = e.target.getPosition();
+        setCropLines((prev) => [...prev, [...lines, x, y]]);
+        clearCircle();
+      },
+      clickOnNotCircle() {
+        const { x, y } = e.target.getStage().getPointerPosition();
+        setAnchors((prev) => [...prev, { x, y }]);
+      },
+    })[state]();
   };
   const moveAnchor = (e, index) => {
     if (!allowDraw) return;
     const { x, y } = e.target.getStage().getPointerPosition();
     setAnchors((prev) => {
-      const newArray = [...prev]
-      newArray[index] = { x, y }
-      return newArray
+      const newArray = [...prev];
+      newArray[index] = { x, y };
+      return newArray;
     });
-  }
-
-  const clearCanvas = () => setAnchors([]);
+  };
 
   const cutImage = () => {
-    // const canvas = canvasFrame.querySelector("canvas")
-    return console.log("Currently not accept cutting image.");
-    if (!lines || lines.length === 0 || !envImage) return;
+    if (cropLines.length === 0 || !envImage) return;
 
-    // return console.log("== begin cut ==:", canvasFrame.querySelector("canvas"));
-    const { points } = lines[0];
-    const lineLength = points.length;
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
     canvas.height = canvasFrame.clientHeight;
     const ctx = canvas.getContext("2d");
     const imgObj = document.createElement("img");
     imgObj.src = envImage;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(points[0], points[1]);
-    for (let i = 2; i < lineLength; i += 2) {
-      ctx.lineTo(points[i], points[i + 1]);
-    }
-    ctx.closePath();
-    ctx.clip();
-    ctx.fillStyle = "pink";
-    ctx.fill();
-    // ctx.drawImage(
-    //   imgObj,
-    //   0,
-    //   0,
-    //   canvasFrame.clientWidth,
-    //   canvasFrame.clientHeight
-    // );
-    ctx.restore();
+
+    cropLines.forEach(line => {
+      const lineLength = line.length
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(line[0], line[1]);
+      for (let i = 2; i < lineLength; i += 2) {
+        ctx.lineTo(line[i], line[i + 1]);
+      }
+      ctx.closePath();
+      ctx.clip();
+      ctx.fillStyle = "pink";
+      ctx.fill();
+      ctx.restore();
+    })
+
     const dataUrl = canvas.toDataURL();
     const aEl = document.createElement("a");
     aEl.href = dataUrl;
     aEl.download = "crop_image.png";
     aEl.click();
-    imgObj.onLoad = () => {
-      // console.log("img load")
-      // ctx.save();
-      // ctx.beginPath();
-      // ctx.moveTo(points[0], points[1]);
-      // for (let i = 2; i < lineLength; i += 2) {
-      //   ctx.lineTo(points[i], points[i + 1]);
-      // }
-      // ctx.closePath();
-      // ctx.clip();
-      // ctx.drawImage(
-      //   imgObj,
-      //   0,
-      //   0,
-      //   canvasFrame.clientWidth,
-      //   canvasFrame.clientHeight
-      // );
-      // ctx.restore();
-      // const dataUrl = canvas.toDataURL();
-      // const aEl = document.createElement("a");
-      // aEl.href = dataUrl;
-      // aEl.download = "crop_image.png";
-      // aEl.click();
-      // aEl.remove();
-      // canvas.remove();
-    };
-    // console.log(envImage)
-    // imgObj.src = envImage
   };
 
   // init env name input width
@@ -173,7 +158,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
         <>
           <div
             ref={setCanvasFrame}
-            className="position-relative border border-2 rounded-4 border-gray-300 mb-4 align-self-center"
+            className="position-relative border border-2 rounded-4 bg-gray-300 border-gray-500 mb-4 align-self-center"
             style={{
               width: "100%",
               maxWidth: "1024px",
@@ -188,14 +173,24 @@ export const EnvModal = ({ currentMode, initValue }) => {
             />
             <Stage
               key={`${renderCount}`}
-              className="position-absolute top-0 left-0 border border-3 border-danger"
+              className="position-absolute top-0 left-0"
               width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
               height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
               onClick={addAnchor}
             >
               <Layer>
-                {anchors.map((anchor, index) => (
-                  <Circle key={index} {...{ ...anchorConfig, ...anchor }} onDragMove={(e) => moveAnchor(e, index)}/>
+                {cropLines.map((cropLine, index) => (
+                  <Line
+                    key={index}
+                    dash={[0, 0, 8, 8]}
+                    fill="#33333388"
+                    closed
+                    points={cropLine}
+                    stroke="#fff"
+                    strokeWidth={3}
+                    lineCap="round"
+                    lineJoin="round"
+                  />
                 ))}
                 {lines.length > 0 && (
                   <Line
@@ -207,6 +202,13 @@ export const EnvModal = ({ currentMode, initValue }) => {
                     lineJoin="round"
                   />
                 )}
+                {anchors.map((anchor, index) => (
+                  <Circle
+                    key={index}
+                    {...{ ...anchorConfig, ...anchor }}
+                    onDragMove={(e) => moveAnchor(e, index)}
+                  />
+                ))}
               </Layer>
             </Stage>
           </div>
@@ -215,7 +217,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
               className="btn btn-light-primary w-100 me-5"
               onClick={clearCanvas}
             >
-              清除筆跡
+              清除畫布
             </button>
             <button
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
