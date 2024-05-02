@@ -10,7 +10,7 @@ import { getFileUrl } from "@/tool/getFileUrl";
 
 import { useFormik } from "formik";
 
-import { createDataRequest, updateDataRequest } from '@/data-list/core/request'
+import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
 
 const anchorConfig = {
   radius: 10,
@@ -42,17 +42,18 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       ...(oriValue || initValue),
     },
     onSubmit: async (values) => {
-      await ({
+      await {
         async create() {
-          console.log(values)
-          await createDataRequest(values)
+          console.log(values);
+          const status = await createDataRequest(values);
+          if (status) goNoneMode();
         },
         async edit() {
-          console.log(values)
+          console.log(values);
           // await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
         },
-        close() { }
-      })[currentMode]()
+        close() {},
+      }[currentMode]();
     },
   });
 
@@ -115,6 +116,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const cutImage = () => {
     if (cropLines.length === 0 || !envImage) return;
 
+    formik.setFieldValue("cropline", JSON.stringify(cropLines))
+
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
     canvas.height = canvasFrame.clientHeight;
@@ -137,10 +140,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       ctx.restore();
     });
 
-    canvas.toBlob(blob => {
-      const file = new File([blob], "new_mask.png", {type: "image/png"})
-      formik.setFieldValue("mask_image", file)}
-    );
+    canvas.toBlob((blob) => {
+      const file = new File([blob], "new_mask.png", { type: "image/png" });
+      formik.setFieldValue("mask_image", file);
+    });
   };
 
   // init env name input width
@@ -255,7 +258,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
               onClick={() => {
                 toggleAllowDraw();
-                cutImage()
+                cutImage();
               }}
             >
               {!allowDraw ? "開始" : "停止"}繪製
@@ -354,7 +357,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <button
           type="submit"
           className="w-100 btn btn-primary"
-          disabled={allowDraw}
+          disabled={allowDraw || cropLines?.length === 0 || !formik.values["env_image"]}
         >
           {allowDraw ? "繪製中無法儲存" : "儲存"}
         </button>
