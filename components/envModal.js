@@ -10,6 +10,8 @@ import { getFileUrl } from "@/tool/getFileUrl";
 
 import { useFormik } from "formik";
 
+import { createDataRequest, updateDataRequest } from '@/data-list/core/request'
+
 const anchorConfig = {
   radius: 10,
   stroke: "#FFFFFF",
@@ -22,7 +24,7 @@ const initValue = {
   name: "新場景",
   image: null,
   enable: true,
-  description: "",
+  comment: "",
 };
 
 export const EnvModal = ({ currentMode, oriValue }) => {
@@ -31,7 +33,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const goNoneMode = () => router.push("");
 
   const [renderCount, setRenderCount] = useState(0);
-  const { name: envName, image, enable, description } = oriValue || initValue;
+  const { name: envName, image } = oriValue || initValue;
 
   const formik = useFormik({
     initialValues: {
@@ -39,7 +41,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       mask_image: null,
       ...(oriValue || initValue),
     },
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      await ({
+        async create() {
+          console.log(values)
+          await createDataRequest(values)
+        },
+        async edit() {
+          console.log(values)
+          // await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
+        },
+        close() { }
+      })[currentMode]()
+    },
   });
 
   // handle env name input
@@ -123,11 +137,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       ctx.restore();
     });
 
-    const dataUrl = canvas.toDataURL();
-    const aEl = document.createElement("a");
-    aEl.href = dataUrl;
-    aEl.download = "crop_image.png";
-    aEl.click();
+    canvas.toBlob(blob => {
+      const file = new File([blob], "new_mask.png", {type: "image/png"})
+      formik.setFieldValue("mask_image", file)}
+    );
   };
 
   // init env name input width
@@ -242,6 +255,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
               onClick={() => {
                 toggleAllowDraw();
+                cutImage()
               }}
             >
               {!allowDraw ? "開始" : "停止"}繪製
@@ -269,8 +283,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             type="file"
             accept=".png, .jpg, .jpeg"
             onChange={(e) => {
+              const [file] = e.target.files;
               const path = getFileUrl(e);
-              if (!path) return;
+              if (!file || !path) return;
+              formik.setFieldValue("env_image", file);
               setEnvImage(path);
             }}
           />
@@ -279,6 +295,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       <div className="d-flex fs-2 pt-6 pb-4">
         <span className="text-gray-500 me-4">場景名稱:</span>
         <input
+          {...formik.getFieldProps("name")}
           onBlur={disableInput}
           onInput={(e) => {
             const text = e.currentTarget.value;
@@ -292,11 +309,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           }}
           id="name"
           name="name"
-          style={{ width: initInputWidth, minWidth: "50px" }}
+          style={{ width: initInputWidth, minWidth: "50px", maxWidth: "200px" }}
           className={`fs-2 p-0 form-control form-control-flush text-primary me-2 border-bottom text-center ${
             inputDisable ? "" : "border-primary"
           }`}
-          defaultValue={envName}
           disabled={inputDisable}
         />
         <label htmlFor="name" className="cursor-pointer" onClick={allowInput}>
@@ -313,19 +329,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             啟用狀態
           </FormLabel>
           <FormCheck
+            {...formik.getFieldProps("enable")}
             inline
             type="switch"
             id="enable"
             name="enable"
-            defaultChecked={enable}
+            defaultChecked={formik.values["enable"]}
           />
         </FormGroup>
       </div>
       <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
       <textarea
-        id="comment"
+        {...formik.getFieldProps("comment")}
         className="w-100 p-4 mb-8 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
-        defaultValue={description || ""}
       ></textarea>
       <div className="d-flex">
         <button
@@ -338,12 +354,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <button
           type="submit"
           className="w-100 btn btn-primary"
-          onClick={() => {
-            return;
-            cutImage();
-          }}
+          disabled={allowDraw}
         >
-          儲存
+          {allowDraw ? "繪製中無法儲存" : "儲存"}
         </button>
       </div>
     </form>

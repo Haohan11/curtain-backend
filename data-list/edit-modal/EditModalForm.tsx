@@ -60,13 +60,6 @@ const ValidateInputField = ({ required = false, label, name, formik, placeholder
   </>
 )
 
-const mockAuthor = {
-  create_name: "han",
-  create_id: "admin",
-  modify_name: "han",
-  modify_id: "admin",
-}
-
 const flatColorImagesField = (stockData) =>
   Object.entries(stockData).reduce((dict, [key, value]) => {
     if (!key.includes("colorImages")) return { ...dict, [key]: value }
@@ -120,7 +113,7 @@ const EditModalForm = ({ isUserLoading }) => {
       } : {})
     }
   }
-  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)), ...mockAuthor })
+  const [initialValues, setInitialValues] = useState({ ...formField[tableName], ...(currentData === null ? {} : handleCurrentData(currentData)) })
 
   const formik = useFormik({
     initialValues,

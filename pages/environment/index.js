@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { Row, Col } from "react-bootstrap";
 
 import { EnvModal } from "../../components/envModal";
+import currentTable from '@/data-list/globalVariable/currentTable'
 
 const mockEnvList = [
   {
@@ -13,67 +14,68 @@ const mockEnvList = [
     name: "客廳",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
   {
     id: 2,
     name: "書房",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
   {
     id: 3,
     name: "小寶房間",
     image: "/livingroom.jpg",
     enable: true,
-    description: "Where Siao bao live.",
+    comment: "Where Siao bao live.",
   },
   {
     id: 4,
     name: "阿桂房間",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
   {
     id: 5,
     name: "會議室",
     image: "/livingroom.jpg",
     enable: true,
-    description: "It's a conference room.",
+    comment: "It's a conference room.",
   },
   {
     id: 6,
     name: "臥室A",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
   {
     id: 7,
     name: "臥室B",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
   {
     id: 8,
     name: "臥室C",
     image: "/livingroom.jpg",
     enable: false,
-    description: "",
+    comment: "",
   },
   {
     id: 9,
     name: "臥室D",
     image: "/livingroom.jpg",
     enable: true,
-    description: "",
+    comment: "",
   },
 ];
 
 const EnvironmentPage = () => {
+  currentTable.set("environment");
   const router = useRouter();
   const { mode } = router.query;
   const currentMode = ["create", "edit"].includes(mode) ? mode : "none";

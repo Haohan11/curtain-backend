@@ -5,6 +5,13 @@ const { fetchUrl } = dict;
 const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
 const getTableUrl = () => fetchUrl[currentTable.get()];
 
+const mockAuthor = {
+  create_name: "han",
+  create_id: "admin",
+  modify_name: "han",
+  modify_id: "admin",
+}
+
 export const getDataRequest = async ({ page, size }) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
@@ -43,6 +50,8 @@ export const getDataByTable = async (tableName) => {
 export const createDataRequest = async (values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
 
+  Object.assign(values, mockAuthor)
+  
   const formData = new FormData();
   for (const key in values) {
     const value = values[key];
@@ -73,6 +82,8 @@ export const createDataRequest = async (values) => {
 export const updateDataRequest = async (values) => {
   console.log("submitvalues", values);
   const URL = `${BASEURL}/${getTableUrl()}`;
+
+  Object.assign(values, mockAuthor)
 
   const formData = new FormData();
   for (const key in values) {
