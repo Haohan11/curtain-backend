@@ -132,6 +132,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
     el.remove();
   }, []);
 
+  // handle canvas size with window resize
   useEffect(() => {
     let timerId = null;
     const handleResize = () => {
@@ -214,10 +215,16 @@ export const EnvModal = ({ currentMode, initValue }) => {
           </div>
           <div className="d-flex">
             <button
-              className="btn btn-light-primary w-100 me-5"
+              className="btn btn-secondary w-50 me-5"
               onClick={clearCanvas}
             >
               清除畫布
+            </button>
+            <button
+              className="btn btn-light-primary w-50 me-5"
+              onClick={clearCircle}
+            >
+              清除錨點
             </button>
             <button
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
