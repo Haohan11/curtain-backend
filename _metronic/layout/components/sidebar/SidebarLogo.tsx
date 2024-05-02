@@ -1,4 +1,3 @@
-// import { Link } from 'react-router-dom'
 import Link from 'next/link'
 import clsx from 'clsx'
 import { KTIcon, toAbsoluteUrl } from '../../../helpers'

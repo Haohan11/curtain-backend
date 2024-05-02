@@ -1,5 +1,5 @@
 
-import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {toAbsoluteUrl} from '../../../../helpers'
 
 type Props = {
@@ -22,7 +22,7 @@ const EngageWidget10 = ({className}: Props) => (
             <br />
             <span className='position-relative d-inline-block text-danger'>
               <Link
-                to='/crafted/pages/profile/overview'
+                href='/crafted/pages/profile/overview'
                 className='text-danger
               opacity-75-hover'
               >

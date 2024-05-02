@@ -1,5 +1,5 @@
 import {useEffect} from 'react'
-import {Outlet, useLocation} from 'react-router-dom'
+// import {Outlet, useLocation} from 'react-router-dom'
 import {HeaderWrapper} from './components/header'
 import {RightToolbar} from '../partials/layout/RightToolbar'
 import {ScrollTop} from './components/scroll-top'
@@ -10,10 +10,10 @@ import {PageDataProvider} from './core'
 import {reInitMenu} from '../helpers'
 
 const MasterLayout = () => {
-  const location = useLocation()
-  useEffect(() => {
-    reInitMenu()
-  }, [location.key])
+  // const location = useLocation()
+  // useEffect(() => {
+  //   reInitMenu()
+  // }, [location.key])
 
   return (
     <PageDataProvider>
@@ -24,7 +24,7 @@ const MasterLayout = () => {
             <Sidebar />
             <div className='app-main flex-column flex-row-fluid' id='kt_app_main'>
               <div className='d-flex flex-column flex-column-fluid'>
-                <Outlet />
+                {/* <Outlet /> */}
               </div>
               <FooterWrapper />
             </div>

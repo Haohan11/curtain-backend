@@ -1,6 +1,6 @@
  
 
-import {Link} from 'react-router-dom'
+import Link from 'next/link'
 import {KTIcon} from '../../../helpers'
 
 const HelpDrawer = () => {
@@ -155,7 +155,7 @@ const HelpDrawer = () => {
                 <div className='d-flex flex-column me-2 me-lg-5'>
                   {/* begin::Title */}
                   <Link
-                    to='/builder'
+                    href='/builder'
                     className='text-gray-900 text-hover-primary fw-bolder fs-6 fs-lg-4 mb-1'
                   >
                     Layout Builder
@@ -189,7 +189,7 @@ const HelpDrawer = () => {
                     href='https://preview.keenthemes.com/metronic8/react/docs/changelog'
                     className='text-gray-900 text-hover-primary fw-bolder fs-6 fs-lg-4 mb-1'
                   >
-                    What's New
+                    What&apos;s New
                   </a>
                   {/* end::Title */}
                   {/* begin::Description */}
