@@ -136,7 +136,7 @@ const EnvironmentPage = () => {
         <Col>
           <EnvModal
             key={`${currentMode}_${editEnvId}`}
-            {...{ currentMode, ...(currentMode === "edit" ? ({initValue: editEnvData}) : {}) }}
+            {...{ currentMode, ...(currentMode === "edit" ? ({oriValue: editEnvData}) : {}) }}
           />
         </Col>
       </Row>

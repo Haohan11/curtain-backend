@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+// relate to environment/index.js
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -6,6 +7,8 @@ import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import { Stage, Layer, Line, Circle } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
+
+import { useFormik } from "formik";
 
 const anchorConfig = {
   radius: 10,
@@ -15,23 +18,29 @@ const anchorConfig = {
   draggable: true,
 };
 
-export const EnvModal = ({ currentMode, initValue }) => {
+const initValue = {
+  name: "新場景",
+  image: null,
+  enable: true,
+  description: "",
+};
+
+export const EnvModal = ({ currentMode, oriValue }) => {
   const router = useRouter();
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
 
   const [renderCount, setRenderCount] = useState(0);
-  const {
-    name: envName,
-    image,
-    enable,
-    description,
-  } = initValue || {
-    name: "新場景",
-    image: null,
-    enable: true,
-    description: "",
-  };
+  const { name: envName, image, enable, description } = oriValue || initValue;
+
+  const formik = useFormik({
+    initialValues: {
+      env_image: null,
+      mask_image: null,
+      ...(oriValue || initValue),
+    },
+    onSubmit: async (values) => {},
+  });
 
   // handle env name input
   const [initInputWidth, setInitInputWidth] = useState("fit-content");
@@ -99,8 +108,8 @@ export const EnvModal = ({ currentMode, initValue }) => {
     const imgObj = document.createElement("img");
     imgObj.src = envImage;
 
-    cropLines.forEach(line => {
-      const lineLength = line.length
+    cropLines.forEach((line) => {
+      const lineLength = line.length;
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(line[0], line[1]);
@@ -112,7 +121,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
       ctx.fillStyle = "pink";
       ctx.fill();
       ctx.restore();
-    })
+    });
 
     const dataUrl = canvas.toDataURL();
     const aEl = document.createElement("a");
@@ -152,7 +161,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
 
   const Panel = (
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={formik.handleSubmit}
       className="p-4 h-100 fw-bold d-flex flex-column"
     >
       {hasEnvImage ? (
@@ -215,18 +224,21 @@ export const EnvModal = ({ currentMode, initValue }) => {
           </div>
           <div className="d-flex">
             <button
+              type="button"
               className="btn btn-secondary w-50 me-5"
               onClick={clearCanvas}
             >
               清除畫布
             </button>
             <button
+              type="button"
               className="btn btn-light-primary w-50 me-5"
               onClick={clearCircle}
             >
               清除錨點
             </button>
             <button
+              type="button"
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
               onClick={() => {
                 toggleAllowDraw();
@@ -253,6 +265,7 @@ export const EnvModal = ({ currentMode, initValue }) => {
           <span className="fs-3 text-gray-500">上傳場景圖片</span>
           <input
             hidden
+            name="env_image"
             type="file"
             accept=".png, .jpg, .jpeg"
             onChange={(e) => {
@@ -315,10 +328,21 @@ export const EnvModal = ({ currentMode, initValue }) => {
         defaultValue={description || ""}
       ></textarea>
       <div className="d-flex">
-        <button className="w-100 btn btn-secondary me-12" onClick={goNoneMode}>
+        <button
+          type="button"
+          className="w-100 btn btn-secondary me-12"
+          onClick={goNoneMode}
+        >
           取消
         </button>
-        <button className="w-100 btn btn-primary" onClick={cutImage}>
+        <button
+          type="submit"
+          className="w-100 btn btn-primary"
+          onClick={() => {
+            return;
+            cutImage();
+          }}
+        >
           儲存
         </button>
       </div>
