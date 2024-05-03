@@ -22,7 +22,7 @@ const anchorConfig = {
 
 const initValue = {
   name: "新場景",
-  image: null,
+  env_image: null,
   enable: true,
   comment: "",
 };
@@ -33,7 +33,11 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const goNoneMode = () => router.push("");
 
   const [renderCount, setRenderCount] = useState(0);
-  const { name: envName, image } = oriValue || initValue;
+  const {
+    name: envName,
+    env_image,
+    cropline,
+  } = oriValue || initValue;
 
   const formik = useFormik({
     initialValues: {
@@ -50,6 +54,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         },
         async edit() {
           console.log(values);
+          goNoneMode()
           // await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
         },
         close() {},
@@ -63,10 +68,11 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const allowInput = () => setInputDisable(false);
   const disableInput = () => setInputDisable(true);
 
-  const [envImage, setEnvImage] = useState(image);
+  const [envImage, setEnvImage] = useState(env_image);
   const hasEnvImage = envImage !== null;
 
   const [canvasFrame, setCanvasFrame] = useState();
+  // const canvasInitWidth = useRef(0);
 
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
@@ -78,8 +84,27 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   );
   const clearCircle = () => setAnchors([]);
 
-  const [cropLines, setCropLines] = useState([]);
+  const [cropLines, setCropLines] = useState(cropline || []);
   const clearCropLines = () => setCropLines([]);
+
+  // const [scaleState, setScaleState] = useState(false);
+  // const scaleDrawItem = (width) => {
+  //   if (!canvasFrame?.nodeType) return;
+  //   const scale = canvasFrame.clientWidth / (width ?? canvasInitWidth.current);
+  //   console.log(scale);
+  //   anchors.length > 0 &&
+  //     setAnchors((prev) =>
+  //       prev.map((points) => ({
+  //         x: points.x * scale,
+  //         y: points.y * scale,
+  //       }))
+  //     );
+  //   cropLines.length > 0 &&
+  //     setCropLines((prev) =>
+  //       prev.map((line) => line.map((point) => point * scale))
+  //     );
+  //   setScaleState(false);
+  // };
 
   const clearCanvas = () => {
     clearCircle();
@@ -116,7 +141,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const cutImage = () => {
     if (cropLines.length === 0 || !envImage) return;
 
-    formik.setFieldValue("cropline", JSON.stringify(cropLines))
+    formik.setFieldValue("cropline", JSON.stringify(cropLines));
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
@@ -164,7 +189,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       if (timerId !== null) clearTimeout(timerId);
       timerId = setTimeout(() => {
         timerId = null;
-        anchors.length > 0 ? clearCanvas() : setRenderCount((prev) => prev + 1);
+        // force rerender
+        // setScaleState(true);
+        clearCanvas()
+        setRenderCount((prev) => prev + 1);
         clearTimeout(timerId);
       }, 100);
     };
@@ -174,6 +202,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // keep canvas frame init width
+  // useEffect(() => {
+  //   if (canvasInitWidth.current !== 0 || !canvasFrame?.nodeType) return;
+  //   const currentWidth = canvasFrame.clientWidth;
+  //   scaleDrawItem(oriWidth || currentWidth);
+  //   canvasInitWidth.current = currentWidth;
+  // }, [canvasFrame]);
+
+  // useEffect(() => {
+  //   if (!scaleState) return;
+  //   scaleDrawItem();
+  // }, [scaleState]);
 
   const Panel = (
     <form
@@ -193,6 +234,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           >
             <Image
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               alt="edit env image"
               src={envImage}
               className="object-fit-contain pe-none"
@@ -357,7 +399,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <button
           type="submit"
           className="w-100 btn btn-primary"
-          disabled={allowDraw || cropLines?.length === 0 || !formik.values["env_image"]}
+          disabled={
+            allowDraw || cropLines?.length === 0 || !formik.values["env_image"]
+          }
         >
           {allowDraw ? "繪製中無法儲存" : "儲存"}
         </button>

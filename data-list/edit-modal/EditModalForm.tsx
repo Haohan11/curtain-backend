@@ -108,7 +108,7 @@ const EditModalForm = ({ isUserLoading }) => {
           colorSchemeList: colorSchemeList.map(scheme => ({ label: scheme.name, value: scheme.id })),
           // for submit colorSchemes data
           colorSchemes: colorSchemeList.map(scheme => scheme.id),
-          ...(loopObject({ stock_image, color_image, removal_image }, (image) => `${process.env.NEXT_PUBLIC_BACKENDURL}/${image}`.replace(/\\/g, '/')))
+          ...(loopObject({ stock_image, color_image, removal_image }, (image) => transImageUrl(image)))
         }))
       } : {})
     }
