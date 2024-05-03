@@ -303,13 +303,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             </button>
             <button
               type="button"
-              className="btn btn-light-primary w-25 me-5"
-              onClick={clearCircle}
-            >
-              清除錨點
-            </button>
-            <button
-              type="button"
               className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
               onClick={() => {
                 toggleAllowDraw();
