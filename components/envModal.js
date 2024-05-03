@@ -33,11 +33,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const goNoneMode = () => router.push("");
 
   const [renderCount, setRenderCount] = useState(0);
-  const {
-    name: envName,
-    env_image,
-    cropline,
-  } = oriValue || initValue;
+  const { id, name: envName, env_image, cropline } = oriValue || initValue;
 
   const formik = useFormik({
     initialValues: {
@@ -53,9 +49,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           if (status) goNoneMode();
         },
         async edit() {
-          console.log(values);
-          goNoneMode()
-          // await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
+          // console.log({...values, id});
+          const status = await updateDataRequest({ ...values, id });
+          if (status) goNoneMode();
         },
         close() {},
       }[currentMode]();
@@ -191,7 +187,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         timerId = null;
         // force rerender
         // setScaleState(true);
-        clearCanvas()
+        clearCanvas();
         setRenderCount((prev) => prev + 1);
         clearTimeout(timerId);
       }, 100);
@@ -281,16 +277,33 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             </Stage>
           </div>
           <div className="d-flex">
+            {envImage && (
+              <label className="btn btn-primary w-25 me-5">
+                更換圖片
+                <input
+                  hidden
+                  type="file"
+                  accept=".png, .jpg, .jpeg"
+                  onChange={(e) => {
+                    const [file] = e.target.files;
+                    const path = getFileUrl(e);
+                    if (!file || !path) return;
+                    formik.setFieldValue("env_image", file);
+                    setEnvImage(path);
+                  }}
+                />
+              </label>
+            )}
             <button
               type="button"
-              className="btn btn-secondary w-50 me-5"
+              className="btn btn-secondary w-25 me-5"
               onClick={clearCanvas}
             >
               清除畫布
             </button>
             <button
               type="button"
-              className="btn btn-light-primary w-50 me-5"
+              className="btn btn-light-primary w-25 me-5"
               onClick={clearCircle}
             >
               清除錨點
@@ -324,7 +337,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           <span className="fs-3 text-gray-500">上傳場景圖片</span>
           <input
             hidden
-            name="env_image"
             type="file"
             accept=".png, .jpg, .jpeg"
             onChange={(e) => {

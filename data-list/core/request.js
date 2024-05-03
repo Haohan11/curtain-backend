@@ -112,6 +112,7 @@ export const updateDataRequest = async (values) => {
     if(!res.ok) return false
     const result = await res.json();
     console.log("submited:", result);
+    return result.status
   } catch (error) {
     console.log("error:", error);
     return false;
