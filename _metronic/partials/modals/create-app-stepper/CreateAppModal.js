@@ -12,37 +12,37 @@ import {Step3} from './steps/Step3'
 import {Step4} from './steps/Step4'
 import {Step5} from './steps/Step5'
 
-type Props = {
-  show: boolean
-  handleClose: () => void
-}
+// type Props = {
+//   show: boolean
+//   handleClose: () => void
+// }
 
 const modalsRoot = typeof document === 'undefined' ? <></> : 
 (document.getElementById('root-modals') || document.body)
 
-const CreateAppModal = ({show, handleClose}: Props) => {
-  const stepperRef = useRef<HTMLDivElement | null>(null)
-  const [ stepper, setStepper ] = useState<StepperComponent | null>(null)
-  const [data, setData] = useState<ICreateAppData>(defaultCreateAppData)
+const CreateAppModal = ({show, handleClose}) => {
+  const stepperRef = useRef(null)
+  const [ stepper, setStepper ] = useState(null)
+  const [data, setData] = useState(defaultCreateAppData)
   const [hasError, setHasError] = useState(false)
 
   const loadStepper = () => {
-    setStepper(StepperComponent.createInsance(stepperRef.current as HTMLDivElement))
+    setStepper(StepperComponent.createInsance(stepperRef.current))
   }
 
-  const updateData = (fieldsToUpdate: Partial<ICreateAppData>) => {
+  const updateData = (fieldsToUpdate) => {
     const updatedData = {...data, ...fieldsToUpdate}
     setData(updatedData)
   }
 
-  const checkAppBasic = (): boolean => {
+  const checkAppBasic = () => {
     if (!data.appBasic.appName || !data.appBasic.appType) {
       return false
     }
     return true
   }
 
-  const checkAppDataBase = (): boolean => {
+  const checkAppDataBase = () => {
     if (!data.appDatabase.databaseName || !data.appDatabase.databaseSolution) {
       return false
     }
