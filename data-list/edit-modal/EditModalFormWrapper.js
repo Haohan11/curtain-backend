@@ -6,7 +6,7 @@ import {getUserById} from '../core/_requests'
 
 const EditModalFormWrapper = () => {
   const {itemIdForUpdate, setItemIdForUpdate} = useListView()
-  const enabledQuery: boolean = isNotEmpty(itemIdForUpdate)
+  const enabledQuery = isNotEmpty(itemIdForUpdate)
   // const {
   //   isLoading,
   //   data: user,

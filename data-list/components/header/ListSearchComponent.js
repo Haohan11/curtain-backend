@@ -8,7 +8,7 @@ import dict from '../../dictionary/tableDictionary'
 
 const ListSearchComponent = () => {
   const { updateState } = useQueryRequest()
-  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useState('')
   const tableName = currentTable.get()
   const { searchPlaceholder } = dict
   // Debounce search term so that it only gives us latest value ...

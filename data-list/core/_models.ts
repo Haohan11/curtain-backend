@@ -8,6 +8,7 @@ export type User = {
   role?: string
   last_login?: string
   two_steps?: boolean
+  enable?: boolean
   joined_day?: string
   online?: boolean
   initials?: {
@@ -18,6 +19,7 @@ export type User = {
 
 export type Products = {
   id?: ID
+  code?: string
   available?: boolean
   name?: string
   style?: string
@@ -31,6 +33,7 @@ export type Products = {
   absorption?: number
   description?: string
   created_time?: string
+  enable?: boolean
 }
 
 export type Series = {

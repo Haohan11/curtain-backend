@@ -14,7 +14,7 @@ import {
 import { EnableCell } from './enableCell'
 import { ProductAvaliableCell } from './ProductAvaliableCell'
 
-const usersColumns: ReadonlyArray<Column<User>> = [
+const usersColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='Actions' className='text-start min-w-100px' />
@@ -58,7 +58,7 @@ const usersColumns: ReadonlyArray<Column<User>> = [
   },
 ]
 
-export const stockColumns: ReadonlyArray<Column<Products>> = [
+export const stockColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -154,7 +154,7 @@ export const stockColumns: ReadonlyArray<Column<Products>> = [
   },
 ]
 
-export const seriesColumns: ReadonlyArray<Column<Series>> = [
+export const seriesColumns= [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -204,7 +204,7 @@ export const colorColumns = [
   }
 ]
 
-export const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
+export const colorSchemeColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -229,7 +229,7 @@ export const colorSchemeColumns: ReadonlyArray<Column<ColorScheme>> = [
   },
 ]
 
-export const designColumns: ReadonlyArray<Column<Design>> = [
+export const designColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -254,7 +254,7 @@ export const designColumns: ReadonlyArray<Column<Design>> = [
   },
 ]
 
-export const materialColumns: ReadonlyArray<Column<Material>> = [
+export const materialColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -279,7 +279,7 @@ export const materialColumns: ReadonlyArray<Column<Material>> = [
   },
 ]
 
-export const supplierColumns: ReadonlyArray<Column<Supplier>> = [
+export const supplierColumns= [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -308,7 +308,7 @@ export const supplierColumns: ReadonlyArray<Column<Supplier>> = [
   },
 ]
 
-export const accountsColumns: ReadonlyArray<Column<Account>> = [
+export const accountsColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -353,7 +353,7 @@ export const accountsColumns: ReadonlyArray<Column<Account>> = [
   },
 ]
 
-export const roleColumns: ReadonlyArray<Column<Role>> = [
+export const roleColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
@@ -379,7 +379,7 @@ export const roleColumns: ReadonlyArray<Column<Role>> = [
   },
 ]
 
-export const environmentColumns: ReadonlyArray<Column<Environment>> = [
+export const environmentColumns = [
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='操作' className='text-start min-w-100px' />
