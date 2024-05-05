@@ -2,11 +2,13 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [{
-      protocol: "http",
-      hostname: "localhost",
-      // port: "3005"
-    }],
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        // port: "3005"
+      },
+    ],
   },
 };
 

@@ -8,7 +8,7 @@ const onlyNumber = (event) => {
     event.key === "ArrowLeft" || 
     event.key === "ArrowRight" ||
     event.key === "Home" ||
-    event.key === "End"
+    event.key === "End" || (event.ctrlKey && ["a", "x", "c", "v"].includes(event.key))
   )
     return;
   event.preventDefault();
