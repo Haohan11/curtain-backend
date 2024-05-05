@@ -698,20 +698,6 @@ const EditModalForm = ({ isUserLoading }) => {
             </div>
           }
 
-          {config.environment_label &&
-            <div className='mb-7'>
-              <div className='fw-bold fs-6 mb-2'>{config.environment_label}</div>
-              <div className='d-flex flex-wrap justify-content-start'>
-                {["OOOXXO", "OOXXYY", "CCVVVV", "SGREYDGH", "OOOYYYO", "OOXUTYUXYY", "CCV",].map((item, index) =>
-                  <label key={index} className='me-2 mb-2 tags-label cursor-pointer'>
-                    <input type='checkbox' hidden />
-                    <div className='fs-4 py-2 px-5 border border-2 rounded-2'>{item}</div>
-                  </label>
-                )}
-              </div>
-            </div>
-          }
-
           {config.description_label &&
             <div className='mb-7'>
               <label className='fw-bold fs-6 mb-2'>{config.description_label}</label>
