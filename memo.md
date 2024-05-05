@@ -1,10 +1,5 @@
 
 ## unhandle issue
-### React does not recognize the `fetchPriority` prop on a DOM element.
-#### where
- - the img tag in ScreenLoad
-#### why
- - unknown
 
 ### Cannot find module 'canvas'
 #### when
