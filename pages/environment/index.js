@@ -64,6 +64,7 @@ const EnvironmentPage = ({ list }) => {
                         fill
                         sizes="200px"
                         alt="env image"
+                        className="object-fit-cover"
                         src={item.env_image}
                       />
                     </div>

@@ -81,7 +81,6 @@ export const createDataRequest = async (values) => {
 };
 
 export const updateDataRequest = async (values) => {
-  console.log("submitvalues", values);
   const URL = `${BASEURL}/${getTableUrl()}`;
 
   Object.assign(values, mockAuthor)
@@ -111,7 +110,6 @@ export const updateDataRequest = async (values) => {
     });
     if(!res.ok) return false
     const result = await res.json();
-    console.log("submited:", result);
     return result.status
   } catch (error) {
     console.log("error:", error);
