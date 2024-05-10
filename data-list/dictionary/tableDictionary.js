@@ -37,7 +37,6 @@ export const fullData = {
       color_label: "商品顏色",
       color_placeholder: "輸入商品顏色名稱",
       material_label: "面料材質",
-      environment_label: "適用場景",
       design_label: "商品風格",
       absorption_label: "吸音效果",
       block_label: "遮光效果",
