@@ -13,10 +13,9 @@ import { useFormik } from "formik";
 import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
 
 const anchorConfig = {
-  radius: 10,
-  stroke: "#FFFFFF",
-  fill: "#87CEEB88",
-  strokeWidth: 2,
+  radius: 5,
+  fill: "gray",
+  strokeWidth: 1,
   draggable: true,
 };
 
@@ -246,22 +245,22 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 {cropLines.map((cropLine, index) => (
                   <Line
                     key={index}
-                    dash={[0, 0, 8, 8]}
+                    dash={[0, 0, 3, 3]}
                     fill="#33333388"
                     closed
                     points={cropLine}
                     stroke="#fff"
-                    strokeWidth={3}
+                    strokeWidth={1.5}
                     lineCap="round"
                     lineJoin="round"
                   />
                 ))}
                 {lines.length > 0 && (
                   <Line
-                    dash={[0, 0, 10, 10]}
+                    dash={[0, 0, 3, 3]}
                     points={lines}
                     stroke="#df4b26"
-                    strokeWidth={5}
+                    strokeWidth={1.5}
                     lineCap="round"
                     lineJoin="round"
                   />
