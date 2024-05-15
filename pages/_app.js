@@ -10,6 +10,7 @@ import Head from "next/head";
 
 import axios from 'axios'
 import { AuthProvider, setupAxios } from '@/_metronic/auth'
+import { SessionProvider } from "next-auth/react"
 
 import { MetronicI18nProvider } from '@/_metronic/i18n/Metronici18n'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -30,13 +31,17 @@ const DynamicWrapper = dynamic(async () => {
   return Layout
 }, {ssr: false, loading: () => <ScreenLoad />})
 
-export default function App({ Component, pageProps }) {
+export default function App({ 
+  Component, 
+  pageProps: { session, ...pageProps },  
+}) {
   const queryClient = new QueryClient()
 
   const getLayout =
     Component.getLayout ?? ((page) => <DynamicWrapper>{page}</DynamicWrapper>);
 
   return getLayout(
+    <SessionProvider session={session}>
     <>
       <Head>
         <title>翔宇窗飾後台</title>
@@ -52,5 +57,6 @@ export default function App({ Component, pageProps }) {
           </MetronicI18nProvider>
         </QueryClientProvider>
     </>
+    </SessionProvider>
   );
 }

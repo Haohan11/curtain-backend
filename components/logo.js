@@ -12,7 +12,7 @@ const Logo = ({ width, height, ...props }) => {
         alt="logo"
         className="object-fit-contain"
         fill
-        src="/image/logo.svg"
+        src="/logo.svg"
       />
     </div>
   );

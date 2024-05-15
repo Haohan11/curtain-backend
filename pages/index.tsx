@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getSession } from "next-auth/react";
 
 export default function Home() {
   return (
@@ -11,4 +12,19 @@ export default function Home() {
       </p>
     </div>
   );
+}
+
+export const getServerSideProps = async (context: any) => {
+  const session = await getSession(context)
+  console.log("index session: ",session);
+  if (!session) {
+      return {
+        redirect: { destination: "/login" },
+      };
+  }
+
+  return {
+    props: {
+    },
+  };
 }
