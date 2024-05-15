@@ -24,6 +24,7 @@ const initValue = {
   env_image: null,
   enable: true,
   comment: "",
+  cropline: [],
 };
 
 export const EnvModal = ({ currentMode, oriValue }) => {
@@ -43,13 +44,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     onSubmit: async (values) => {
       await {
         async create() {
-          console.log(values);
           const status = await createDataRequest(values);
           if (status) goNoneMode();
         },
         async edit() {
-          // console.log({...values, id});
-          const status = await updateDataRequest({ ...values, id });
+          const cropline = Array.isArray(values.cropline)
+            ? JSON.stringify(values.cropline)
+            : values.cropline;
+          const status = await updateDataRequest({ ...values, cropline, id });
           if (status) goNoneMode();
         },
         close() {},
