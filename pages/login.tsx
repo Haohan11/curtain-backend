@@ -4,10 +4,15 @@ import { useRouter } from "next/router";
 import { Row, Col, Container, Form, FormGroup, FormCheck, Button } from "react-bootstrap";
 import { signIn, useSession, getSession } from "next-auth/react";
 import LoginPageLayout from "@/components/loginPageLayout";
+import ModalWrapper from "@/components/modalWrapper";
+import PopUp from "@/components/popUp";
 import Logo from "@/components/logo";
+
+import { useModals } from "@/tool/hooks";
 
 const LoginLayout = () => {
     const router = useRouter();
+    const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
     const login = async () => {
         const form = document.getElementById("loginForm");
@@ -25,7 +30,7 @@ const LoginLayout = () => {
             router.push("/");
         } else {
           form.reset();
-          alert("帳號密碼錯誤")
+         handleShowModal('popup')
         }
     }
 
@@ -57,6 +62,19 @@ const LoginLayout = () => {
                 </FormGroup>
                 <Button variant="primary" type="button" className="w-100" onClick={login}>登入</Button>
             </div>
+            {/*新增 和 編輯完成*/}
+        <ModalWrapper
+          key="popup"
+          show={isModalOpen("popup")}
+          size="lg"
+          onHide={() => {handleCloseModal('popup')}}
+        >
+          <PopUp
+            imageSrc={'/icon/circle-error.svg'}
+            title={'帳號或密碼錯誤'}
+            confirmOnClick={() => {handleCloseModal('popup')}}
+          />
+        </ModalWrapper>
         </Form>
       );
 
