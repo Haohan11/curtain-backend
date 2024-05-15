@@ -47,10 +47,8 @@ export const getDataByTable = async (tableName) => {
   }
 };
 
-export const createDataRequest = async (values) => {
+export const createDataRequest = async (token, values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
-
-  Object.assign(values, mockAuthor)
 
   const formData = new FormData();
   for (const key in values) {
@@ -68,6 +66,9 @@ export const createDataRequest = async (values) => {
   try {
     const res = await fetch(URL, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
     });
     if(!res.ok) return false
@@ -80,7 +81,7 @@ export const createDataRequest = async (values) => {
   }
 };
 
-export const updateDataRequest = async (values) => {
+export const updateDataRequest = async (token, values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
 
   Object.assign(values, mockAuthor)
@@ -106,6 +107,9 @@ export const updateDataRequest = async (values) => {
   try {
     const res = await fetch(URL, {
       method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
     });
     if(!res.ok) return false

@@ -8,6 +8,8 @@ import { KTSVG } from "@/_metronic/helpers/index.ts";
 import { Stage, Layer, Line, Circle } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
 
+import { useSession } from "next-auth/react";
+
 import { useFormik } from "formik";
 
 import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
@@ -28,6 +30,9 @@ const initValue = {
 };
 
 export const EnvModal = ({ currentMode, oriValue }) => {
+  const { data, status } = useSession();
+  const token = data?.user?.accessToken;
+
   const router = useRouter();
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
@@ -44,14 +49,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     onSubmit: async (values) => {
       await {
         async create() {
-          const status = await createDataRequest(values);
+          const status = await createDataRequest(token, values);
           if (status) goNoneMode();
         },
         async edit() {
           const cropline = Array.isArray(values.cropline)
             ? JSON.stringify(values.cropline)
             : values.cropline;
-          const status = await updateDataRequest({ ...values, cropline, id });
+          const status = await updateDataRequest(token, { ...values, cropline, id });
           if (status) goNoneMode();
         },
         close() {},

@@ -12,6 +12,8 @@ import clsx from 'clsx'
 import { useListView } from '../core/ListViewProvider'
 import { useTableData } from '../core/tableDataProvider'
 
+import { useSession } from "next-auth/react";
+
 import currentTable from '../globalVariable/currentTable'
 import dict from '../dictionary/tableDictionary'
 import Stars from '@/components/input/starsRating'
@@ -22,12 +24,12 @@ import { loopObject } from '@/tool/loopObject'
 import onlyInputNumbers from '@/tool/inputOnlyNumbers'
 import Select from "react-select"
 
-import { createDataRequest, updateDataRequest, getDataByTable } from '../core/request'
+import { createDataRequest,token,  updateDataRequest, getDataByTable } from '../core/request'
 
 const { modalConfig, formField, validationSchema } = dict
 
 const InputLabel = ({ required, text }) =>
-  <label className={clsx('fw-bold fs-6 mb-2', {
+  <label className={clsx('ftoken, w-bold fs-6 mb-2', {
     'required': required
   })}>{text}</label>
 
@@ -76,6 +78,9 @@ const flatColorImagesField = (stockData) =>
   }, {})
 
 const EditModalForm = ({ isUserLoading }) => {
+  const { data, status } = useSession();
+  const token = data?.user?.accessToken;
+
   const router = useRouter()
   const { setItemIdForUpdate, itemIdForUpdate } = useListView()
 
@@ -125,12 +130,12 @@ const EditModalForm = ({ isUserLoading }) => {
 
       await ({
         async create() {
-          await createDataRequest(values)
+          await createDataRequest(token, values)
           router.push(router.asPath.split('?')[0])
           closeModal()
         },
         async edit() {
-          await updateDataRequest({ ...flatColorImagesField(values), id: itemIdForUpdate })
+          await updateDataRequest(token, { ...flatColorImagesField(values), id: itemIdForUpdate })
           router.push(router.asPath.split('?')[0])
           closeModal()
         },
