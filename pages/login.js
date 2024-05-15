@@ -85,7 +85,7 @@ LoginLayout.getLayout = (page) => page;
 
 export default LoginLayout;
 
-export const getServerSideProps = async (context: any) => {
+export const getServerSideProps = async (context) => {
     const session = await getSession(context)
     console.log("login session: " + session);
     if (session) {
