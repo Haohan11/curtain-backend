@@ -7,7 +7,7 @@ const ListHeader = () => {
   const {selected} = useListView()
   return (
     <div className='d-flex justify-content-between card-header border-0 pt-6'>
-      <ListSearchComponent />
+      {/* <ListSearchComponent /> */}
       {/* begin::Card toolbar */}
       <div className='card-toolbar'>
         {/* begin::Group actions */}

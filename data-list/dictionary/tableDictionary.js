@@ -229,7 +229,6 @@ export const fullData = {
       name_required: true,
       email: true,
       email_required: true,
-      role_label: "員工角色",
       enable_label,
       code_label: "員工編號",
       code_read_only: true,
