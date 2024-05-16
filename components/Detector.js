@@ -2,7 +2,7 @@ import React, { useEffect, Fragment } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { checkExpires } from "@/tool/hooks";
 import ModalWrapper from "@/components/modalWrapper";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/popUp";
 import { useModals } from "@/tool/hooks";
 
 const Detector = ({ children }) => {
