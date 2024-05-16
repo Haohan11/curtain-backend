@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
 
 import ModalWrapper from "@/components/modalWrapper";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/popUp";
 import { useModals } from "@/tool/hooks";
 
 const anchorConfig = {
