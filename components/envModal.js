@@ -14,6 +14,10 @@ import { useFormik } from "formik";
 
 import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
 
+import ModalWrapper from "@/components/modalWrapper";
+import PopUp from "@/components/PopUp";
+import { useModals } from "@/tool/hooks";
+
 const anchorConfig = {
   radius: 5,
   fill: "gray",
@@ -32,6 +36,8 @@ const initValue = {
 export const EnvModal = ({ currentMode, oriValue }) => {
   const { data, status } = useSession();
   const token = data?.user?.accessToken;
+  const [message, setMessage] = useState("");
+  const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
   const router = useRouter();
   const goCreateMode = () => router.push("?mode=create");
@@ -50,14 +56,24 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       await {
         async create() {
           const status = await createDataRequest(token, values);
-          if (status) goNoneMode();
+          if (status) {
+            setMessage("新增成功");
+            handleShowModal("success");
+          }
         },
         async edit() {
           const cropline = Array.isArray(values.cropline)
             ? JSON.stringify(values.cropline)
             : values.cropline;
-          const status = await updateDataRequest(token, { ...values, cropline, id });
-          if (status) goNoneMode();
+          const status = await updateDataRequest(token, {
+            ...values,
+            cropline,
+            id,
+          });
+          if (status) {
+            setMessage("編輯成功");
+            handleShowModal("success");
+          }
         },
         close() {},
       }[currentMode]();
@@ -403,7 +419,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <button
           type="button"
           className="w-100 btn btn-secondary me-12"
-          onClick={goNoneMode}
+          onClick={()=>{handleShowModal('reset')}}
         >
           取消
         </button>
@@ -417,6 +433,45 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           {allowDraw ? "繪製中無法儲存" : "儲存"}
         </button>
       </div>
+
+      {/*是否重製*/}
+      <ModalWrapper
+        key="reset"
+        show={isModalOpen("reset")}
+        size="lg"
+        onHide={() => {
+          goNoneMode()
+        }}
+      >
+        <PopUp
+          imageSrc={"/icon/warning.svg"}
+          title={"編輯尚未完成，是否要取消?"}
+          denyOnClick={() => {
+            handleCloseModal("reset");
+          }}
+          confirmOnClick={() => {
+            goNoneMode()
+          }}
+        />
+      </ModalWrapper>
+
+      {/*新增 和 編輯完成*/}
+      <ModalWrapper
+        key="success"
+        show={isModalOpen("success")}
+        size="lg"
+        onHide={() => {
+          goNoneMode();
+        }}
+      >
+        <PopUp
+          imageSrc={"/icon/check-circle.svg"}
+          title={message}
+          confirmOnClick={() => {
+            goNoneMode();
+          }}
+        />
+      </ModalWrapper>
     </form>
   );
 

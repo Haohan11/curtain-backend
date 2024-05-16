@@ -13,7 +13,9 @@ import currentTable from "@/data-list/globalVariable/currentTable";
 import { getSession } from "next-auth/react";
 
 import { getDataByTable } from "@/data-list/core/request";
-
+import ModalWrapper from "@/components/modalWrapper";
+import PopUp from "@/components/PopUp";
+import { useModals } from "@/tool/hooks";
 const EnvModal = dynamic(
   async () => {
     const { EnvModal } = await import("../../components/envModal");
@@ -24,6 +26,7 @@ const EnvModal = dynamic(
 
 const EnvironmentPage = ({ list }) => {
   currentTable.set("environment");
+  const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
   const emptyList = list.length === 0;
 
@@ -82,7 +85,11 @@ const EnvironmentPage = ({ list }) => {
             </div>
             <div
               className="position-absolute w-100 p-3 fs-3 fw-bold left-0 bottom-0 text-center bg-primary text-white cursor-pointer"
-              onClick={goCreateMode}
+              onClick={
+                editEnvId !== undefined
+                  ? () => handleShowModal("reset")
+                  : goCreateMode
+              }
             >
               <span className="px-2 fs-1 border border-white border-2 me-2">
                 +
@@ -101,6 +108,28 @@ const EnvironmentPage = ({ list }) => {
           />
         </Col>
       </Row>
+      {/*是否重製*/}
+      <ModalWrapper
+        key="reset"
+        show={isModalOpen("reset")}
+        size="lg"
+        onHide={() => {
+          handleCloseModal("reset");
+        }}
+      >
+        <PopUp
+          imageSrc={"/icon/warning.svg"}
+          title={"編輯尚未完成，是否要重製?"}
+          denyOnClick={() => {
+            handleCloseModal("reset");
+          }}
+          confirmOnClick={() => {
+            goCreateMode();
+            handleCloseModal("reset");
+            setEditEnvId(undefined);
+          }}
+        />
+      </ModalWrapper>
     </>
   );
 };
