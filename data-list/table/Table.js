@@ -8,6 +8,7 @@ import { TablePagination } from '../components/pagination/TablePagination'
 import { useTableData } from '@/data-list/core/tableDataProvider'
 import { useRouter } from 'next/router'
 
+import { useSession } from 'next-auth/react'
 import { getDataRequest } from "../core/request"
 
 import currentTable from '../globalVariable/currentTable'
@@ -15,9 +16,12 @@ import dict from '../dictionary/tableDictionary'
 
 const { column } = dict
 
-const fetchTableData = async ({ page = 1, size = 5 }) => await getDataRequest({ page, size })
+const fetchTableData = async (token, { page = 1, size = 5 }) => await getDataRequest(token, { page, size })
 
 const Table = () => {
+  const { data, status } = useSession();
+  const token = data?.user?.accessToken;
+
   const router = useRouter()
   const { setItemIdForUpdate} = useListView()
   const closeModal = () => setItemIdForUpdate(undefined)
@@ -34,7 +38,7 @@ const Table = () => {
     const { query: { page, size } } = router;
     (async () => {
       setIsLoading(true)
-      const result = await fetchTableData({ page, size })
+      const result = await fetchTableData(token, { page, size })
       setIsLoading(false)
       if (result === false) return
 

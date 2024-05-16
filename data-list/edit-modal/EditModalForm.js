@@ -323,7 +323,7 @@ const EditModalForm = ({ isUserLoading }) => {
   useEffect(() => {
     (async () => {
       fetchSeries: if (config.series_label) {
-        const res = await getDataByTable("series");
+        const res = await getDataByTable(token, "series");
         if (res === false) break fetchSeries;
 
         const { data: list } = res;
@@ -332,7 +332,7 @@ const EditModalForm = ({ isUserLoading }) => {
       }
 
       fetchSupplier: if (config.supplier_label) {
-        const res = await getDataByTable("supplier");
+        const res = await getDataByTable(token, "supplier");
         if (res === false) break fetchSupplier;
 
         const { data: list } = res;
@@ -342,7 +342,7 @@ const EditModalForm = ({ isUserLoading }) => {
 
       if (config.color_label) {
         fetchColorScheme: {
-          const res = await getDataByTable("colorScheme");
+          const res = await getDataByTable(token, "colorScheme");
           if (res === false) break fetchColorScheme;
 
           const { data: list } = res;
@@ -350,7 +350,7 @@ const EditModalForm = ({ isUserLoading }) => {
           setColorScheme(enableList);
         }
         fetchColor: {
-          const res = await getDataByTable("color");
+          const res = await getDataByTable(token, "color");
           if (res === false) break fetchColor;
 
           const { data: list } = res;
@@ -360,7 +360,7 @@ const EditModalForm = ({ isUserLoading }) => {
       }
 
       fetchMaterial: if (config.material_label) {
-        const res = await getDataByTable("material");
+        const res = await getDataByTable(token, "material");
         if (res === false) break fetchMaterial;
 
         const { data: list } = res;
@@ -369,7 +369,7 @@ const EditModalForm = ({ isUserLoading }) => {
       }
 
       fetchDesign: if (config.design_label) {
-        const res = await getDataByTable("design");
+        const res = await getDataByTable(token, "design");
         if (res === false) break fetchDesign;
 
         const { data: list } = res;
@@ -378,7 +378,7 @@ const EditModalForm = ({ isUserLoading }) => {
       }
 
       fetchEnvironment: if (config.environment_label) {
-        const res = await getDataByTable("environment");
+        const res = await getDataByTable(token, "environment");
         if (res === false) break fetchEnvironment;
 
         const { data: list } = res;
@@ -414,6 +414,13 @@ const EditModalForm = ({ isUserLoading }) => {
         noValidate
       >
         {/* begin::Scroll */}
+        <div className="mb-7 d-flex">
+          <div className="bg-secondary px-5 py-2 border rounded-1">
+            <span className="">注意 :</span>
+            <span className="text-danger  px-3">*</span>
+            <span className="">為必填欄位</span>
+          </div>
+        </div>
         <div
           className="d-flex flex-column scroll-y-auto"
           id="kt_modal_add_user_scroll"

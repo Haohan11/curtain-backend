@@ -10,6 +10,8 @@ import { transImageUrl } from "../../tool/transImageUrl";
 // import { EnvModal } from "../../components/envModal";
 import currentTable from "@/data-list/globalVariable/currentTable";
 
+import { getSession } from "next-auth/react";
+
 import { getDataByTable } from "@/data-list/core/request";
 
 const EnvModal = dynamic(
@@ -103,9 +105,12 @@ const EnvironmentPage = ({ list }) => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (context) => {
+  const session = await getSession(context);
+  const accessToken = session?.user?.accessToken;
+
   try {
-    const res = await getDataByTable("environment");
+    const res = await getDataByTable(accessToken, "environment");
     const { data } = res;
 
     const list = data.map((item) => ({
