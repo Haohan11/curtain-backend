@@ -10,12 +10,16 @@ const mockAuthor = {
   create_id: "admin",
   modify_name: "han",
   modify_id: "admin",
-}
+};
 
-export const getDataRequest = async ({ page, size }) => {
+export const getDataRequest = async (token, { page, size }) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
-    const res = await fetch(URL);
+    const res = await fetch(URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
@@ -27,7 +31,7 @@ export const getDataRequest = async ({ page, size }) => {
   }
 };
 
-export const getDataByTable = async (tableName) => {
+export const getDataByTable = async (token, tableName) => {
   const tableUrl = fetchUrl[tableName];
   if (tableUrl === undefined)
     throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`);
@@ -35,7 +39,11 @@ export const getDataByTable = async (tableName) => {
   const URL = `${BASEURL}/${tableUrl}`;
 
   try {
-    const res = await fetch(URL);
+    const res = await fetch(URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     if (!res.ok) return false;
     const {
       data: { total, totalPages, list },
@@ -71,10 +79,10 @@ export const createDataRequest = async (token, values) => {
       },
       body: formData,
     });
-    if(!res.ok) return false
+    if (!res.ok) return false;
     const result = await res.json();
     console.log("submited:", result);
-    return result.status
+    return result.status;
   } catch (error) {
     console.log("error:", error);
     return false;
@@ -83,8 +91,6 @@ export const createDataRequest = async (token, values) => {
 
 export const updateDataRequest = async (token, values) => {
   const URL = `${BASEURL}/${getTableUrl()}`;
-
-  Object.assign(values, mockAuthor)
 
   const formData = new FormData();
   for (const key in values) {
@@ -112,9 +118,9 @@ export const updateDataRequest = async (token, values) => {
       },
       body: formData,
     });
-    if(!res.ok) return false
+    if (!res.ok) return false;
     const result = await res.json();
-    return result.status
+    return result.status;
   } catch (error) {
     console.log("error:", error);
     return false;
