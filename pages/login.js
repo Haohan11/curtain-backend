@@ -5,7 +5,7 @@ import { Row, Col, Container, Form, FormGroup, FormCheck, Button } from "react-b
 import { signIn, useSession, getSession } from "next-auth/react";
 import LoginPageLayout from "@/components/loginPageLayout";
 import ModalWrapper from "@/components/modalWrapper";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/popUp";
 import Logo from "@/components/logo";
 
 import { useModals } from "@/tool/hooks";
