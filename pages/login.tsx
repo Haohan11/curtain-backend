@@ -39,7 +39,7 @@ const LoginLayout = () => {
           className="h-100 flex-center flex-column text-textgrey pb-10"
           id="loginForm"
         >
-            {/* <Logo className="mb-3" width={150} /> */}
+            <Logo className={"mb-3"} width={150} />
             <h1 className="fw-bold fs-2 my-5 text-darkblue">登入</h1>
             <div style={{ width: "clamp(275px, 60% ,350px)" }}>
                 <FormGroup className="mb-3">
@@ -51,7 +51,7 @@ const LoginLayout = () => {
                         name="account"
                     />
                 </FormGroup>
-                <FormGroup className="mb-3">
+                <FormGroup className="mb-10">
                     <label className="form-label">密碼</label>
                     <input
                         type="password"
