@@ -14,7 +14,7 @@ import { getSession } from "next-auth/react";
 
 import { getDataByTable } from "@/data-list/core/request";
 import ModalWrapper from "@/components/modalWrapper";
-import PopUp from "@/components/PopUp";
+import PopUp from "@/components/popUp";
 import { useModals } from "@/tool/hooks";
 const EnvModal = dynamic(
   async () => {
