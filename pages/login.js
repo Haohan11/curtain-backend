@@ -5,7 +5,7 @@ import { Row, Col, Container, Form, FormGroup, FormCheck, Button } from "react-b
 import { signIn, useSession, getSession } from "next-auth/react";
 import LoginPageLayout from "@/components/loginPageLayout";
 import ModalWrapper from "@/components/modalWrapper";
-import PopUp from "@/components/popUp";
+import PopUp from "@/components/PopUp";
 import Logo from "@/components/logo";
 
 import { useModals } from "@/tool/hooks";
@@ -27,10 +27,10 @@ const LoginLayout = () => {
         });
         console.log('result :', result);
         if (result?.ok) {
-            router.push("/");
+            handleShowModal('success')
         } else {
           form.reset();
-         handleShowModal('popup')
+         handleShowModal('wrong')
         }
     }
 
@@ -62,17 +62,33 @@ const LoginLayout = () => {
                 </FormGroup>
                 <Button variant="primary" type="button" className="w-100" onClick={login}>登入</Button>
             </div>
-            {/*新增 和 編輯完成*/}
+            {/*帳密錯誤*/}
         <ModalWrapper
-          key="popup"
-          show={isModalOpen("popup")}
+          key="wrong"
+          show={isModalOpen("wrong")}
           size="lg"
-          onHide={() => {handleCloseModal('popup')}}
-        >
+          onHide={() => {handleCloseModal('wrong')}}
+          >
           <PopUp
             imageSrc={'/icon/circle-error.svg'}
             title={'帳號或密碼錯誤'}
-            confirmOnClick={() => {handleCloseModal('popup')}}
+            confirmOnClick={() => {handleCloseModal('wrong')}}
+            />
+        </ModalWrapper>
+
+            {/*登入成功*/}
+        <ModalWrapper
+          key="success"
+          show={isModalOpen("success")}
+          size="lg"
+          onHide={() => {router.push("/")
+        }}
+        >
+          <PopUp
+            imageSrc={'/icon/check-circle.svg'}
+            title={'登入成功'}
+            confirmOnClick={() => {router.push("/")
+          }}
           />
         </ModalWrapper>
         </Form>

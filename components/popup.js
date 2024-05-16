@@ -31,7 +31,7 @@ const PopUp = ({
         {denyOnClick && (
           <Col xs={4}>
             <button
-              className="btn btn-secondary fs-5 w-100 text-white"
+              className="btn btn-danger fs-5 w-100 text-white"
               onClick={denyOnClick}
             >
               返回
