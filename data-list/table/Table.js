@@ -32,7 +32,7 @@ const Table = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (!router.isReady) return
+    if (!router.isReady || !token) return
     closeModal()
 
     const { query: { page, size } } = router;
@@ -46,7 +46,7 @@ const Table = () => {
       setTableData(data)
       setTotalPages(totalPages)
     })()
-  }, [router])
+  }, [router, token])
 
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } = useTable({
     columns,
