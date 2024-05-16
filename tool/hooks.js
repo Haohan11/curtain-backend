@@ -46,3 +46,5 @@ export function useModals() {
 }
 
 
+export const checkExpires = (time) =>
+  time ? time * 1000 < Date.now() : console.log("Invalid exp.");
