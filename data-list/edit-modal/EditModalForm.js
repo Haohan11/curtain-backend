@@ -414,6 +414,13 @@ const EditModalForm = ({ isUserLoading }) => {
         noValidate
       >
         {/* begin::Scroll */}
+        <div className="mb-7 d-flex">
+          <div className="bg-secondary px-5 py-2 border rounded-1">
+            <span className="">注意 :</span>
+            <span className="text-danger  px-3">*</span>
+            <span className="">為必填欄位</span>
+          </div>
+        </div>
         <div
           className="d-flex flex-column scroll-y-auto"
           id="kt_modal_add_user_scroll"
