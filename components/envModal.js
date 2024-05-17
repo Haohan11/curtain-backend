@@ -43,42 +43,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
 
-  const [renderCount, setRenderCount] = useState(0);
-  const { id, name: envName, env_image, cropline } = oriValue || initValue;
-
-  const formik = useFormik({
-    initialValues: {
-      env_image: null,
-      mask_image: null,
-      ...(oriValue || initValue),
-    },
-    onSubmit: async (values) => {
-      await {
-        async create() {
-          const status = await createDataRequest(token, values);
-          if (status) {
-            setMessage("新增成功");
-            handleShowModal("success");
-          }
-        },
-        async edit() {
-          const cropline = Array.isArray(values.cropline)
-            ? JSON.stringify(values.cropline)
-            : values.cropline;
-          const status = await updateDataRequest(token, {
-            ...values,
-            cropline,
-            id,
-          });
-          if (status) {
-            setMessage("編輯成功");
-            handleShowModal("success");
-          }
-        },
-        close() {},
-      }[currentMode]();
-    },
-  });
+  // const [renderCount, setRenderCount] = useState(0);
+  const {
+    id,
+    name: envName,
+    env_image,
+    cropline,
+    width,
+  } = oriValue || initValue;
 
   // handle env name input
   const [initInputWidth, setInitInputWidth] = useState("fit-content");
@@ -90,11 +62,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const hasEnvImage = envImage !== null;
 
   const [canvasFrame, setCanvasFrame] = useState();
-  // const canvasInitWidth = useRef(0);
+  const canvasInitWidth = useRef(width);
 
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
 
+  const staticAnchors = useRef([])
   const [anchors, setAnchors] = useState([]);
   const lines = anchors.reduce(
     (lineArray, anchor) => [...lineArray, anchor.x, anchor.y],
@@ -102,27 +75,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   );
   const clearCircle = () => setAnchors([]);
 
+  const staticCropline = useRef(cropline || [])
   const [cropLines, setCropLines] = useState(cropline || []);
-  const clearCropLines = () => setCropLines([]);
-
-  // const [scaleState, setScaleState] = useState(false);
-  // const scaleDrawItem = (width) => {
-  //   if (!canvasFrame?.nodeType) return;
-  //   const scale = canvasFrame.clientWidth / (width ?? canvasInitWidth.current);
-  //   console.log(scale);
-  //   anchors.length > 0 &&
-  //     setAnchors((prev) =>
-  //       prev.map((points) => ({
-  //         x: points.x * scale,
-  //         y: points.y * scale,
-  //       }))
-  //     );
-  //   cropLines.length > 0 &&
-  //     setCropLines((prev) =>
-  //       prev.map((line) => line.map((point) => point * scale))
-  //     );
-  //   setScaleState(false);
-  // };
+  const clearCropLines = () => setCropLines(staticCropline.current = []);
 
   const clearCanvas = () => {
     clearCircle();
@@ -142,7 +97,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       },
       clickOnNotCircle() {
         const { x, y } = e.target.getStage().getPointerPosition();
-        setAnchors((prev) => [...prev, { x, y }]);
+        setAnchors((prev) => staticAnchors.current = [...prev, { x, y }]);
       },
     })[state]();
   };
@@ -160,6 +115,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     if (cropLines.length === 0 || !envImage) return;
 
     formik.setFieldValue("cropline", JSON.stringify(cropLines));
+    canvasInitWidth.current = canvasFrame.clientWidth;
+    staticCropline.current = cropLines;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
@@ -189,6 +146,59 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     });
   };
 
+  const formik = useFormik({
+    initialValues: {
+      env_image: null,
+      mask_image: null,
+      ...(oriValue || initValue),
+    },
+    onSubmit: async (values) => {
+      await {
+        async create() {
+          const status = await createDataRequest(token, {
+            ...values,
+            width: canvasFrame.clientWidth,
+          });
+          if (status) {
+            setMessage("新增成功");
+            handleShowModal("success");
+          }
+        },
+        async edit() {
+          const cropline = Array.isArray(values.cropline)
+            ? JSON.stringify(values.cropline)
+            : values.cropline;
+          const status = await updateDataRequest(token, {
+            ...values,
+            width: canvasFrame.clientWidth,
+            cropline,
+            id,
+          });
+          if (status) {
+            setMessage("編輯成功");
+            handleShowModal("success");
+          }
+        },
+        close() {},
+      }[currentMode]();
+    },
+  });
+
+  const [scaleState, setScaleState] = useState(false);
+  const scaleDrawItem = () => {
+    if (!canvasFrame?.nodeType || !canvasInitWidth.current) return;
+    const scale = canvasFrame.clientWidth / canvasInitWidth.current;
+    anchors.length > 0 &&
+      setAnchors(staticAnchors.current.map((points) => ({
+          x: points.x * scale,
+          y: points.y * scale,
+        }))
+      );
+    staticCropline.current.length > 0 &&
+      setCropLines(staticCropline.current.map((line) => line.map((point) => point * scale)));
+    setScaleState(false);
+  };
+
   // init env name input width
   useEffect(() => {
     const el = document.createElement("span");
@@ -198,28 +208,34 @@ export const EnvModal = ({ currentMode, oriValue }) => {
 
     setInitInputWidth(el.clientWidth * 2 + "px");
     el.remove();
-  }, []);
 
-  // handle canvas size with window resize
-  useEffect(() => {
-    let timerId = null;
-    const handleResize = () => {
-      if (timerId !== null) clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        timerId = null;
-        // force rerender
-        // setScaleState(true);
-        clearCanvas();
-        setRenderCount((prev) => prev + 1);
-        clearTimeout(timerId);
-      }, 100);
-    };
+    // scaleDrawItem();
+    // setScaleState(true);
+    const handleResize = () => setScaleState(true);
     window.addEventListener("resize", handleResize);
+
+    handleResize();
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    // setRenderCount((prev) => prev + 1);
   }, []);
+
+  // handle canvas size with window resize
+  // useEffect(() => {
+  //   const handleResize = () => setScaleState(true);
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log("canvasFrame", canvasFrame)
+  //   scaleDrawItem()
+  // }, [canvasFrame])
 
   // keep canvas frame init width
   // useEffect(() => {
@@ -229,10 +245,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   //   canvasInitWidth.current = currentWidth;
   // }, [canvasFrame]);
 
-  // useEffect(() => {
-  //   if (!scaleState) return;
-  //   scaleDrawItem();
-  // }, [scaleState]);
+  useEffect(() => {
+    // if (!scaleState) return;
+    scaleDrawItem();
+  }, [scaleState]);
 
   const Panel = (
     <form
@@ -258,7 +274,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               className="object-fit-contain pe-none"
             />
             <Stage
-              key={`${renderCount}`}
+              // key={`${renderCount}`}
               className="position-absolute top-0 left-0"
               width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
               height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
@@ -419,7 +435,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <button
           type="button"
           className="w-100 btn btn-secondary me-12"
-          onClick={()=>{handleShowModal('reset')}}
+          onClick={() => {
+            handleShowModal("reset");
+          }}
         >
           取消
         </button>
@@ -427,7 +445,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           type="submit"
           className="w-100 btn btn-primary"
           disabled={
-            allowDraw || cropLines?.length === 0 || !formik.values["env_image"]
+            allowDraw || cropLines?.length === 0 || !formik.values["env_image"] || !formik.values["name"]
           }
         >
           {allowDraw ? "繪製中無法儲存" : "儲存"}
@@ -440,7 +458,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         show={isModalOpen("reset")}
         size="lg"
         onHide={() => {
-          goNoneMode()
+          goNoneMode();
         }}
       >
         <PopUp
@@ -450,7 +468,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             handleCloseModal("reset");
           }}
           confirmOnClick={() => {
-            goNoneMode()
+            goNoneMode();
           }}
         />
       </ModalWrapper>

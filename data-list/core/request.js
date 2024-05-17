@@ -5,13 +5,6 @@ const { fetchUrl } = dict;
 const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
 const getTableUrl = () => fetchUrl[currentTable.get()];
 
-const mockAuthor = {
-  create_name: "han",
-  create_id: "admin",
-  modify_name: "han",
-  modify_id: "admin",
-};
-
 export const getDataRequest = async (token, { page, size }) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
   try {
