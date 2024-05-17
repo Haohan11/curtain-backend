@@ -21,14 +21,15 @@ const SidebarMenuItem: FC<Props & WithChildren> = ({
   fontIcon,
   hasBullet = false,
 }) => {
-  const {pathname} = useRouter()
+  const {pathname,asPath} = useRouter()
+   
   const isActive = checkIsActive(pathname, to)
   const {config} = useLayout()
   const {app} = config
 
   return (
     <div className='menu-item'>
-      <Link href={to} className={clsx('menu-link without-sub', {active: isActive})} >
+      <Link href={to} className={clsx(`menu-link without-sub ${to===asPath?'bg-secondary':''}`, {active: isActive})} >
         {hasBullet && (
           <span className='menu-bullet'>
             <span className='bullet bullet-dot'></span>
