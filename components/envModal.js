@@ -114,8 +114,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const cutImage = () => {
     if (cropLines.length === 0 || !envImage) return;
 
-    formik.setFieldValue("cropline", JSON.stringify(cropLines));
-
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
     canvas.height = canvasFrame.clientHeight;
@@ -163,18 +161,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           }
         },
         async edit() {
-          const cropline = Array.isArray(values.cropline)
-            ? JSON.stringify(values.cropline)
-            : values.cropline;
-          const status = await updateDataRequest(token, {
+          const { status, message } = await updateDataRequest(token, {
             ...values,
             width: canvasFrame.clientWidth,
-            cropline,
+            cropline: JSON.stringify(cropLines),
             id,
           });
           if (status) {
             setMessage("編輯成功");
             handleShowModal("success");
+          }
+          if(message === "NotAllowDisableAll") {
+            setMessage("至少要有一個場景啟用");
+            handleShowModal("failed");
           }
         },
         close() {},
@@ -458,6 +457,23 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           title={message}
           confirmOnClick={() => {
             goNoneMode();
+          }}
+        />
+      </ModalWrapper>
+
+      <ModalWrapper
+        key="failed"
+        show={isModalOpen("failed")}
+        size="lg"
+        onHide={() => {
+          handleCloseModal("failed");
+        }}
+      >
+        <PopUp
+          imageSrc={"/icon/warning.svg"}
+          title={message}
+          confirmOnClick={() => {
+          handleCloseModal("failed");
           }}
         />
       </ModalWrapper>

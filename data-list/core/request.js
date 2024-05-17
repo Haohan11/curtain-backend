@@ -111,9 +111,8 @@ export const updateDataRequest = async (token, values) => {
       },
       body: formData,
     });
-    if (!res.ok) return false;
     const result = await res.json();
-    return result.status;
+    return { status: res.ok, message: result.message };
   } catch (error) {
     console.log("error:", error);
     return false;
