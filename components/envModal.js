@@ -43,7 +43,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
 
-  // const [renderCount, setRenderCount] = useState(0);
   const {
     id,
     name: envName,
@@ -92,7 +91,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     ({
       clickOnCircle() {
         const { x, y } = e.target.getPosition();
-        setCropLines((prev) => [...prev, [...lines, x, y]]);
+        canvasFrame?.nodeType && (canvasInitWidth.current = canvasFrame.clientWidth);
+        setCropLines((prev) => staticCropline.current = [...prev, [...lines, x, y]]);
         clearCircle();
       },
       clickOnNotCircle() {
@@ -115,8 +115,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     if (cropLines.length === 0 || !envImage) return;
 
     formik.setFieldValue("cropline", JSON.stringify(cropLines));
-    canvasInitWidth.current = canvasFrame.clientWidth;
-    staticCropline.current = cropLines;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
@@ -184,6 +182,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     },
   });
 
+  // resize listener will mutate this state to trigger useEffect to excute `scaleDrawItem`
   const [scaleState, setScaleState] = useState(false);
   const scaleDrawItem = () => {
     if (!canvasFrame?.nodeType || !canvasInitWidth.current) return;
@@ -199,7 +198,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     setScaleState(false);
   };
 
-  // init env name input width
+  // init env name input width and add resize listener
   useEffect(() => {
     const el = document.createElement("span");
     document.body.appendChild(el);
@@ -209,8 +208,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     setInitInputWidth(el.clientWidth * 2 + "px");
     el.remove();
 
-    // scaleDrawItem();
-    // setScaleState(true);
     const handleResize = () => setScaleState(true);
     window.addEventListener("resize", handleResize);
 
@@ -219,34 +216,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-    // setRenderCount((prev) => prev + 1);
   }, []);
 
-  // handle canvas size with window resize
-  // useEffect(() => {
-  //   const handleResize = () => setScaleState(true);
-  //   window.addEventListener("resize", handleResize);
-
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("canvasFrame", canvasFrame)
-  //   scaleDrawItem()
-  // }, [canvasFrame])
-
-  // keep canvas frame init width
-  // useEffect(() => {
-  //   if (canvasInitWidth.current !== 0 || !canvasFrame?.nodeType) return;
-  //   const currentWidth = canvasFrame.clientWidth;
-  //   scaleDrawItem(oriWidth || currentWidth);
-  //   canvasInitWidth.current = currentWidth;
-  // }, [canvasFrame]);
-
   useEffect(() => {
-    // if (!scaleState) return;
     scaleDrawItem();
   }, [scaleState]);
 
@@ -274,7 +246,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               className="object-fit-contain pe-none"
             />
             <Stage
-              // key={`${renderCount}`}
               className="position-absolute top-0 left-0"
               width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
               height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
