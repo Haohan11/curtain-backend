@@ -50,7 +50,7 @@ const Detector = ({ children }) => {
       >
         <PopUp
           imageSrc={"/icon/circle-error.svg"}
-          title={"網頁已過期，請重新登入"}
+          title={"登入已逾時，請重新登入"}
           confirmOnClick={() => signOut({ callbackUrl: "/login" })}
         />
       </ModalWrapper>
