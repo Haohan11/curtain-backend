@@ -153,6 +153,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         async create() {
           const status = await createDataRequest(token, {
             ...values,
+            cropline: JSON.stringify(cropLines),
             width: canvasFrame.clientWidth,
           });
           if (status) {

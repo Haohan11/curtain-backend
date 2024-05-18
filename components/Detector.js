@@ -9,7 +9,7 @@ import { useModals } from "@/tool/hooks";
 
 const Detector = ({ children }) => {
   const session = useSession();
-  const { asPath } = useRouter();
+  const { route } = useRouter();
 
   const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
@@ -28,7 +28,7 @@ const Detector = ({ children }) => {
     } else {
       //隨時檢測是否過期
       const checkTime = session?.data?._exp * 1000 - Date.now();
-      if (checkTime < 0) {
+      if ((session.status === "unauthenticated" && route !== "/login") || checkTime < 0) {
         handleShowModal("popup");
       }
       clearTimeout(timeId);
