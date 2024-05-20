@@ -34,17 +34,17 @@ const TwoPageLayout = ({ data, content, goBack }) => {
         <div className="position-relative vh-100 overflow-hidden">
           <Image
             alt="login cover image"
-            src={data.cover_image}
+            src={data?.cover_image}
             sizes="50vw"
             placeholder="blur"
-            blurDataURL={data.cover_image}
+            blurDataURL={data?.cover_image}
             fill
             className="object-fit-cover"
           />
           <div className="position-absolute w-100 bottom-0 text-white p-5">
             <Container className="p-xl-12 p-6">
               <h1 className="fw-bold" style={{ fontSize: "100px" }}>
-                {data.cover_title}
+                {data?.cover_title}
               </h1>
               <p>
                 Vitae enim labore vitae, beatae quos vitae quos sequi

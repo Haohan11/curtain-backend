@@ -1,4 +1,4 @@
-import ArrowLeft from "@/icon/arrow-left";
+import ArrowLeft from "../public/icon/arrow-left.svg";
 import Link from "next/link";
 import exposeDiv from "@/components/exposeDiv";
 import addClassName from "@/tool/addClassName";
