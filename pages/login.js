@@ -17,16 +17,21 @@ import PopUp from "@/components/popUp";
 import Logo from "@/components/logo";
 
 import { useModals } from "@/tool/hooks";
+import useLocalStorage from "../tool/useLocalStorage";
 
 const LoginLayout = () => {
   const router = useRouter();
   const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
+
+  const [rememberMe, setRememberMe, clearRememberMe] =
+    useLocalStorage("rememberMe");
 
   const login = async () => {
     const form = document.getElementById("loginForm");
     const formData = new FormData(form);
 
     const data = Object.fromEntries(formData);
+    data.rememberMe? setRememberMe(data.account) : clearRememberMe();
     console.log("login data: ");
     console.log(data);
     const result = await signIn("credentials", {
@@ -97,6 +102,7 @@ const LoginLayout = () => {
                   <input
                     type="text"
                     className="form-control"
+                    defaultValue={rememberMe}
                     placeholder=""
                     name="account"
                   />
@@ -110,6 +116,12 @@ const LoginLayout = () => {
                     name="password"
                   />
                 </FormGroup>
+                <FormCheck
+                  name="rememberMe"
+                  label="記住我"
+                  defaultValue={!!rememberMe}
+                  className="text-black mb-10"
+                ></FormCheck>
                 <Button
                   variant="primary"
                   type="button"
