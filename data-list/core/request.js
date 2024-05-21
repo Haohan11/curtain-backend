@@ -5,8 +5,13 @@ const { fetchUrl } = dict;
 const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
 const getTableUrl = () => fetchUrl[currentTable.get()];
 
-export const getDataRequest = async (token, { page, size }) => {
-  const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}`;
+export const getDataRequest = async (
+  token,
+  { page, size, keyword, sort, item, isEnable }
+) => {
+  const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}&keyword=${keyword}&sort=${sort}&item=${item}${
+    isEnable === undefined ||isEnable === '' ? "" : isEnable==="1" ? "&onlyEnable=" : "&onlyDisable="
+  }`;
   try {
     const res = await fetch(URL, {
       headers: {

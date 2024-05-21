@@ -10,7 +10,7 @@ const DataListToolbar = () => {
 
   return (
     <div className='d-flex justify-content-end' data-kt-user-table-toolbar='base'>
-      {/* <UsersListFilter /> */}
+      <UsersListFilter />
 
       <button type='button' className='btn btn-primary' onClick={openAddModal}>
         <KTIcon iconName='plus' className='fs-2' />
