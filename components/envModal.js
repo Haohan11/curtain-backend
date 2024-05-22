@@ -66,7 +66,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
 
-  const staticAnchors = useRef([])
+  const staticAnchors = useRef([]);
   const [anchors, setAnchors] = useState([]);
   const lines = anchors.reduce(
     (lineArray, anchor) => [...lineArray, anchor.x, anchor.y],
@@ -74,9 +74,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   );
   const clearCircle = () => setAnchors([]);
 
-  const staticCropline = useRef(cropline || [])
+  const staticCropline = useRef(cropline || []);
   const [cropLines, setCropLines] = useState(cropline || []);
-  const clearCropLines = () => setCropLines(staticCropline.current = []);
+  const clearCropLines = () => setCropLines((staticCropline.current = []));
 
   const clearCanvas = () => {
     clearCircle();
@@ -91,13 +91,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     ({
       clickOnCircle() {
         const { x, y } = e.target.getPosition();
-        canvasFrame?.nodeType && (canvasInitWidth.current = canvasFrame.clientWidth);
-        setCropLines((prev) => staticCropline.current = [...prev, [...lines, x, y]]);
+        canvasFrame?.nodeType &&
+          (canvasInitWidth.current = canvasFrame.clientWidth);
+        setCropLines(
+          (prev) => (staticCropline.current = [...prev, [...lines, x, y]])
+        );
         clearCircle();
       },
       clickOnNotCircle() {
         const { x, y } = e.target.getStage().getPointerPosition();
-        setAnchors((prev) => staticAnchors.current = [...prev, { x, y }]);
+        setAnchors((prev) => (staticAnchors.current = [...prev, { x, y }]));
       },
     })[state]();
   };
@@ -172,7 +175,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             setMessage("編輯成功");
             handleShowModal("success");
           }
-          if(message === "NotAllowDisableAll") {
+          if (message === "NotAllowDisableAll") {
             setMessage("至少要有一個場景啟用");
             handleShowModal("failed");
           }
@@ -188,13 +191,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     if (!canvasFrame?.nodeType || !canvasInitWidth.current) return;
     const scale = canvasFrame.clientWidth / canvasInitWidth.current;
     anchors.length > 0 &&
-      setAnchors(staticAnchors.current.map((points) => ({
+      setAnchors(
+        staticAnchors.current.map((points) => ({
           x: points.x * scale,
           y: points.y * scale,
         }))
       );
     staticCropline.current.length > 0 &&
-      setCropLines(staticCropline.current.map((line) => line.map((point) => point * scale)));
+      setCropLines(
+        staticCropline.current.map((line) => line.map((point) => point * scale))
+      );
     setScaleState(false);
   };
 
@@ -222,262 +228,276 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     scaleDrawItem();
   }, [scaleState]);
 
+  const judge = '' 
+  // "disabled"
+
   const Panel = (
     <form
       onSubmit={formik.handleSubmit}
       className="p-4 h-100 fw-bold d-flex flex-column"
     >
-      {hasEnvImage ? (
-        <>
-          <div
-            ref={setCanvasFrame}
-            className="position-relative border border-2 rounded-4 bg-gray-300 border-gray-500 mb-4 align-self-center"
+      <fieldset disabled={judge}>
+        {hasEnvImage ? (
+          <>
+            <div
+              ref={setCanvasFrame}
+              className="position-relative border border-2 rounded-4 bg-gray-300 border-gray-500 mb-4 align-self-center"
+              style={{
+                width: "100%",
+                maxWidth: "1024px",
+                aspectRatio: "16 / 9",
+              }}
+            >
+              <Image
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt="edit env image"
+                src={envImage}
+                className="object-fit-contain pe-none"
+              />
+              <Stage
+                className="position-absolute top-0 left-0"
+                width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
+                height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
+                onClick={addAnchor}
+              >
+                <Layer>
+                  {cropLines.map((cropLine, index) => (
+                    <Line
+                      key={index}
+                      dash={[0, 0, 3, 3]}
+                      fill="#33333388"
+                      closed
+                      points={cropLine}
+                      stroke="#fff"
+                      strokeWidth={1.5}
+                      lineCap="round"
+                      lineJoin="round"
+                    />
+                  ))}
+                  {lines.length > 0 && (
+                    <Line
+                      dash={[0, 0, 3, 3]}
+                      points={lines}
+                      stroke="#df4b26"
+                      strokeWidth={1.5}
+                      lineCap="round"
+                      lineJoin="round"
+                    />
+                  )}
+                  {anchors.map((anchor, index) => (
+                    <Circle
+                      key={index}
+                      {...{ ...anchorConfig, ...anchor }}
+                      onDragMove={(e) => moveAnchor(e, index)}
+                    />
+                  ))}
+                </Layer>
+              </Stage>
+            </div>
+            <div className="d-flex">
+              {envImage && (
+                <label className="btn btn-primary w-25 me-5">
+                  更換圖片
+                  <input
+                    hidden
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    onChange={(e) => {
+                      const [file] = e.target.files;
+                      const path = getFileUrl(e);
+                      if (!file || !path) return;
+                      formik.setFieldValue("env_image", file);
+                      setEnvImage(path);
+                    }}
+                  />
+                </label>
+              )}
+              <button
+                type="button"
+                className="btn btn-secondary w-25 me-5"
+                onClick={clearCanvas}
+              >
+                清除畫布
+              </button>
+              <button
+                type="button"
+                className={`btn btn-${
+                  allowDraw ? "secondary" : "primary"
+                } w-100`}
+                onClick={() => {
+                  toggleAllowDraw();
+                  cutImage();
+                }}
+              >
+                {!allowDraw ? "開始" : "停止"}繪製
+              </button>
+            </div>
+          </>
+        ) : (
+          <label
+            className="rounded-4 border-gray-300 flex-center flex-column align-self-center cursor-pointer"
             style={{
               width: "100%",
               maxWidth: "1024px",
+              border: "dashed",
               aspectRatio: "16 / 9",
             }}
           >
-            <Image
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              alt="edit env image"
-              src={envImage}
-              className="object-fit-contain pe-none"
+            <KTSVG
+              path="media/icons/duotune/files/fil022.svg"
+              className="svg-icon-muted svg-icon-4hx"
             />
-            <Stage
-              className="position-absolute top-0 left-0"
-              width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
-              height={canvasFrame?.nodeType ? canvasFrame.clientHeight : 0}
-              onClick={addAnchor}
-            >
-              <Layer>
-                {cropLines.map((cropLine, index) => (
-                  <Line
-                    key={index}
-                    dash={[0, 0, 3, 3]}
-                    fill="#33333388"
-                    closed
-                    points={cropLine}
-                    stroke="#fff"
-                    strokeWidth={1.5}
-                    lineCap="round"
-                    lineJoin="round"
-                  />
-                ))}
-                {lines.length > 0 && (
-                  <Line
-                    dash={[0, 0, 3, 3]}
-                    points={lines}
-                    stroke="#df4b26"
-                    strokeWidth={1.5}
-                    lineCap="round"
-                    lineJoin="round"
-                  />
-                )}
-                {anchors.map((anchor, index) => (
-                  <Circle
-                    key={index}
-                    {...{ ...anchorConfig, ...anchor }}
-                    onDragMove={(e) => moveAnchor(e, index)}
-                  />
-                ))}
-              </Layer>
-            </Stage>
-          </div>
-          <div className="d-flex">
-            {envImage && (
-              <label className="btn btn-primary w-25 me-5">
-                更換圖片
-                <input
-                  hidden
-                  type="file"
-                  accept=".png, .jpg, .jpeg"
-                  onChange={(e) => {
-                    const [file] = e.target.files;
-                    const path = getFileUrl(e);
-                    if (!file || !path) return;
-                    formik.setFieldValue("env_image", file);
-                    setEnvImage(path);
-                  }}
-                />
-              </label>
-            )}
-            <button
-              type="button"
-              className="btn btn-secondary w-25 me-5"
-              onClick={clearCanvas}
-            >
-              清除畫布
-            </button>
-            <button
-              type="button"
-              className={`btn btn-${allowDraw ? "secondary" : "primary"} w-100`}
-              onClick={() => {
-                toggleAllowDraw();
-                cutImage();
+            <span className="fs-3 text-gray-500">上傳場景圖片</span>
+            <input
+              hidden
+              type="file"
+              accept=".png, .jpg, .jpeg"
+              onChange={(e) => {
+                const [file] = e.target.files;
+                const path = getFileUrl(e);
+                if (!file || !path) return;
+                formik.setFieldValue("env_image", file);
+                setEnvImage(path);
               }}
+            />
+          </label>
+        )}
+        <div className="d-flex fs-2 pt-6 pb-4">
+          <span className="text-gray-500 me-4">場景名稱:</span>
+          <input
+            {...formik.getFieldProps("name")}
+            onBlur={disableInput}
+            onInput={(e) => {
+              const text = e.currentTarget.value;
+              const el = document.createElement("span");
+              document.body.appendChild(el);
+              el.innerHTML = text;
+              el.style.position = "absolute";
+
+              e.currentTarget.style.width = el.clientWidth * 2 + "px";
+              el.remove();
+            }}
+            id="name"
+            name="name"
+            style={{
+              width: initInputWidth,
+              minWidth: "50px",
+              maxWidth: "200px",
+            }}
+            className={`fs-2 p-0 form-control form-control-flush text-primary me-2 border-bottom text-center ${
+              inputDisable ? "" : "border-primary"
+            }`}
+            disabled={inputDisable}
+          />
+          <label htmlFor="name" className="cursor-pointer" onClick={allowInput}>
+            <KTSVG
+              path="media/icons/duotune/art/art005.svg"
+              className="svg-icon-muted svg-icon-1"
+            />
+          </label>
+          <FormGroup className="ms-auto d-flex">
+            <FormLabel
+              className="fs-4 fw-bold me-2 cursor-pointer"
+              htmlFor="enable"
             >
-              {!allowDraw ? "開始" : "停止"}繪製
-            </button>
-          </div>
-        </>
-      ) : (
-        <label
-          className="rounded-4 border-gray-300 flex-center flex-column align-self-center cursor-pointer"
-          style={{
-            width: "100%",
-            maxWidth: "1024px",
-            border: "dashed",
-            aspectRatio: "16 / 9",
+              啟用狀態
+            </FormLabel>
+            <FormCheck
+              {...formik.getFieldProps("enable")}
+              inline
+              type="switch"
+              id="enable"
+              name="enable"
+              defaultChecked={formik.values["enable"]}
+            />
+          </FormGroup>
+        </div>
+        <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
+        <textarea
+          {...formik.getFieldProps("comment")}
+          className="w-100 p-4 mb-8 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
+        ></textarea>
+        <div className="d-flex">
+          <button
+            type="button"
+            className="w-100 btn btn-secondary me-12"
+            onClick={() => {
+              handleShowModal("reset");
+            }}
+          >
+            取消
+          </button>
+          <button
+            type="submit"
+            className="w-100 btn btn-primary"
+            disabled={
+              allowDraw ||
+              cropLines?.length === 0 ||
+              !formik.values["env_image"] ||
+              !formik.values["name"]
+            }
+          >
+            {allowDraw ? "繪製中無法儲存" : "儲存"}
+          </button>
+        </div>
+
+        {/*是否重製*/}
+        <ModalWrapper
+          key="reset"
+          show={isModalOpen("reset")}
+          size="lg"
+          onHide={() => {
+            goNoneMode();
           }}
         >
-          <KTSVG
-            path="media/icons/duotune/files/fil022.svg"
-            className="svg-icon-muted svg-icon-4hx"
-          />
-          <span className="fs-3 text-gray-500">上傳場景圖片</span>
-          <input
-            hidden
-            type="file"
-            accept=".png, .jpg, .jpeg"
-            onChange={(e) => {
-              const [file] = e.target.files;
-              const path = getFileUrl(e);
-              if (!file || !path) return;
-              formik.setFieldValue("env_image", file);
-              setEnvImage(path);
+          <PopUp
+            imageSrc={"/icon/warning.svg"}
+            title={"編輯尚未完成，是否要取消?"}
+            denyOnClick={() => {
+              handleCloseModal("reset");
+            }}
+            confirmOnClick={() => {
+              goNoneMode();
             }}
           />
-        </label>
-      )}
-      <div className="d-flex fs-2 pt-6 pb-4">
-        <span className="text-gray-500 me-4">場景名稱:</span>
-        <input
-          {...formik.getFieldProps("name")}
-          onBlur={disableInput}
-          onInput={(e) => {
-            const text = e.currentTarget.value;
-            const el = document.createElement("span");
-            document.body.appendChild(el);
-            el.innerHTML = text;
-            el.style.position = "absolute";
+        </ModalWrapper>
 
-            e.currentTarget.style.width = el.clientWidth * 2 + "px";
-            el.remove();
-          }}
-          id="name"
-          name="name"
-          style={{ width: initInputWidth, minWidth: "50px", maxWidth: "200px" }}
-          className={`fs-2 p-0 form-control form-control-flush text-primary me-2 border-bottom text-center ${
-            inputDisable ? "" : "border-primary"
-          }`}
-          disabled={inputDisable}
-        />
-        <label htmlFor="name" className="cursor-pointer" onClick={allowInput}>
-          <KTSVG
-            path="media/icons/duotune/art/art005.svg"
-            className="svg-icon-muted svg-icon-1"
-          />
-        </label>
-        <FormGroup className="ms-auto d-flex">
-          <FormLabel
-            className="fs-4 fw-bold me-2 cursor-pointer"
-            htmlFor="enable"
-          >
-            啟用狀態
-          </FormLabel>
-          <FormCheck
-            {...formik.getFieldProps("enable")}
-            inline
-            type="switch"
-            id="enable"
-            name="enable"
-            defaultChecked={formik.values["enable"]}
-          />
-        </FormGroup>
-      </div>
-      <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
-      <textarea
-        {...formik.getFieldProps("comment")}
-        className="w-100 p-4 mb-8 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
-      ></textarea>
-      <div className="d-flex">
-        <button
-          type="button"
-          className="w-100 btn btn-secondary me-12"
-          onClick={() => {
-            handleShowModal("reset");
-          }}
-        >
-          取消
-        </button>
-        <button
-          type="submit"
-          className="w-100 btn btn-primary"
-          disabled={
-            allowDraw || cropLines?.length === 0 || !formik.values["env_image"] || !formik.values["name"]
-          }
-        >
-          {allowDraw ? "繪製中無法儲存" : "儲存"}
-        </button>
-      </div>
-
-      {/*是否重製*/}
-      <ModalWrapper
-        key="reset"
-        show={isModalOpen("reset")}
-        size="lg"
-        onHide={() => {
-          goNoneMode();
-        }}
-      >
-        <PopUp
-          imageSrc={"/icon/warning.svg"}
-          title={"編輯尚未完成，是否要取消?"}
-          denyOnClick={() => {
-            handleCloseModal("reset");
-          }}
-          confirmOnClick={() => {
+        {/*新增 和 編輯完成*/}
+        <ModalWrapper
+          key="success"
+          show={isModalOpen("success")}
+          size="lg"
+          onHide={() => {
             goNoneMode();
           }}
-        />
-      </ModalWrapper>
+        >
+          <PopUp
+            imageSrc={"/icon/check-circle.svg"}
+            title={message}
+            confirmOnClick={() => {
+              goNoneMode();
+            }}
+          />
+        </ModalWrapper>
 
-      {/*新增 和 編輯完成*/}
-      <ModalWrapper
-        key="success"
-        show={isModalOpen("success")}
-        size="lg"
-        onHide={() => {
-          goNoneMode();
-        }}
-      >
-        <PopUp
-          imageSrc={"/icon/check-circle.svg"}
-          title={message}
-          confirmOnClick={() => {
-            goNoneMode();
+        <ModalWrapper
+          key="failed"
+          show={isModalOpen("failed")}
+          size="lg"
+          onHide={() => {
+            handleCloseModal("failed");
           }}
-        />
-      </ModalWrapper>
-
-      <ModalWrapper
-        key="failed"
-        show={isModalOpen("failed")}
-        size="lg"
-        onHide={() => {
-          handleCloseModal("failed");
-        }}
-      >
-        <PopUp
-          imageSrc={"/icon/warning.svg"}
-          title={message}
-          confirmOnClick={() => {
-          handleCloseModal("failed");
-          }}
-        />
-      </ModalWrapper>
+        >
+          <PopUp
+            imageSrc={"/icon/warning.svg"}
+            title={message}
+            confirmOnClick={() => {
+              handleCloseModal("failed");
+            }}
+          />
+        </ModalWrapper>
+      </fieldset>
     </form>
   );
 
