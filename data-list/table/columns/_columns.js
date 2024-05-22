@@ -75,11 +75,11 @@ export const stockColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='商品型號' className='min-w-125px' />,
-    accessor: 'name',
+    accessor: 'code',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='商品樣式' className='min-w-125px' />,
-    accessor: 'code',
+    accessor: 'name',
   },
   {
     Header: (props) => (
