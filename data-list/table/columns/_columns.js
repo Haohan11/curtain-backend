@@ -121,13 +121,13 @@ export const stockColumns = [
     accessor: 'design',
     Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].design} />,
   },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='適用場景' className='min-w-125px' />
-    ),
-    accessor: 'environment',
-    Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].environment} />,
-  },
+  // {
+  //   Header: (props) => (
+  //     <UserCustomHeader tableProps={props} title='適用場景' className='min-w-125px' />
+  //   ),
+  //   accessor: 'environment',
+  //   Cell: ({ ...props }) => <ColorSchemeCell colorScheme={props.data[props.row.index].environment} />,
+  // },
   {
     Header: (props) => (
       <UserCustomHeader tableProps={props} title='遮光效果' className='min-w-125px' />

@@ -14,6 +14,9 @@ import { getDataRequest } from "../core/request";
 import currentTable from "../globalVariable/currentTable";
 import dict from "../dictionary/tableDictionary";
 
+  // import { useSession } from 'next-auth/react'
+// import { useRouter } from 'next/router'
+
 const { column } = dict;
 
 const fetchTableData = async (token, { page = 1, size = 5, keyword = "",sort, item, isEnable }) =>
@@ -31,6 +34,25 @@ const Table = () => {
   const { tableData, setTableData } = useTableData();
   const [totalPages, setTotalPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+
+  // const {permission} = useSession()
+  // const {session} = useSession();
+  // const router = useRouter();
+
+
+
+  // useEffect(()=>{
+  //   if(router.asPath.includes('stock')&&session.data.permission.stock.motify > 0){
+  //  columns.shift();
+  // }
+  //   if(router.asPath.includes('environment')&&session.data.permission.environment.motify > 0){
+  //     //  columns.shift();
+  // }
+  //   if(router.asPath.includes('employee')&&session.data.permission.account.motify > 0){
+  //     //  columns.shift();
+  // }
+  // },[router])
 
   useEffect(() => {
     if (!router.isReady || !token) return;

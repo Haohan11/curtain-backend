@@ -46,6 +46,8 @@ const EnvironmentPage = ({ list }) => {
   const [editEnvId, setEditEnvId] = useState();
   const editEnvData = list.find((item) => item.id === editEnvId);
 
+  const judge = true;
+
   return (
     <>
       <Row className="m-0 h-100">
@@ -83,19 +85,21 @@ const EnvironmentPage = ({ list }) => {
                 <div className="text-center fs-4">目前沒有資料</div>
               )}
             </div>
-            <div
-              className="position-absolute w-100 p-3 fs-3 fw-bold left-0 bottom-0 text-center bg-primary text-white cursor-pointer"
-              onClick={
-                editEnvId !== undefined
-                  ? () => handleShowModal("reset")
-                  : goCreateMode
-              }
-            >
-              <span className="px-2 fs-1 border border-white border-2 me-2">
-                +
-              </span>
-              新增場景
-            </div>
+            {judge && (
+              <div
+                className="position-absolute w-100 p-3 fs-3 fw-bold left-0 bottom-0 text-center bg-primary text-white cursor-pointer"
+                onClick={
+                  editEnvId !== undefined
+                    ? () => handleShowModal("reset")
+                    : goCreateMode
+                }
+              >
+                <span className="px-2 fs-1 border border-white border-2 me-2">
+                  +
+                </span>
+                新增場景
+              </div>
+            )}
           </div>
         </Col>
         <Col>

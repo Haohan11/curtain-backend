@@ -27,9 +27,9 @@ const UsersListFilter = () => {
     setSortItem('')
     setSort('')
     setIsEnable("")
-    router.push({
-      query: { ...router.query,sort:"",item:"",isEnable:isEnable},
-    }); 
+    // router.push({
+    //   query: { ...router.query,sort:"",item:"",isEnable:isEnable},
+    // }); 
   }
 
   const filterData = () => {
@@ -141,7 +141,7 @@ const UsersListFilter = () => {
               disabled={isLoading}
               onClick={resetData}
               className='btn btn-light btn-active-light-primary fw-bold me-2 px-6'
-              data-kt-menu-dismiss='true'
+              // data-kt-menu-dismiss='true'
               data-kt-user-table-filter='reset'
             >
               重置
