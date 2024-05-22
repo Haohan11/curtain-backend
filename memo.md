@@ -9,5 +9,9 @@
 
 ## todo: Sizebar entry environment page state (query string) maintain 
 
- #### filter in DataListToolbar
- #### search in ListHeader
+#### filter in DataListToolbar
+#### search in ListHeader
+
+### role permission
+#### front and back entry 
+#### env, account, stock visitable

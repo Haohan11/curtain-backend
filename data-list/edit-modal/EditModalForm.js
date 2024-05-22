@@ -105,15 +105,15 @@ const EditModalForm = ({ isUserLoading }) => {
   const { data, status } = useSession();
   const token = data?.user?.accessToken;
 
-  const router = useRouter()
-  const { setItemIdForUpdate, itemIdForUpdate } = useListView()
+  const router = useRouter();
+  const { setItemIdForUpdate, itemIdForUpdate } = useListView();
 
   const currentMode = (() => {
     if (itemIdForUpdate === null) return "create";
     if (!isNaN(parseInt(itemIdForUpdate))) return "edit";
     if (itemIdForUpdate === undefined) return "close";
   })();
-  
+
   const createMode = currentMode === "create";
   const editMode = currentMode === "edit";
 
@@ -133,6 +133,7 @@ const EditModalForm = ({ isUserLoading }) => {
       environment,
       description,
       colorList,
+      permission,
     } = data;
     return {
       ...data,
@@ -168,11 +169,32 @@ const EditModalForm = ({ isUserLoading }) => {
             ),
           }
         : {}),
+      ...(permission &&
+        permission.length > 0 && {
+          permission: {
+            front: false,
+            back: permission.reduce(
+              (acc, item) => ({
+                ...acc,
+                [`id_${item.id}`]: { view: false, modify: false },
+              }),
+              {}
+            ),
+          },
+        }),
     };
   };
   const [initialValues, setInitialValues] = useState({
     ...formField[tableName],
     ...(currentData === null ? {} : handleCurrentData(currentData)),
+    permission: {
+      front: false,
+      back: [
+        { id: 1, label: "商品管理" },
+        { id: 2, label: "人員管理" },
+        { id: 3, label: "場景管理" },
+      ].reduce((acc, item) => ({ ...acc, [`id_${item.id}`]: { view: false, modify: false } }), {}),
+    },
   });
 
   //提醒系列
@@ -184,7 +206,7 @@ const EditModalForm = ({ isUserLoading }) => {
     enableReinitialize: true,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
-      // return console.log(values);
+      return console.log(values);
 
       await {
         async create() {
@@ -194,7 +216,6 @@ const EditModalForm = ({ isUserLoading }) => {
             icon: "/icon/check-circle.svg",
           });
           handleShowModal("popup");
-          
         },
         async edit() {
           await updateDataRequest(token, {
@@ -206,7 +227,6 @@ const EditModalForm = ({ isUserLoading }) => {
             icon: "/icon/check-circle.svg",
           });
           handleShowModal("popup");
-          
         },
         close() {},
       }[currentMode]();
@@ -1069,19 +1089,126 @@ const EditModalForm = ({ isUserLoading }) => {
             </div>
           )}
 
-          {config.auth_label && (
-            <div className="mb-7">
-              <label className="fw-bold fs-6 mb-2">{config.auth_label}</label>
-              <div>
-                {config.auth_list.map((auth, index) => (
-                  <FormCheck
-                    key={index}
-                    label={auth}
-                    id={`${config.auth_label}_${auth}`}
-                    name={config.auth_label}
-                    inline
-                  />
-                ))}
+          {config.permission_label && (
+            <div className="mb-6 row gy-0">
+              <p className="fw-bold fs-6 mb-3">{config.permission_label}</p>
+              <div className="col-auto">
+                <FormCheck
+                  className="mb-2"
+                  label={<span className="text-dark">展示前台</span>}
+                  id={"front"}
+                  inline
+                />
+              </div>
+              <div className="col">
+                <FormCheck
+                  className="mb-2"
+                  label={<span className="text-dark">管理後台</span>}
+                  id={"permission-back"}
+                  inline
+                  onInput={(e) => {
+                    document
+                      .querySelectorAll("[data-belong=back")
+                      .forEach((input) => (input.checked = e.target.checked));
+                    const prev = formik.values["permission"];
+                    prev.back = Object.entries(prev.back).reduce(
+                      (acc, [key, value]) => ({
+                        ...acc,
+                        [key]: Object.keys(value).reduce(
+                          (inAcc, key) => ({
+                            ...inAcc,
+                            [key]: e.target.checked,
+                          }),
+                          {}
+                        ),
+                      }),
+                      {}
+                    );
+                    formik.setFieldValue("permission", prev);
+                  }}
+                />
+                <div className="d-flex pt-2">
+                  {config.permission_list.map((auth, index) => (
+                    <div key={index}>
+                      <FormCheck
+                        data-belong="back"
+                        data-group-head={`group-${auth.id}`}
+                        label={<span className="text-dark">{auth.label}</span>}
+                        id={auth.id}
+                        name={`role_permission_${auth.id}`}
+                        inline
+                        onInput={(e) => {
+                          const isChecked = e.target.checked;
+                          document
+                            .querySelectorAll(`[data-group=group-${auth.id}]`)
+                            .forEach((input) => (input.checked = isChecked));
+
+                          const backCheck =
+                            document.getElementById("permission-back");
+                          if (!backCheck) return;
+                          isChecked
+                            ? ![
+                                ...document.querySelectorAll(
+                                  `[data-group-head]`
+                                ),
+                              ]
+                                .map((input) => input.checked)
+                                .includes(false) && (backCheck.checked = true)
+                            : backCheck.checked === true &&
+                              (backCheck.checked = false);
+
+                          const prev = formik.values["permission"];
+                          prev.back[`id_${auth.id}`] = { view: isChecked, modify: isChecked };
+                          formik.setFieldValue("permission", prev);
+                        }}
+                      />
+                      <div className="pt-2 ps-9">
+                        <FormCheck
+                          data-belong="back"
+                          data-group={`group-${auth.id}`}
+                          label="檢視"
+                          id={`view_${auth.id}`}
+                          name={`role_permission_${auth.id}_view`}
+                          inline
+                          onInput={(e) => {
+                            const isChecked = e.target.checked;
+                            const backCheck =
+                            document.getElementById("permission-back");
+                            const groupHead = document.querySelector(`[data-group-head=group-${auth.id}]`);
+                            if(!groupHead) return;
+
+                            isChecked ? ![...document.querySelectorAll(`[data-group=group-${auth.id}]`)].map(input => input.checked).includes(false) && groupHead.click() : (groupHead.checked = backCheck.checked = false)
+                            
+                            const prev = formik.values["permission"];
+                            prev.back[`id_${auth.id}`]["view"] = isChecked
+                            formik.setFieldValue("permission", prev);
+                          }}
+                        />
+                        <FormCheck
+                          data-belong="back"
+                          data-group={`group-${auth.id}`}
+                          label="修改"
+                          id={`modify_${auth.id}`}
+                          name={`role_permission_${auth.id}_modify`}
+                          inline
+                          onInput={(e) => {
+                            const isChecked = e.target.checked;
+                            const backCheck =
+                            document.getElementById("permission-back");
+                            const groupHead = document.querySelector(`[data-group-head=group-${auth.id}]`);
+                            if(!groupHead) return;
+
+                            isChecked ? ![...document.querySelectorAll(`[data-group=group-${auth.id}]`)].map(input => input.checked).includes(false) && groupHead.click() : (groupHead.checked = backCheck.checked = false)
+
+                            const prev = formik.values["permission"];
+                            prev.back[`id_${auth.id}`]["modify"] = isChecked
+                            formik.setFieldValue("permission", prev);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -1309,22 +1436,27 @@ const EditModalForm = ({ isUserLoading }) => {
               </span>
             )}
           </button>
-        {/*新增 和 編輯完成*/}
-        <ModalWrapper
-          key="popup"
-          show={isModalOpen("popup")}
-          size="lg"
-          onHide={() => {router.push(router.asPath.split("?")[0]);closeModal()}}
-        >
-          <PopUp
-            imageSrc={popupSet.icon}
-            title={popupSet.message}
-            confirmOnClick={() => {router.push(router.asPath.split("?")[0]);closeModal()}}
-          />
-        </ModalWrapper>
+          {/*新增 和 編輯完成*/}
+          <ModalWrapper
+            key="popup"
+            show={isModalOpen("popup")}
+            size="lg"
+            onHide={() => {
+              router.push(router.asPath.split("?")[0]);
+              closeModal();
+            }}
+          >
+            <PopUp
+              imageSrc={popupSet.icon}
+              title={popupSet.message}
+              confirmOnClick={() => {
+                router.push(router.asPath.split("?")[0]);
+                closeModal();
+              }}
+            />
+          </ModalWrapper>
         </div>
         {/* end::Actions */}
-
       </form>
       {/*(formik.isSubmitting || isUserLoading) && <UsersListLoading />*/}
     </>

@@ -278,13 +278,24 @@ export const fullData = {
     searchPlaceholder: "角色類別",
     createHeaderText: "角色類別",
     column: roleColumns,
+    fetchUrl: "role",
     modalConfig: {
       name_label: "角色名稱",
-      members_label: "員工列表",
-      auth_label: "權限設定",
-      auth_list: ["顯示模組", "顯示操作項", "勾選修改/檢視"],
+      // members_label: "員工列表",
+      permission_label: "權限設定",
+      permission_list: [
+        { id: 1, label: "商品管理" },
+        { id: 2, label: "人員管理" },
+        { id: 3, label: "場景管理" },
+      ],
       comment_label,
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string()
+        .min(2, "至少 2 個字")
+        .max(50, "至多 50 個字")
+        .required("此欄位必填"),
+    }),
     formField: {
       name: "",
     },

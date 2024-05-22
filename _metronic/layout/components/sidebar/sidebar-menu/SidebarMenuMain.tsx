@@ -32,7 +32,7 @@ const SidebarMenuMain = () => {
         icon='bi bi-person'
       >
         <SidebarMenuItem to='/employee/info' title='員工資料' hasBullet={true} />
-        {/* <SidebarMenuItem to='/accounts/role' title='角色類別' hasBullet={true} /> */}
+        <SidebarMenuItem to='/employee/role' title='角色類別' hasBullet={true} />
       </SidebarMenuItemWithSub>
       <SidebarMenuItem to='/environment' title='場景管理' icon='bi bi-bounding-box' />
       <div className='menu-item'>
