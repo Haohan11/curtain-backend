@@ -283,11 +283,7 @@ export const fullData = {
       name_label: "角色名稱",
       // members_label: "員工列表",
       permission_label: "權限設定",
-      permission_list: [
-        { id: 1, label: "商品管理" },
-        { id: 2, label: "人員管理" },
-        { id: 3, label: "場景管理" },
-      ],
+      permission_list: {},
       comment_label,
     },
     validationSchema: Yup.object().shape({
@@ -323,6 +319,10 @@ export const fullData = {
       enable: true,
       comment: "",
     },
+  },
+  // -&anchor
+  permission: {
+    fetchUrl: "permission",
   },
 };
 
