@@ -24,7 +24,7 @@ const ListSearchComponent = () => {
       if (debouncedSearchTerm !== undefined && searchTerm !== undefined) {
         // updateState({ search: debouncedSearchTerm, ...initialQueryState })
           router.push({
-            query: { ...router.query, keyword: debouncedSearchTerm },
+            query: { ...router.query, keyword: debouncedSearchTerm,page:1 },
           });
       }
     },

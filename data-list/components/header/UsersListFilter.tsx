@@ -34,7 +34,7 @@ const UsersListFilter = () => {
 
   const filterData = () => {
     router.push({
-      query: { ...router.query,sort:sort,item:sortItem,isEnable:isEnable},
+      query: { ...router.query,sort:sort,item:sortItem,isEnable:isEnable,page:1},
     }); 
   }
 

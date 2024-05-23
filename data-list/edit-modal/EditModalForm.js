@@ -200,8 +200,6 @@ const EditModalForm = ({ isUserLoading }) => {
     enableReinitialize: true,
     validationSchema: validationSchema[tableName],
     onSubmit: async (values) => {
-      return console.log(values);
-
       await {
         async create() {
           await createDataRequest(token, values);
