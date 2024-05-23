@@ -202,6 +202,7 @@ const EditModalForm = ({ isUserLoading }) => {
     onSubmit: async (values) => {
       await {
         async create() {
+          // return console.log("Submit values", values)
           await createDataRequest(token, values);
           setPopupSet({
             message: "新增成功",
@@ -327,6 +328,10 @@ const EditModalForm = ({ isUserLoading }) => {
   const environmentIsEmpty = environment.length === 0;
 
   const [permission, setPermission] = useState([]);
+  const permissionIsEmpty = permission.length === 0;
+
+  const [employee, setEmployee] = useState([]);
+  const employeeIsEmpty = employee.length === 0;
 
   const [avatarSrc, handleAvatarChoose] = useInputFilePath();
 
@@ -406,6 +411,14 @@ const EditModalForm = ({ isUserLoading }) => {
 
         const { data: list } = res;
         setPermission(list);
+      }
+
+      fetchEmployee: if (config.members_label) {
+        const res = await getDataByTable(token, "accounts");
+        if (res === false) break fetchEmployee;
+
+        const { data: list } = res;
+        setEmployee(list);
       }
     })();
   }, []);
@@ -1095,9 +1108,18 @@ const EditModalForm = ({ isUserLoading }) => {
               </label>
 
               <div className="p-4 border border-gray-400 rounded-2">
-                <p>員工一</p>
-                <p>員工二</p>
-                <p>員工三</p>
+                {!employeeIsEmpty &&
+                  employee.map((em) => (
+                    <FormCheck
+                      key={em.id}
+                      className="position-relative mb-2"
+                      {...formik.getFieldProps("employee")}
+                      id={`employee_${em.id}`}
+                      name="employee"
+                      value={em.id}
+                      label={<div className="position-absolute ps-10 top-0 start-0 w-100 d-block text-dark">{em.name}</div>}
+                    />
+                  ))}
               </div>
             </div>
           )}
@@ -1105,183 +1127,188 @@ const EditModalForm = ({ isUserLoading }) => {
           {config.permission_label && (
             <div className="mb-6 row gy-0">
               <p className="fw-bold fs-6 mb-3">{config.permission_label}</p>
-              {permission.map((item) => {
-                const isParent = item.childs && item.childs.length > 0;
-                return (
-                  <div key={item.id} className="col-auto">
-                    <FormCheck
-                      className="mb-2"
-                      label={<span className="text-dark">{item.name}</span>}
-                      id={item.code}
-                      name={`permission_${item.id}`}
-                      inline
-                      onInput={(e) => {
-                        document
-                          .querySelectorAll(`[data-belong=${item.code}]`)
-                          .forEach(
-                            (input) => (input.checked = e.target.checked)
+              {!permissionIsEmpty &&
+                permission.map((item) => {
+                  const isParent = item.childs && item.childs.length > 0;
+                  return (
+                    <div key={item.id} className="col-auto">
+                      <FormCheck
+                        className="mb-2"
+                        label={<span className="text-dark">{item.name}</span>}
+                        id={item.code}
+                        name={`permission_${item.id}`}
+                        inline
+                        onInput={(e) => {
+                          document
+                            .querySelectorAll(`[data-belong=${item.code}]`)
+                            .forEach(
+                              (input) => (input.checked = e.target.checked)
+                            );
+
+                          const getId = (dict, per) => {
+                            dict.push(`${per.id}`);
+                            Array.isArray(per.childs) &&
+                              per.childs.reduce(getId, dict);
+                            return dict;
+                          };
+
+                          const childIds = item.childs.reduce(getId, []);
+
+                          const newPermi = formik.values["permission"];
+                          Object.keys(newPermi).forEach(
+                            (perId) =>
+                              childIds.includes(perId) &&
+                              (newPermi[`${perId}`] = e.target.checked)
                           );
 
-                        const getId = (dict, per) => {
-                          dict.push(`${per.id}`);
-                          Array.isArray(per.childs) &&
-                            per.childs.reduce(getId, dict);
-                          return dict;
-                        };
+                          newPermi[`${item.id}`] = e.target.checked;
+                          formik.setFieldValue("permission", newPermi);
+                        }}
+                      />
+                      {isParent && (
+                        <div className="d-flex pt-2">
+                          {item.childs.map((child) => {
+                            const hasGrandChild =
+                              child.childs && child.childs.length > 0;
+                            return (
+                              <div key={child.id}>
+                                <FormCheck
+                                  data-belong={item.code}
+                                  data-group-head={`group-${child.id}`}
+                                  label={
+                                    <span className="text-dark">
+                                      {child.name}
+                                    </span>
+                                  }
+                                  id={`${child.code}_${child.id}`}
+                                  name={`permission_${child.id}`}
+                                  inline
+                                  onInput={(e) => {
+                                    const isChecked = e.target.checked;
+                                    document
+                                      .querySelectorAll(
+                                        `[data-group=group-${child.id}]`
+                                      )
+                                      .forEach(
+                                        (input) => (input.checked = isChecked)
+                                      );
 
-                        const childIds = item.childs.reduce(getId, []);
+                                    const parentCheck = document.getElementById(
+                                      item.code
+                                    );
+                                    if (!parentCheck) return;
 
-                        const newPermi = formik.values["permission"];
-                        Object.keys(newPermi).forEach(
-                          (perId) =>
-                            childIds.includes(perId) &&
-                            (newPermi[`${perId}`] = e.target.checked)
-                        );
+                                    const newPermi =
+                                      formik.values["permission"];
 
-                        newPermi[`${item.id}`] = e.target.checked;
-                        formik.setFieldValue("permission", newPermi);
-                      }}
-                    />
-                    {isParent && (
-                      <div className="d-flex pt-2">
-                        {item.childs.map((child) => {
-                          const hasGrandChild =
-                            child.childs && child.childs.length > 0;
-                          return (
-                            <div key={child.id}>
-                              <FormCheck
-                                data-belong={item.code}
-                                data-group-head={`group-${child.id}`}
-                                label={
-                                  <span className="text-dark">
-                                    {child.name}
-                                  </span>
-                                }
-                                id={`${child.code}_${child.id}`}
-                                name={`permission_${child.id}`}
-                                inline
-                                onInput={(e) => {
-                                  const isChecked = e.target.checked;
-                                  document
-                                    .querySelectorAll(
-                                      `[data-group=group-${child.id}]`
-                                    )
-                                    .forEach(
-                                      (input) => (input.checked = isChecked)
+                                    if (
+                                      isChecked &&
+                                      ![
+                                        ...document.querySelectorAll(
+                                          `[data-group-head]`
+                                        ),
+                                      ]
+                                        .map((input) => input.checked)
+                                        .includes(false)
+                                    ) {
+                                      parentCheck.checked = true;
+                                      newPermi[`${item.id}`] = isChecked;
+                                    }
+
+                                    if (!isChecked && parentCheck.checked) {
+                                      parentCheck.checked = false;
+                                      newPermi[`${item.id}`] = isChecked;
+                                    }
+
+                                    const getId = (dict, per) => {
+                                      dict.push(`${per.id}`);
+                                      Array.isArray(per.childs) &&
+                                        per.childs.reduce(getId, dict);
+                                      return dict;
+                                    };
+                                    const childIds = child.childs.reduce(
+                                      getId,
+                                      []
                                     );
 
-                                  const parentCheck = document.getElementById(
-                                    item.code
-                                  );
-                                  if (!parentCheck) return;
+                                    Object.keys(newPermi).forEach(
+                                      (perId) =>
+                                        childIds.includes(perId) &&
+                                        (newPermi[`${perId}`] = isChecked)
+                                    );
 
-                                  const newPermi = formik.values["permission"];
+                                    newPermi[`${child.id}`] = isChecked;
+                                    formik.setFieldValue(
+                                      "permission",
+                                      newPermi
+                                    );
+                                  }}
+                                />
+                                {hasGrandChild && (
+                                  <div className="pt-2 ps-9">
+                                    {child.childs.map((grand) => (
+                                      <FormCheck
+                                        key={grand.id}
+                                        data-belong={item.code}
+                                        data-group={`group-${child.id}`}
+                                        label={grand.name}
+                                        id={`${grand.code}_${grand.id}`}
+                                        name={`permission_${grand.id}`}
+                                        inline
+                                        onInput={(e) => {
+                                          const isChecked = e.target.checked;
+                                          const grandParentCheck =
+                                            document.getElementById(item.code);
+                                          const groupHead =
+                                            document.querySelector(
+                                              `[data-group-head=group-${child.id}]`
+                                            );
+                                          if (!groupHead) return;
 
-                                  if (
-                                    isChecked &&
-                                    ![
-                                      ...document.querySelectorAll(
-                                        `[data-group-head]`
-                                      ),
-                                    ]
-                                      .map((input) => input.checked)
-                                      .includes(false)
-                                  ) {
-                                    parentCheck.checked = true;
-                                    newPermi[`${item.id}`] = isChecked;
-                                  }
+                                          const newPermi =
+                                            formik.values["permission"];
+                                          if (
+                                            isChecked &&
+                                            ![
+                                              ...document.querySelectorAll(
+                                                `[data-group=group${child.id}]`
+                                              ),
+                                            ]
+                                              .map((input) => input.checked)
+                                              .includes(false)
+                                          ) {
+                                            groupHead.click();
+                                            newPermi[`${item.id}`] = newPermi[
+                                              `${child.id}`
+                                            ] = isChecked;
+                                          }
 
-                                  if (!isChecked && parentCheck.checked) {
-                                    parentCheck.checked = false;
-                                    newPermi[`${item.id}`] = isChecked;
-                                  }
+                                          if (!isChecked) {
+                                            groupHead.checked =
+                                              grandParentCheck.checked =
+                                              newPermi[`${item.id}`] =
+                                              newPermi[`${child.id}`] =
+                                                isChecked;
+                                          }
 
-                                  const getId = (dict, per) => {
-                                    dict.push(`${per.id}`);
-                                    Array.isArray(per.childs) &&
-                                      per.childs.reduce(getId, dict);
-                                    return dict;
-                                  };
-                                  const childIds = child.childs.reduce(
-                                    getId,
-                                    []
-                                  );
-
-                                  Object.keys(newPermi).forEach(
-                                    (perId) =>
-                                      childIds.includes(perId) &&
-                                      (newPermi[`${perId}`] = isChecked)
-                                  );
-
-                                  newPermi[`${child.id}`] = isChecked;
-                                  formik.setFieldValue("permission", newPermi);
-                                }}
-                              />
-                              {hasGrandChild && (
-                                <div className="pt-2 ps-9">
-                                  {child.childs.map((grand) => (
-                                    <FormCheck
-                                      key={grand.id}
-                                      data-belong={item.code}
-                                      data-group={`group-${child.id}`}
-                                      label={grand.name}
-                                      id={`${grand.code}_${grand.id}`}
-                                      name={`permission_${grand.id}`}
-                                      inline
-                                      onInput={(e) => {
-                                        const isChecked = e.target.checked;
-                                        const grandParentCheck =
-                                          document.getElementById(item.code);
-                                        const groupHead =
-                                          document.querySelector(
-                                            `[data-group-head=group-${child.id}]`
+                                          newPermi[`${grand.id}`] = isChecked;
+                                          formik.setFieldValue(
+                                            "permission",
+                                            newPermi
                                           );
-                                        if (!groupHead) return;
-
-                                        const newPermi =
-                                          formik.values["permission"];
-                                        if (
-                                          isChecked &&
-                                          ![
-                                            ...document.querySelectorAll(
-                                              `[data-group=group${child.id}]`
-                                            ),
-                                          ]
-                                            .map((input) => input.checked)
-                                            .includes(false)
-                                        ) {
-                                          groupHead.click();
-                                          newPermi[`${item.id}`] = newPermi[
-                                            `${child.id}`
-                                          ] = isChecked;
-                                        }
-
-                                        if (!isChecked) {
-                                          groupHead.checked =
-                                            grandParentCheck.checked =
-                                            newPermi[`${item.id}`] =
-                                            newPermi[`${child.id}`] =
-                                              isChecked;
-                                        }
-
-                                        newPermi[`${grand.id}`] = isChecked;
-                                        formik.setFieldValue(
-                                          "permission",
-                                          newPermi
-                                        );
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                                        }}
+                                      />
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
 
             // <div>

@@ -34,7 +34,7 @@ export const getDataByTable = async (token, tableName) => {
   if (tableUrl === undefined)
     throw Error(`Table: ${tableName} or table fetchUrl doesn't exist.`);
 
-  const URL = `${BASEURL}/${tableUrl}`;
+  const URL = `${BASEURL}/${tableUrl}?onlyEnable=`;
 
   try {
     const res = await fetch(URL, {
