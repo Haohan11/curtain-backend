@@ -281,7 +281,7 @@ export const fullData = {
     fetchUrl: "role",
     modalConfig: {
       name_label: "角色名稱",
-      members_label: "員工列表",
+      // members_label: "員工列表",
       permission_label: "權限設定",
       permission_list: {},
       comment_label,

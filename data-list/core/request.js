@@ -10,7 +10,11 @@ export const getDataRequest = async (
   { page, size, keyword, sort, item, isEnable }
 ) => {
   const URL = `${BASEURL}/${getTableUrl()}?page=${page}&size=${size}&keyword=${keyword}&sort=${sort}&item=${item}${
-    isEnable === undefined ||isEnable === '' ? "" : isEnable==="1" ? "&onlyEnable=" : "&onlyDisable="
+    isEnable === undefined || isEnable === ""
+      ? ""
+      : isEnable === "1"
+      ? "&onlyEnable="
+      : "&onlyDisable="
   }`;
   try {
     const res = await fetch(URL, {
@@ -59,9 +63,19 @@ export const createDataRequest = async (token, values) => {
   const formData = new FormData();
   for (const key in values) {
     const value = values[key];
-    if (!Array.isArray(value)) {
-      formData.append(key, value);
-      continue;
+
+    try {
+      if (!Array.isArray(value)) {
+        formData.append(
+          key,
+          typeof value === "object" && value !== null
+            ? JSON.stringify(value)
+            : value
+        );
+        continue;
+      }
+    } catch (error) {
+      return !!console.warn(error)
     }
 
     value.forEach((item) => {

@@ -202,7 +202,6 @@ const EditModalForm = ({ isUserLoading }) => {
     onSubmit: async (values) => {
       await {
         async create() {
-          // return console.log("Submit values", values)
           await createDataRequest(token, values);
           setPopupSet({
             message: "新增成功",
