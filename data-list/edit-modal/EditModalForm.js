@@ -1278,6 +1278,9 @@ const EditModalForm = ({ isUserLoading }) => {
                                             `${grand.id}`
                                           ]
                                         }
+                                        onClick={(e) => {
+                                          !e.target.checked && grand.code === "view" && e.preventDefault()
+                                        }}
                                         onInput={(e) => {
                                           const isChecked = e.target.checked;
                                           const grandParentCheck =
@@ -1294,7 +1297,11 @@ const EditModalForm = ({ isUserLoading }) => {
                                             isChecked &&
                                             ![
                                               ...document.querySelectorAll(
-                                                `[data-group=group${child.id}]`
+                                                `[data-group=group${
+                                                  grand.code === "modify"
+                                                    ? ""
+                                                    : `-${child.id}`
+                                                }]`
                                               ),
                                             ]
                                               .map((input) => input.checked)
@@ -1312,6 +1319,9 @@ const EditModalForm = ({ isUserLoading }) => {
                                               newPermi[`${item.id}`] =
                                               newPermi[`${child.id}`] =
                                                 isChecked;
+                                            document.querySelector(
+                                              `[data-group=group-${child.id}]`
+                                            ).checked = false;
                                           }
 
                                           newPermi[`${grand.id}`] = isChecked;
