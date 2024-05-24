@@ -169,26 +169,11 @@ const EditModalForm = ({ isUserLoading }) => {
             ),
           }
         : {}),
-      ...(permission && {}),
     };
   };
   const [initialValues, setInitialValues] = useState({
     ...formField[tableName],
     ...(currentData === null ? {} : handleCurrentData(currentData)),
-    permission: {
-      front: false,
-      back: [
-        { id: 1, label: "商品管理" },
-        { id: 2, label: "人員管理" },
-        { id: 3, label: "場景管理" },
-      ].reduce(
-        (acc, item) => ({
-          ...acc,
-          [`id_${item.id}`]: { view: false, modify: false },
-        }),
-        {}
-      ),
-    },
   });
 
   //提醒系列
@@ -202,6 +187,7 @@ const EditModalForm = ({ isUserLoading }) => {
     onSubmit: async (values) => {
       await {
         async create() {
+          return console.log(values);
           await createDataRequest(token, values);
           setPopupSet({
             message: "新增成功",
@@ -210,6 +196,7 @@ const EditModalForm = ({ isUserLoading }) => {
           handleShowModal("popup");
         },
         async edit() {
+          return console.log(values);
           await updateDataRequest(token, {
             ...flatColorImagesField(values),
             id: itemIdForUpdate,
@@ -1116,7 +1103,11 @@ const EditModalForm = ({ isUserLoading }) => {
                       id={`employee_${em.id}`}
                       name="employee"
                       value={em.id}
-                      label={<div className="position-absolute ps-10 top-0 start-0 w-100 d-block text-dark">{em.name}</div>}
+                      label={
+                        <div className="position-absolute ps-10 top-0 start-0 w-100 d-block text-dark">
+                          {em.name}
+                        </div>
+                      }
                     />
                   ))}
               </div>
@@ -1137,6 +1128,9 @@ const EditModalForm = ({ isUserLoading }) => {
                         id={item.code}
                         name={`permission_${item.id}`}
                         inline
+                        defaultChecked={
+                          formik.values["permission"]?.[`${item.id}`]
+                        }
                         onInput={(e) => {
                           document
                             .querySelectorAll(`[data-belong=${item.code}]`)
@@ -1181,6 +1175,9 @@ const EditModalForm = ({ isUserLoading }) => {
                                   }
                                   id={`${child.code}_${child.id}`}
                                   name={`permission_${child.id}`}
+                                  defaultChecked={
+                                    formik.values["permission"]?.[`${child.id}`]
+                                  }
                                   inline
                                   onInput={(e) => {
                                     const isChecked = e.target.checked;
@@ -1254,6 +1251,11 @@ const EditModalForm = ({ isUserLoading }) => {
                                         id={`${grand.code}_${grand.id}`}
                                         name={`permission_${grand.id}`}
                                         inline
+                                        defaultChecked={
+                                          formik.values["permission"]?.[
+                                            `${grand.id}`
+                                          ]
+                                        }
                                         onInput={(e) => {
                                           const isChecked = e.target.checked;
                                           const grandParentCheck =
@@ -1312,7 +1314,7 @@ const EditModalForm = ({ isUserLoading }) => {
 
             // <div>
             //   <pre>
-            //     {JSON.stringify(permission, null, 4)}
+            //     {JSON.stringify(formik.values["permission"], null, 4)}
             //   </pre>
             // </div>
           )}

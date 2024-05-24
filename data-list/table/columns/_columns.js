@@ -366,16 +366,8 @@ export const roleColumns = [
     accessor: 'name',
   },
   {
-    Header: (props) => <UserCustomHeader tableProps={props} title='員工列表' className='min-w-125px' />,
-    accessor: 'list',
-  },
-  {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
     accessor: 'comments',
-  },
-  {
-    Header: (props) => <UserCustomHeader tableProps={props} title='權限設定' className='min-w-125px' />,
-    accessor: 'auth',
   },
 ]
 
