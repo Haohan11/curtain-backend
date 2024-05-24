@@ -325,7 +325,7 @@ export const accountsColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工角色' className='min-w-125px' />,
-    accessor: 'role',
+    accessor: 'role_name',
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='員工編號' className='min-w-125px' />,
