@@ -59,8 +59,9 @@ const UsersListFilter = () => {
         title={ <><KTIcon iconName='filter' className='fs-2' /> 篩選</> }
         id={`dropdown-button-drop-0`}
         key={0}
+        autoClose="outside"
       >
-        <Dropdown.Item className='bg-transparent'>
+        <Dropdown.Item className='bg-transparent'  >
           <div className='px-7 py-5'>
             <div className='fs-5 text-gray-900 fw-bolder'>篩選條件</div>
           </div>
@@ -140,7 +141,7 @@ const UsersListFilter = () => {
                 disabled={isLoading}
                 type='button'
                 onClick={filterData}
-                className='btn btn-primary fw-bold px-6'
+                className='btn btn-primary dropdown-toggle fw-bold px-6'
                 data-kt-menu-dismiss='true'
                 data-kt-user-table-filter='filter'
               >
