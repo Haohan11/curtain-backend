@@ -187,7 +187,6 @@ const EditModalForm = ({ isUserLoading }) => {
     onSubmit: async (values) => {
       await {
         async create() {
-          return console.log(values);
           await createDataRequest(token, values);
           setPopupSet({
             message: "新增成功",
@@ -196,7 +195,6 @@ const EditModalForm = ({ isUserLoading }) => {
           handleShowModal("popup");
         },
         async edit() {
-          return console.log(values);
           await updateDataRequest(token, {
             ...flatColorImagesField(values),
             id: itemIdForUpdate,

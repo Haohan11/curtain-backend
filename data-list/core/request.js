@@ -108,7 +108,12 @@ export const updateDataRequest = async (token, values) => {
   for (const key in values) {
     const value = values[key];
     if (!Array.isArray(value)) {
-      formData.append(key, value);
+      formData.append(
+        key,
+        typeof value === "object" && value !== null
+          ? JSON.stringify(value)
+          : value
+      );
       continue;
     }
 
