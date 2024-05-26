@@ -38,6 +38,10 @@ export const authOptions = {
           return user.data;
         }
 
+        if (user.message === "NoPermission") {
+          return { error: "NoPermission" };
+        }
+
         return null;
       },
     }),
@@ -49,6 +53,12 @@ export const authOptions = {
     signOut: "/",
   },
   callbacks: {
+    async signIn({ user }) {
+      if (user?.error === "NoPermission") {
+        throw new Error("NoPermission");
+      }
+      return true;
+    },
     async jwt({ token, trigger, session, user }) {
       if (user) {
         return {
@@ -56,7 +66,7 @@ export const authOptions = {
           userId: user.id,
           userName: user.name,
           accessToken: user.token,
-          _exp: user._exp
+          _exp: user._exp,
         };
       }
 
@@ -67,7 +77,7 @@ export const authOptions = {
       session.user.userId = token.userId;
       session.user.userName = token.userName;
       session.user.accessToken = token.accessToken;
-      session._exp = token._exp
+      session._exp = token._exp;
 
       return session;
     },

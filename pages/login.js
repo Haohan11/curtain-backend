@@ -31,7 +31,7 @@ const LoginLayout = () => {
     const formData = new FormData(form);
 
     const data = Object.fromEntries(formData);
-    data.rememberMe? setRememberMe(data.account) : clearRememberMe();
+    data.rememberMe ? setRememberMe(data.account) : clearRememberMe();
     console.log("login data: ");
     console.log(data);
     const result = await signIn("credentials", {
@@ -39,12 +39,12 @@ const LoginLayout = () => {
       redirect: false,
     });
     console.log("result :", result);
-    if (result?.ok) {
-      handleShowModal("success");
-    } else {
-      form.reset();
-      handleShowModal("wrong");
-    }
+    if (result?.error === "NoPermission") return handleShowModal("NoPermission");
+
+    if (result?.ok) return handleShowModal("success");
+
+    form.reset();
+    handleShowModal("wrong");
   };
 
   return (
@@ -145,6 +145,22 @@ const LoginLayout = () => {
                   title={"帳號或密碼錯誤"}
                   confirmOnClick={() => {
                     handleCloseModal("wrong");
+                  }}
+                />
+              </ModalWrapper>
+              <ModalWrapper
+                key="NoPermission"
+                show={isModalOpen("NoPermission")}
+                size="lg"
+                onHide={() => {
+                  handleCloseModal("NoPermission");
+                }}
+              >
+                <PopUp
+                  imageSrc={"/icon/circle-error.svg"}
+                  title={"權限不足"}
+                  confirmOnClick={() => {
+                    handleCloseModal("NoPermission");
                   }}
                 />
               </ModalWrapper>
