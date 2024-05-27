@@ -1278,9 +1278,6 @@ const EditModalForm = ({ isUserLoading }) => {
                                             `${grand.id}`
                                           ]
                                         }
-                                        onClick={(e) => {
-                                          !e.target.checked && grand.code === "view" && e.preventDefault()
-                                        }}
                                         onInput={(e) => {
                                           const isChecked = e.target.checked;
                                           const grandParentCheck =
@@ -1319,9 +1316,9 @@ const EditModalForm = ({ isUserLoading }) => {
                                               newPermi[`${item.id}`] =
                                               newPermi[`${child.id}`] =
                                                 isChecked;
-                                            document.querySelector(
+                                            [...document.querySelectorAll(
                                               `[data-group=group-${child.id}]`
-                                            ).checked = false;
+                                            )].map(el => el.checked = false);
                                           }
 
                                           newPermi[`${grand.id}`] = isChecked;
