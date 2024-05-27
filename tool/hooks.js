@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const useInputFilePath = () => {
   const [src, setSrc] = useState(null);
@@ -19,15 +19,13 @@ export const useGroupInputFilePath = (init) => {
     const [file] = event.target.files;
     if (!file) return;
     setSrcArray((prev) => {
-        prev[index] = URL.createObjectURL(file) 
-        return [...prev]
+      prev[index] = URL.createObjectURL(file);
+      return [...prev];
     });
   };
 
   return [srcArray, setSrcArray, handleChooseFile];
 };
-
-
 
 export function useModals() {
   const [modals, setModals] = useState({});
@@ -45,8 +43,31 @@ export function useModals() {
   return { handleShowModal, handleCloseModal, isModalOpen };
 }
 
+export const usePermission = (persist) => {
+  const [permission, setPermission] = useState(null);
+
+  useEffect(() => {
+    if (!persist) return;
+    if (permission !== null) return;
+    try {
+      setPermission(JSON.parse(localStorage.getItem("permission")));
+    } catch {
+      console.warn("Failed to get permission data.");
+    }
+  });
+
+  useEffect(() => {
+    if (persist) return;
+    if (permission !== null) return;
+    try {
+      setPermission(JSON.parse(localStorage.getItem("permission")));
+    } catch {
+      console.warn("Failed to get permission data.");
+    }
+  }, []);
+
+  return permission;
+};
 
 export const checkExpires = (time) =>
   time ? time * 1000 < Date.now() : console.log("Invalid exp.");
-
-

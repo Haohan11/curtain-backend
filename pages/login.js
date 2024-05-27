@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -21,6 +21,7 @@ import useLocalStorage from "../tool/useLocalStorage";
 
 const LoginLayout = () => {
   const router = useRouter();
+  const session = useSession();
   const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
   const [rememberMe, setRememberMe, clearRememberMe] =
@@ -39,13 +40,22 @@ const LoginLayout = () => {
       redirect: false,
     });
     console.log("result :", result);
-    if (result?.error === "NoPermission") return handleShowModal("NoPermission");
+    if (result?.error === "NoPermission")
+      return handleShowModal("NoPermission");
 
     if (result?.ok) return handleShowModal("success");
 
     form.reset();
     handleShowModal("wrong");
   };
+
+  useEffect(() => {
+    if (!session || !session.data?.user?.permission) return () => {
+      localStorage.removeItem("permission")
+    };
+
+    localStorage.setItem("permission", JSON.stringify(session.data.user.permission))
+  }, [session]);
 
   return (
     <Row className="g-0">

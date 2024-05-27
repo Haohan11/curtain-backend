@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import { Row, Col } from "react-bootstrap";
 
 import { transImageUrl } from "../../tool/transImageUrl";
-// import { EnvModal } from "../../components/envModal";
 import currentTable from "@/data-list/globalVariable/currentTable";
 
 import { getSession } from "next-auth/react";
@@ -15,7 +14,7 @@ import { getSession } from "next-auth/react";
 import { getDataByTable } from "@/data-list/core/request";
 import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
-import { useModals } from "@/tool/hooks";
+import { useModals, usePermission } from "@/tool/hooks";
 const EnvModal = dynamic(
   async () => {
     const { EnvModal } = await import("../../components/envModal");
@@ -31,6 +30,7 @@ const EnvironmentPage = ({ list }) => {
   const emptyList = list.length === 0;
 
   const router = useRouter();
+  const permission = usePermission();
   const { mode } = router.query;
   const currentMode = ["create", "edit"].includes(mode) ? mode : "none";
 
@@ -45,8 +45,6 @@ const EnvironmentPage = ({ list }) => {
 
   const [editEnvId, setEditEnvId] = useState();
   const editEnvData = list.find((item) => item.id === editEnvId);
-
-  const judge = true;
 
   return (
     <>
@@ -85,7 +83,7 @@ const EnvironmentPage = ({ list }) => {
                 <div className="text-center fs-4">目前沒有資料</div>
               )}
             </div>
-            {judge && (
+            {permission?.environment?.modify && (
               <div
                 className="position-absolute w-100 p-3 fs-3 fw-bold left-0 bottom-0 text-center bg-primary text-white cursor-pointer"
                 onClick={

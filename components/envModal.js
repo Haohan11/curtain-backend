@@ -9,14 +9,13 @@ import { Stage, Layer, Line, Circle } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
 
 import { useSession } from "next-auth/react";
-
 import { useFormik } from "formik";
 
 import { createDataRequest, updateDataRequest } from "@/data-list/core/request";
 
 import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
-import { useModals } from "@/tool/hooks";
+import { useModals, usePermission } from "@/tool/hooks";
 
 const anchorConfig = {
   radius: 5,
@@ -40,6 +39,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const { handleShowModal, handleCloseModal, isModalOpen } = useModals();
 
   const router = useRouter();
+  const permission = usePermission();
+  const allowModify = permission?.environment?.modify;
   const goCreateMode = () => router.push("?mode=create");
   const goNoneMode = () => router.push("");
 
@@ -228,15 +229,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     scaleDrawItem();
   }, [scaleState]);
 
-  const judge = '' 
-  // "disabled"
-
   const Panel = (
     <form
       onSubmit={formik.handleSubmit}
       className="p-4 h-100 fw-bold d-flex flex-column"
     >
-      <fieldset disabled={judge}>
+      <fieldset disabled={!allowModify}>
         {hasEnvImage ? (
           <>
             <div
@@ -510,13 +508,17 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           none: (
             <div className="h-100 flex-center">
               <div
-                className="h-75 w-75 flex-center flex-column fs-1 fw-bold text-center  border-gray-600 border-2 text-gray-600 rounded-3 cursor-pointer"
+                className={`h-75 w-75 flex-center flex-column fs-1 fw-bold text-center  border-gray-600 border-2 text-gray-600 rounded-3 ${allowModify && "cursor-pointer"}`}
                 style={{ border: "dashed" }}
-                onClick={goCreateMode}
+                {...(allowModify && { onClick: goCreateMode })}
               >
-                <p>請從左側選擇要編輯的場景</p>
-                <p>或是</p>
-                <p>點此新增場景</p>
+                <p>請從左側選擇要{allowModify ? "編輯" : "檢視"}的場景</p>
+                {allowModify &&
+                  <>
+                    <p>或是</p>
+                    <p>點此新增場景</p>
+                  </>
+                }
               </div>
             </div>
           ),

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { useTable, ColumnInstance, Row } from "react-table";
+import { useTable } from "react-table";
 import { CustomHeaderColumn } from "./columns/CustomHeaderColumn";
 import { CustomRow } from "./columns/CustomRow";
-import { User } from "../core/_models";
 import { useListView } from "../core/ListViewProvider";
 import { TablePagination } from "../components/pagination/TablePagination";
 import { useTableData } from "@/data-list/core/tableDataProvider";
@@ -13,46 +12,50 @@ import { getDataRequest } from "../core/request";
 
 import currentTable from "../globalVariable/currentTable";
 import dict from "../dictionary/tableDictionary";
-
-  // import { useSession } from 'next-auth/react'
-// import { useRouter } from 'next/router'
+import { usePermission } from "@/tool/hooks";
 
 const { column } = dict;
 
-const fetchTableData = async (token, { page = 1, size = 5, keyword = "",sort, item, isEnable }) =>
-  await getDataRequest(token, { page, size, keyword,sort, item, isEnable });
+const fetchTableData = async (
+  token,
+  { page = 1, size = 5, keyword = "", sort, item, isEnable }
+) => await getDataRequest(token, { page, size, keyword, sort, item, isEnable });
 
-const Table = () => {
+const Table = ({ setTrigger }) => {
   const { data, status } = useSession();
   const token = data?.user?.accessToken;
 
   const router = useRouter();
   const { setItemIdForUpdate } = useListView();
   const closeModal = () => setItemIdForUpdate(undefined);
+
   const tableName = currentTable.get();
   const columns = column[tableName];
   const { tableData, setTableData } = useTableData();
   const [totalPages, setTotalPages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const permission = usePermission();
+  
+  useEffect(() => {
+    if (!permission || !router) return;
 
+    const index = columns.findIndex((col) => col.id === "actions");
+    if (index === -1) return;
 
-  // const {permission} = useSession()
-  // const {session} = useSession();
-  // const router = useRouter();
+    router.asPath.includes("stock") &&
+      !permission.stock?.modify &&
+      columns.splice(index, 1);
+    router.asPath.includes("environment") &&
+      !permission.environment?.modify &&
+      columns.splice(index, 1);
+    router.asPath.includes("employee") &&
+      !permission.account?.modify &&
+      columns.splice(index, 1);
 
-
-
-  // useEffect(()=>{
-  //   if(router.asPath.includes('stock')&&session.data.permission.stock.motify > 0){
-  //  columns.shift();
-  // }
-  //   if(router.asPath.includes('environment')&&session.data.permission.environment.motify > 0){
-  //     //  columns.shift();
-  // }
-  //   if(router.asPath.includes('employee')&&session.data.permission.account.motify > 0){
-  //     //  columns.shift();
-  // }
-  // },[router])
+    // trigger table to rerender
+    setTrigger(`${columns.length}_${tableName}`);
+  }, [permission, router]);
 
   useEffect(() => {
     if (!router.isReady || !token) return;
@@ -122,7 +125,6 @@ const Table = () => {
         </table>
       </div>
       <TablePagination totalPages={totalPages} />
-      {/* {isLoading && <UsersListLoading />} */}
     </div>
   );
 };

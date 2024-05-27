@@ -59,6 +59,7 @@ export const authOptions = {
       }
       return true;
     },
+
     async jwt({ token, trigger, session, user }) {
       if (user) {
         return {
@@ -66,6 +67,7 @@ export const authOptions = {
           userId: user.id,
           userName: user.name,
           accessToken: user.token,
+          permission: user.permission,
           _exp: user._exp,
         };
       }
@@ -77,6 +79,7 @@ export const authOptions = {
       session.user.userId = token.userId;
       session.user.userName = token.userName;
       session.user.accessToken = token.accessToken;
+      session.user.permission= token.permission,
       session._exp = token._exp;
 
       return session;

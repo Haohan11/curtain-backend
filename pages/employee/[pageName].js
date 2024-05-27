@@ -35,7 +35,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params: { pageName } }) => {
   const tableNameDict = {
-    info: "accounts",
+    info: "account",
     role: "role",
   };
   return {

@@ -1343,12 +1343,6 @@ const EditModalForm = ({ isUserLoading }) => {
                   );
                 })}
             </div>
-
-            // <div>
-            //   <pre>
-            //     {JSON.stringify(formik.values["permission"], null, 4)}
-            //   </pre>
-            // </div>
           )}
 
           {config.comment_label && (

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { ListViewProvider, useListView } from './core/ListViewProvider'
 import { TableDataProvider } from './core/tableDataProvider'
 import { ListHeader } from './components/header/ListHeader'
@@ -23,13 +25,14 @@ const DynamicToolbarWrapper = dynamic(
 );
 
 const List = () => {
-  const { itemIdForUpdate } = useListView()
+  const { itemIdForUpdate } = useListView();
+  const [trigger, setTrigger] = useState(0);
 
   return (
     <>
       <div className='px-8'>
         <ListHeader />
-        <Table />
+        <Table key={trigger} setTrigger={setTrigger}/>
       </div>
       {itemIdForUpdate !== undefined && <EditModal />}
     </>

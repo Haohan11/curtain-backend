@@ -18,7 +18,7 @@ const comment_label = "備註";
 
 export const fullData = {
   // -&anchor
-  products: {
+  stock: {
     pageTitle: "商品維護",
     searchPlaceholder: "商品",
     createHeaderText: "商品資料",
@@ -218,7 +218,7 @@ export const fullData = {
     },
   },
   // -&anchor
-  accounts: {
+  account: {
     pageTitle: "員工資料",
     searchPlaceholder: "員工",
     createHeaderText: "員工資料",
