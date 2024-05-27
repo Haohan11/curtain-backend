@@ -215,6 +215,21 @@ const EditModalForm = ({ isUserLoading }) => {
   const [colorImagePath, setColorImagePath] = useState([
     { index: 0, imagePath: [...Array(3)] },
   ]);
+  const imagesValid = (() => {
+    if (tableName !== "stock") return true;
+
+    if (colorImagePath.length === 0) return false;
+
+    if (
+      colorImagePath.length === 1 &&
+      colorImagePath[0].imagePath.some((file) => !file)
+    )
+      return false;
+
+    return !colorImagePath.some((cp) =>
+      [1, 2].includes(cp.imagePath.filter((file) => !file).length)
+    );
+  })();
 
   const addColorRow = () => {
     const newIndex = (colorRowCount.current += editMode ? -1 : 1);
@@ -725,7 +740,7 @@ const EditModalForm = ({ isUserLoading }) => {
 
           {config.color_label && (
             <div className="fv-row mb-7">
-              <div className="fw-bold fs-6 mb-2">{config.color_label}</div>
+              <InputLabel text={config.color_label} required />
               <div className="row gy-4 mb-3">
                 {{
                   create: colorImagePath,
@@ -836,7 +851,7 @@ const EditModalForm = ({ isUserLoading }) => {
                           </label>
                         )
                       )}
-                      <div className="ms-3 w-100">
+                      <div className="ms-3 flex-grow-1">
                         {!colorIsEmpty ? (
                           <Select
                             className={clsx(
@@ -962,6 +977,9 @@ const EditModalForm = ({ isUserLoading }) => {
                 />
                 新增商品顏色
               </div>
+              {!imagesValid && (
+                <div className="pt-2 text-danger">請提供正確的圖片數量</div>
+              )}
             </div>
           )}
 
@@ -1316,9 +1334,11 @@ const EditModalForm = ({ isUserLoading }) => {
                                               newPermi[`${item.id}`] =
                                               newPermi[`${child.id}`] =
                                                 isChecked;
-                                            [...document.querySelectorAll(
-                                              `[data-group=group-${child.id}]`
-                                            )].map(el => el.checked = false);
+                                            [
+                                              ...document.querySelectorAll(
+                                                `[data-group=group-${child.id}]`
+                                              ),
+                                            ].map((el) => (el.checked = false));
                                           }
 
                                           newPermi[`${grand.id}`] = isChecked;
@@ -1380,7 +1400,8 @@ const EditModalForm = ({ isUserLoading }) => {
               isUserLoading ||
               formik.isSubmitting ||
               !formik.isValid ||
-              !formik.touched
+              !formik.touched ||
+              !imagesValid
             }
           >
             <span className="indicator-label">確認</span>
