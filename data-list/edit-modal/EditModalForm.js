@@ -215,21 +215,39 @@ const EditModalForm = ({ isUserLoading }) => {
   const [colorImagePath, setColorImagePath] = useState([
     { index: 0, imagePath: [...Array(3)] },
   ]);
-  const imagesValid = (() => {
-    if (tableName !== "stock") return true;
+  const imagesValid = {
+    create: () => {
+      if (tableName !== "stock") return true;
 
-    if (colorImagePath.length === 0) return false;
+      if (colorImagePath.length === 0) return false;
 
-    if (
-      colorImagePath.length === 1 &&
-      colorImagePath[0].imagePath.some((file) => !file)
-    )
-      return false;
+      if (
+        colorImagePath.length === 1 &&
+        colorImagePath[0].imagePath.some((file) => !file)
+      )
+        return false;
 
-    return !colorImagePath.some((cp) =>
-      [1, 2].includes(cp.imagePath.filter((file) => !file).length)
-    );
-  })();
+      return !colorImagePath.some((cp) =>
+        [1, 2].includes(cp.imagePath.filter((file) => !file).length)
+      );
+    },
+    edit: () => {
+      if (tableName !== "stock") return true;
+
+      const colorList = formik.values["colorList"];
+      if (colorList.length === 0) return false;
+
+      if (colorList.length === 1) {
+        const { stock_image, color_image, removal_image } = colorList[0];
+        return ![!stock_image, !color_image, !removal_image].includes(true)
+      }
+
+      return !colorList.some(row => {
+        const { stock_image, color_image, removal_image } = row;
+        [1, 2].includes([stock_image, color_image, removal_image].filter(file => !file).length)
+      })
+    },
+  }[currentMode]();
 
   const addColorRow = () => {
     const newIndex = (colorRowCount.current += editMode ? -1 : 1);
