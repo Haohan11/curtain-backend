@@ -239,12 +239,12 @@ const EditModalForm = ({ isUserLoading }) => {
 
       if (colorList.length === 1) {
         const { stock_image, color_image, removal_image } = colorList[0];
-        return ![!stock_image, !color_image, !removal_image].includes(true)
+        return ![stock_image, color_image, removal_image].some(img => !img)
       }
 
       return !colorList.some(row => {
         const { stock_image, color_image, removal_image } = row;
-        [1, 2].includes([stock_image, color_image, removal_image].filter(file => !file).length)
+        return [1, 2].includes([stock_image, color_image, removal_image].filter(file => !file).length)
       })
     },
   }[currentMode]();
@@ -996,7 +996,7 @@ const EditModalForm = ({ isUserLoading }) => {
                 新增商品顏色
               </div>
               {!imagesValid && (
-                <div className="pt-2 text-danger">請提供正確的圖片數量</div>
+                <div className="pt-2 text-danger">請提供正確數量的圖片</div>
               )}
             </div>
           )}
