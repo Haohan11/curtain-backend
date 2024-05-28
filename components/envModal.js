@@ -230,11 +230,11 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   }, [scaleState]);
 
   const Panel = (
-    <form
-      onSubmit={formik.handleSubmit}
-      className="p-4 h-100 fw-bold d-flex flex-column"
-    >
-      <fieldset disabled={!allowModify}>
+    <form onSubmit={formik.handleSubmit} className="h-100">
+      <fieldset
+        disabled={!allowModify}
+        className="h-100 p-4 pb-0 fw-bold d-flex flex-column"
+      >
         {hasEnvImage ? (
           <>
             <div
@@ -293,7 +293,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 </Layer>
               </Stage>
             </div>
-            <div className="d-flex">
+            <div className="d-flex flex-wrap">
               {envImage && (
                 <label className="btn btn-primary w-25 me-5">
                   更換圖片
@@ -322,7 +322,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 type="button"
                 className={`btn btn-${
                   allowDraw ? "secondary" : "primary"
-                } w-100`}
+                } flex-grow-1`}
                 onClick={() => {
                   toggleAllowDraw();
                   cutImage();
@@ -361,7 +361,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             />
           </label>
         )}
-        <div className="d-flex fs-2 pt-6 pb-4">
+        <div className="d-flex fs-2 pt-6 pb-2">
           <span className="text-gray-500 me-4">場景名稱:</span>
           <input
             {...formik.getFieldProps("name")}
@@ -411,10 +411,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             />
           </FormGroup>
         </div>
-        <label className="d-block fs-2 text-gray-500 mb-2">備註</label>
+        <label className="d-block fs-2 text-gray-500 mb-1">備註</label>
         <textarea
           {...formik.getFieldProps("comment")}
-          className="w-100 p-4 mb-8 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
+          className="w-100 py-2 px-4 mb-5 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
         ></textarea>
         <div className="d-flex">
           <button
@@ -508,17 +508,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           none: (
             <div className="h-100 flex-center">
               <div
-                className={`h-75 w-75 flex-center flex-column fs-1 fw-bold text-center  border-gray-600 border-2 text-gray-600 rounded-3 ${allowModify && "cursor-pointer"}`}
+                className={`h-75 w-75 flex-center flex-column fs-1 fw-bold text-center  border-gray-600 border-2 text-gray-600 rounded-3 ${
+                  allowModify && "cursor-pointer"
+                }`}
                 style={{ border: "dashed" }}
                 {...(allowModify && { onClick: goCreateMode })}
               >
                 <p>請從左側選擇要{allowModify ? "編輯" : "檢視"}的場景</p>
-                {allowModify &&
+                {allowModify && (
                   <>
                     <p>或是</p>
                     <p>點此新增場景</p>
                   </>
-                }
+                )}
               </div>
             </div>
           ),

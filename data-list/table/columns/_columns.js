@@ -201,7 +201,11 @@ export const colorColumns = [
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='顏色名稱' className='min-w-125px' />,
     accessor: 'name',
-  }
+  },
+  {
+    Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
+    accessor: 'comment',
+  },
 ]
 
 export const colorSchemeColumns = [
@@ -225,7 +229,7 @@ export const colorSchemeColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 
@@ -250,7 +254,7 @@ export const designColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 
@@ -275,7 +279,7 @@ export const materialColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 
@@ -304,7 +308,7 @@ export const supplierColumns= [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 
@@ -347,10 +351,6 @@ export const accountsColumns = [
     Header: (props) => <UserCustomHeader tableProps={props} title='電子郵箱' className='min-w-125px' />,
     accessor: 'email',
   },
-  {
-    Header: (props) => <UserCustomHeader tableProps={props} title='登入密碼' className='min-w-125px' />,
-    accessor: 'password',
-  },
 ]
 
 export const roleColumns = [
@@ -367,7 +367,7 @@ export const roleColumns = [
   },
   {
     Header: (props) => <UserCustomHeader tableProps={props} title='備註' className='min-w-125px' />,
-    accessor: 'comments',
+    accessor: 'comment',
   },
 ]
 
