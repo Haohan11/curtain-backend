@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "_metronic/layout/components/sidebar/sidebar-menu/SidebarMenuMain.js", "data-list/components/header/DataListToolbar.js"  ],
   "exclude": [
     "node_modules"
   ]
