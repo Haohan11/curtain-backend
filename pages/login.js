@@ -35,7 +35,7 @@ const LoginLayout = () => {
     data.rememberMe ? setRememberMe(data.account) : clearRememberMe();
     console.log("login data: ");
     console.log(data);
-    const result = await signIn("credentials", {
+    const result = await signIn("XiangYu-Backend", {
       ...data,
       redirect: false,
     });
