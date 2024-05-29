@@ -80,7 +80,7 @@ export const createDataRequest = async (token, values) => {
       if (!Array.isArray(value)) {
         formData.append(
           key,
-          typeof value === "object" && value !== null
+          typeof value === "object" && value !== null && !value instanceof File
             ? JSON.stringify(value)
             : value
         );
@@ -122,7 +122,7 @@ export const updateDataRequest = async (token, values) => {
     if (!Array.isArray(value)) {
       formData.append(
         key,
-        typeof value === "object" && value !== null
+        typeof value === "object" && value !== null && !value instanceof File
           ? JSON.stringify(value)
           : value
       );
