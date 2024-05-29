@@ -244,6 +244,7 @@ export const fullData = {
       password_placeholder: "輸入密碼",
     },
     validationSchema: Yup.object().shape({
+      preserve: Yup.boolean(),
       email: Yup.string().email("格式錯誤").required("此欄位必填"),
       name: Yup.string()
         .min(2, "至少 2 個字")
@@ -255,12 +256,16 @@ export const fullData = {
       phone_number: Yup.string()
         .matches(/^\d{10}$/, "僅限輸入 10 碼數字")
         .required("此欄位必填"),
-      password: Yup.string()
-        .matches(
-          /^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,
-          "至少 4 碼英數字"
-        )
-        .required("此欄位必填"),
+      password: Yup.string().when("preserve", {
+        is: false,
+        then: () => Yup.string()
+          .matches(
+            /^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,
+            "至少 4 碼英數字"
+          )
+          .required("此欄位必填"),
+        otherwise: () => Yup.string(),
+      }),
     }),
     formField: {
       name: "",

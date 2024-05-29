@@ -239,13 +239,16 @@ const EditModalForm = ({ isUserLoading }) => {
 
       if (colorList.length === 1) {
         const { stock_image, color_image, removal_image } = colorList[0];
-        return ![stock_image, color_image, removal_image].some(img => !img)
+        return ![stock_image, color_image, removal_image].some((img) => !img);
       }
 
-      return !colorList.some(row => {
+      return !colorList.some((row) => {
         const { stock_image, color_image, removal_image } = row;
-        return [1, 2].includes([stock_image, color_image, removal_image].filter(file => !file).length)
-      })
+        return [1, 2].includes(
+          [stock_image, color_image, removal_image].filter((file) => !file)
+            .length
+        );
+      });
     },
   }[currentMode]();
 
@@ -691,13 +694,18 @@ const EditModalForm = ({ isUserLoading }) => {
           {config.password_label && (
             <div className="fv-row mb-7">
               <ValidateInputField
-                required={config.password_required}
+                required={!editMode && config.password_required}
                 label={config.password_label}
                 type="password"
                 placeholder={config.password_placeholder}
                 name={"password"}
                 formik={formik}
               />
+              {
+                (formik.values["preserve"] = !(
+                  createMode || formik.values["password"]?.length > 0
+                ))
+              }
             </div>
           )}
 
