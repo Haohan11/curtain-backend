@@ -11,10 +11,11 @@ import {
   Button,
 } from "react-bootstrap";
 import { signIn, useSession, getSession } from "next-auth/react";
-import LoginPageLayout from "@/components/loginPageLayout";
 import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
 import Logo from "@/components/logo";
+
+import VersionCode from "@/components/VersionCode";
 
 import { useModals } from "@/tool/hooks";
 import useLocalStorage from "../tool/useLocalStorage";
@@ -50,11 +51,15 @@ const LoginLayout = () => {
   };
 
   useEffect(() => {
-    if (!session || !session.data?.user?.permission) return () => {
-      localStorage.removeItem("permission")
-    };
+    if (!session || !session.data?.user?.permission)
+      return () => {
+        localStorage.removeItem("permission");
+      };
 
-    localStorage.setItem("permission", JSON.stringify(session.data.user.permission))
+    localStorage.setItem(
+      "permission",
+      JSON.stringify(session.data.user.permission)
+    );
   }, [session]);
 
   return (
@@ -96,10 +101,11 @@ const LoginLayout = () => {
       </Col>
       <Col>
         <div className="vh-100 px-4 px-lg-6 flex-column">
-          {/* <div className="flex-center text-textgrey" style={{ height: "10vh" }}>
-                  {headContent()}
-                </div> */}
-          <div className="overflow-y-auto scroll" style={{ height: "80vh" }}>
+          <div
+            className="flex-center text-textgrey"
+            style={{ height: "8vh" }}
+          ></div>
+          <div className="overflow-y-auto scroll" style={{ height: "84vh" }}>
             <Form
               className="h-100 flex-center flex-column text-textgrey pb-10"
               id="loginForm"
@@ -194,10 +200,13 @@ const LoginLayout = () => {
               </ModalWrapper>
             </Form>
           </div>
-          <div className="flex-center" style={{ height: "10vh" }}>
-            <p className="text-textgrey">
+          <div className="flex-center" style={{ height: "8vh" }}>
+            <p style={{ color: "grey" }}>
               Copyright © 2024 XiangYu Drapery. All rights reserved
             </p>
+          </div>
+          <div className="position-fixed py-2 px-3 bottom-0 end-0 fs-6-xs" style={{color: "grey"}}>
+            <VersionCode />
           </div>
         </div>
       </Col>

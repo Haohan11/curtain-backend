@@ -5,6 +5,18 @@ const { fetchUrl } = dict;
 const BASEURL = process.env.NEXT_PUBLIC_BACKENDURL;
 const getTableUrl = () => fetchUrl[currentTable.get()];
 
+export const alterSyncTables = async () => {
+  const URL = `${BASEURL}/alter-tables`;
+  try {
+    const res = await fetch(URL);
+    if (!res.ok) return false;
+    return await res.json();
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
 export const getDataRequest = async (
   token,
   { page, size, keyword, sort, item, isEnable }
@@ -75,7 +87,7 @@ export const createDataRequest = async (token, values) => {
         continue;
       }
     } catch (error) {
-      return !!console.warn(error)
+      return !!console.warn(error);
     }
 
     value.forEach((item) => {
