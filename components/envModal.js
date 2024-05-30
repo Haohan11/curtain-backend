@@ -17,18 +17,7 @@ import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
 import { useModals, usePermission } from "@/tool/hooks";
 
-const generateColorStop = (stripe, color1 = "#333", color2 = "#AAA") => {
-  return [...new Array(stripe * 2)].reduce((colorStop, _, index) => {
-    colorStop.push(
-      index % 2 === 0
-        ? index / (stripe * 2)
-        : (index - 1) % 4 === 0
-        ? color1
-        : color2
-    );
-    return colorStop;
-  }, []);
-};
+import patternImage from "@/public/image/pattern.jpg";
 
 const anchorConfig = {
   radius: 8,
@@ -43,7 +32,6 @@ const zoneConfig = {
   strokeWidth: 1.5,
   lineCap: "round",
   lineJoin: "round",
-  fillLinearGradientColorStops: generateColorStop(100),
 };
 
 const drawLineConfig = {
@@ -298,19 +286,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                     <Line
                       key={index}
                       {...zoneConfig}
-                      fillLinearGradientEndPoint={(() => {
-                        if (!canvasFrame) return { x: 0, y: 0 };
-                        const radius = Math.sqrt(
-                          Math.pow(canvasFrame.clientWidth, 2) +
-                            Math.pow(canvasFrame.clientHeight, 2)
-                        );
-
-                        return {
-                          x: Math.cos(angle* 0.005* Math.PI) * radius,
-                          y: Math.sin(angle* 0.005* Math.PI) * radius,
-                        };
-                      })()}
                       points={cropLine}
+                      fillPatternRotation={angle}
+                      fillPatternImage={(() => {
+                        const img = document.createElement("img")
+                        img.src = "/image/pattern.jpg"
+
+                        return img
+                      })()}
                     />
                   ))}
                   {lines.length > 0 && (
@@ -327,11 +310,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               </Stage>
             </div>
             <div className="py-4 fs-5 fw-normal d-flex align-items-center">
+              <div style={{width: "100px", height: "100px"}}>
+                {(() => {
+                  const img = <img src="/image/pattern.jpg" style={{opacity: 0.5}}/>
+                })()}
+              </div>
               <input
                 id="angle"
                 type="range"
                 defaultValue={0}
-                test={console.log(angle)}
+                max={360}
                 onChange={(e) => setAngle(e.target.value)}
               />
               <label htmlFor="angle" className="ms-2">
