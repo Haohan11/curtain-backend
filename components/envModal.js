@@ -31,9 +31,8 @@ const generateColorStop = (stripe, color1 = "#333", color2 = "#AAA") => {
 };
 
 const anchorConfig = {
-  radius: 5,
-  fill: "gray",
-  strokeWidth: 1,
+  radius: 8,
+  fill: "steelblue",
   draggable: true,
 };
 
@@ -49,8 +48,8 @@ const zoneConfig = {
 
 const drawLineConfig = {
   dash: [0, 0, 3, 3],
-  stroke: "#df4b26",
-  strokeWidth: 1.5,
+  stroke: "blue",
+  strokeWidth: 2.5,
   lineCap: "round",
   lineJoin: "round",
 };
@@ -94,6 +93,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
 
   const [canvasFrame, setCanvasFrame] = useState();
   const canvasInitWidth = useRef(width);
+
+  const [angle, setAngle] = useState(0);
 
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
@@ -270,7 +271,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           <>
             <div
               ref={setCanvasFrame}
-              className="position-relative border border-2 rounded-4 bg-gray-300 border-gray-500 mb-4 align-self-center"
+              className={`position-relative border border-2 rounded-4 bg-gray-300 border-${
+                allowDraw ? "danger" : "gray-500"
+              } align-self-center`}
               style={{
                 width: "100%",
                 maxWidth: "1024px",
@@ -295,10 +298,18 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                     <Line
                       key={index}
                       {...zoneConfig}
-                      fillLinearGradientStartPoint={{ x: 0 }}
-                      fillLinearGradientEndPoint={{
-                        x: canvasFrame?.clientWidth ?? 0,
-                      }}
+                      fillLinearGradientEndPoint={(() => {
+                        if (!canvasFrame) return { x: 0, y: 0 };
+                        const radius = Math.sqrt(
+                          Math.pow(canvasFrame.clientWidth, 2) +
+                            Math.pow(canvasFrame.clientHeight, 2)
+                        );
+
+                        return {
+                          x: Math.cos(angle* 0.005* Math.PI) * radius,
+                          y: Math.sin(angle* 0.005* Math.PI) * radius,
+                        };
+                      })()}
                       points={cropLine}
                     />
                   ))}
@@ -314,6 +325,18 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                   ))}
                 </Layer>
               </Stage>
+            </div>
+            <div className="py-4 fs-5 fw-normal d-flex align-items-center">
+              <input
+                id="angle"
+                type="range"
+                defaultValue={0}
+                test={console.log(angle)}
+                onChange={(e) => setAngle(e.target.value)}
+              />
+              <label htmlFor="angle" className="ms-2">
+                調整窗簾角度
+              </label>
             </div>
             <div className="d-flex flex-wrap">
               {envImage && (
