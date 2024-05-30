@@ -695,7 +695,14 @@ const EditModalForm = ({ isUserLoading }) => {
             <div className="fv-row mb-7">
               <ValidateInputField
                 required={!editMode && config.password_required}
-                label={config.password_label}
+                label={
+                  <>
+                    {config.password_label}
+                    <span className="ms-2 fw-normal" style={{ color: "grey" }}>
+                      ( 不更改請留空 )
+                    </span>
+                  </>
+                }
                 type="password"
                 placeholder={config.password_placeholder}
                 name={"password"}
