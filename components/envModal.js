@@ -17,11 +17,42 @@ import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
 import { useModals, usePermission } from "@/tool/hooks";
 
+const generateColorStop = (stripe, color1 = "#333", color2 = "#AAA") => {
+  return [...new Array(stripe * 2)].reduce((colorStop, _, index) => {
+    colorStop.push(
+      index % 2 === 0
+        ? index / (stripe * 2)
+        : (index - 1) % 4 === 0
+        ? color1
+        : color2
+    );
+    return colorStop;
+  }, []);
+};
+
 const anchorConfig = {
   radius: 5,
   fill: "gray",
   strokeWidth: 1,
   draggable: true,
+};
+
+const zoneConfig = {
+  dash: [0, 0, 3, 3],
+  closed: true,
+  stroke: "#fff",
+  strokeWidth: 1.5,
+  lineCap: "round",
+  lineJoin: "round",
+  fillLinearGradientColorStops: generateColorStop(100),
+};
+
+const drawLineConfig = {
+  dash: [0, 0, 3, 3],
+  stroke: "#df4b26",
+  strokeWidth: 1.5,
+  lineCap: "round",
+  lineJoin: "round",
 };
 
 const initValue = {
@@ -263,25 +294,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                   {cropLines.map((cropLine, index) => (
                     <Line
                       key={index}
-                      dash={[0, 0, 3, 3]}
-                      fill="#33333388"
-                      closed
+                      {...zoneConfig}
+                      fillLinearGradientStartPoint={{ x: 0 }}
+                      fillLinearGradientEndPoint={{
+                        x: canvasFrame?.clientWidth ?? 0,
+                      }}
                       points={cropLine}
-                      stroke="#fff"
-                      strokeWidth={1.5}
-                      lineCap="round"
-                      lineJoin="round"
                     />
                   ))}
                   {lines.length > 0 && (
-                    <Line
-                      dash={[0, 0, 3, 3]}
-                      points={lines}
-                      stroke="#df4b26"
-                      strokeWidth={1.5}
-                      lineCap="round"
-                      lineJoin="round"
-                    />
+                    <Line points={lines} {...drawLineConfig} />
                   )}
                   {anchors.map((anchor, index) => (
                     <Circle
