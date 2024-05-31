@@ -88,8 +88,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [canvasFrame, setCanvasFrame] = useState();
   const canvasInitWidth = useRef(width);
 
-  const [angle, setAngle] = useState(0);
-
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
 
@@ -106,8 +104,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const clearCropLines = () => setCropLines((staticCropline.current = []));
 
   const [previewMask, setPreviewMask] = useState();
+
+  const [angle, setAngle] = useState(0);
   const [skewX, setSkewX] = useState(0);
   const [skewY, setSkewY] = useState(0);
+
+  const resetTranform = () => {
+    setAngle(0)
+    setSkewX(0)
+    setSkewY(0)
+  }
 
   const clearCanvas = () => {
     clearCircle();
@@ -136,6 +142,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       },
     })[state]();
   };
+
   const moveAnchor = (e, index) => {
     if (!allowDraw) return;
     const { x, y } = e.target.getStage().getPointerPosition();
@@ -344,18 +351,18 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 </Layer>
               </Stage>
             </div>
-            <div className="py-4 fs-5 fw-normal d-flex justify-content-around align-items-center">
+            {!0 && <div key={[angle, skewX, skewY].some(item => !!item) ? "normal" : "reset"} className="pt-4 fs-5 fw-normal d-flex justify-content-between align-items-center">
               {[
                 {
                   id: "angle",
-                  defaultValue: 0,
+                  defaultValue: angle,
                   max: 180,
                   onChange: (e) => setAngle(e.target.value),
                   label: "旋轉角度",
                 },
                 {
                   id: "skewX",
-                  defaultValue: 0,
+                  defaultValue: skewX,
                   min: -45,
                   max: 45,
                   onChange: (e) => setSkewX(e.target.value),
@@ -363,22 +370,23 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 },
                 {
                   id: "skewY",
-                  defaultValue: 0,
+                  defaultValue: skewY,
                   min: -45,
                   max: 45,
                   onChange: (e) => setSkewY(e.target.value),
                   label: "垂直偏移",
                 },
               ].map((item) => (
-                <div key={item.id}>
-                  <input type="range" {...item} />
-                  <label htmlFor={item.id} className="ms-2">
+                <div key={item.id} className="flex-center">
+                  <label htmlFor={item.id} className="me-3">
                     {item.label}
                   </label>
+                  <input type="range" {...item} />
                 </div>
               ))}
-            </div>
-            <div className="d-flex flex-wrap">
+              <button type="button" className="btn px-8 text-white" style={{backgroundColor: "var(--bs-gray-500)"}} onClick={resetTranform}>重置</button>
+            </div>}
+            <div className="d-flex flex-wrap mt-4">
               {envImage && (
                 <label className="btn btn-primary w-25 me-5">
                   更換圖片
