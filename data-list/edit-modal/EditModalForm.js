@@ -698,9 +698,14 @@ const EditModalForm = ({ isUserLoading }) => {
                 label={
                   <>
                     {config.password_label}
-                    <span className="ms-2 fw-normal" style={{ color: "grey" }}>
-                      ( 不更改請留空 )
-                    </span>
+                    {editMode && (
+                      <span
+                        className="ms-2 fw-normal"
+                        style={{ color: "grey" }}
+                      >
+                        ( 不更改請留空 )
+                      </span>
+                    )}
                   </>
                 }
                 type="password"
