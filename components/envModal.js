@@ -17,7 +17,13 @@ import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
 import { useModals, usePermission } from "@/tool/hooks";
 
-import patternImage from "@/public/image/pattern.jpg";
+const generatePattern = (stripe, color1 = "#333", color2 = "#aaa") => {
+  return [...new Array(stripe * 2)].reduce((colorStop, _, index) => {
+    return `${colorStop} ${index % 2 === 0 ? color1 : color2} ${
+      (index * 50) / stripe
+    }%${index === stripe * 2 - 1 ? "" : ","}`;
+  }, "to right,");
+};
 
 const anchorConfig = {
   radius: 8,
@@ -99,9 +105,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [cropLines, setCropLines] = useState(cropline || []);
   const clearCropLines = () => setCropLines((staticCropline.current = []));
 
+  const [previewMask, setPreviewMask] = useState();
+  const [skewX, setSkewX] = useState(0);
+  const [skewY, setSkewY] = useState(0);
+
   const clearCanvas = () => {
     clearCircle();
     clearCropLines();
+    setPreviewMask(null);
   };
 
   const addAnchor = (e) => {
@@ -136,7 +147,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   };
 
   const cutImage = () => {
-    if (cropLines.length === 0 || !envImage) return;
+    if (!canvasFrame || cropLines.length === 0 || !envImage) return;
 
     const canvas = document.createElement("canvas");
     canvas.width = canvasFrame.clientWidth;
@@ -159,6 +170,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       ctx.fill();
       ctx.restore();
     });
+
+    setPreviewMask(canvas.toDataURL());
 
     canvas.toBlob((blob) => {
       const file = new File([blob], "new_mask.png", { type: "image/png" });
@@ -249,6 +262,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     scaleDrawItem();
   }, [scaleState]);
 
+  useEffect(() => {
+    cutImage();
+  }, [cropLines]);
+
   const Panel = (
     <form onSubmit={formik.handleSubmit} className="h-100">
       <fieldset
@@ -275,6 +292,31 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 src={envImage}
                 className="object-fit-contain pe-none"
               />
+              {previewMask && (
+                <div
+                  className="position-relative w-100 h-100 pe-none overflow-hidden"
+                  style={{
+                    maskImage: `url('${previewMask}')`,
+                    maskRepeat: "no-repeat",
+                    maskSize: "contain",
+                  }}
+                >
+                  <div
+                    className="pe-none position-absolute"
+                    style={{
+                      top: "-50%",
+                      left: "-50%",
+                      height: "200%",
+                      width: "200%",
+                      transform: `rotate(${angle}deg) skew(${skewX}deg, ${skewY}deg)`,
+                      backgroundImage: `linear-gradient(${generatePattern(
+                        80
+                      )})`,
+                    }}
+                  >
+                  </div>
+                </div>
+              )}
               <Stage
                 className="position-absolute top-0 left-0"
                 width={canvasFrame?.nodeType ? canvasFrame.clientWidth : 0}
@@ -287,13 +329,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                       key={index}
                       {...zoneConfig}
                       points={cropLine}
-                      fillPatternRotation={angle}
-                      fillPatternImage={(() => {
-                        const img = document.createElement("img")
-                        img.src = "/image/pattern.jpg"
-
-                        return img
-                      })()}
                     />
                   ))}
                   {lines.length > 0 && (
@@ -309,22 +344,39 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 </Layer>
               </Stage>
             </div>
-            <div className="py-4 fs-5 fw-normal d-flex align-items-center">
-              <div style={{width: "100px", height: "100px"}}>
-                {(() => {
-                  const img = <img src="/image/pattern.jpg" style={{opacity: 0.5}}/>
-                })()}
-              </div>
-              <input
-                id="angle"
-                type="range"
-                defaultValue={0}
-                max={360}
-                onChange={(e) => setAngle(e.target.value)}
-              />
-              <label htmlFor="angle" className="ms-2">
-                調整窗簾角度
-              </label>
+            <div className="py-4 fs-5 fw-normal d-flex justify-content-around align-items-center">
+              {[
+                {
+                  id: "angle",
+                  defaultValue: 0,
+                  max: 180,
+                  onChange: (e) => setAngle(e.target.value),
+                  label: "旋轉角度",
+                },
+                {
+                  id: "skewX",
+                  defaultValue: 0,
+                  min: -45,
+                  max: 45,
+                  onChange: (e) => setSkewX(e.target.value),
+                  label: "水平偏移",
+                },
+                {
+                  id: "skewY",
+                  defaultValue: 0,
+                  min: -45,
+                  max: 45,
+                  onChange: (e) => setSkewY(e.target.value),
+                  label: "垂直偏移",
+                },
+              ].map((item) => (
+                <div key={item.id}>
+                  <input type="range" {...item} />
+                  <label htmlFor={item.id} className="ms-2">
+                    {item.label}
+                  </label>
+                </div>
+              ))}
             </div>
             <div className="d-flex flex-wrap">
               {envImage && (
@@ -358,10 +410,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 } flex-grow-1`}
                 onClick={() => {
                   toggleAllowDraw();
-                  cutImage();
                 }}
               >
-                {!allowDraw ? "開始" : "停止"}繪製
+                {!allowDraw ? "開始繪製" : "繪製完成"}
               </button>
             </div>
           </>
