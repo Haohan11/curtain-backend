@@ -97,10 +97,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
 
   const [allowTrans, setAllowTrans] = useState(false);
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
-  const [transAnchor, setTransAnchor] = useState();
-  const oriTransAnchor = useRef();
-  const initTransAnchor = () => {
-    if (!canvasFrame || oriTransAnchor.current) return;
+  const [transAnchor, setTransAnchor] = useState([]);
+  const addTransAnchor = () => {
+    if (!canvasFrame) return;
     const x1 = canvasFrame.clientWidth * 0.25;
     const x2 = canvasFrame.clientWidth * 0.75;
     const y1 = canvasFrame.clientHeight * 0.25;
@@ -111,8 +110,24 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       { x: x2, y: y2 },
       { x: x1, y: y2 },
     ];
-    oriTransAnchor.current = position.map(({x,y}) => [x,y]);
-    setTransAnchor(position);
+    setTransAnchor((prev) => [
+      ...prev,
+      {
+        originalPos: position.map(({ x, y }) => [x, y]),
+        targetPos: position,
+      },
+    ]);
+  };
+  const moveTransAnchor = (e, index, anchorIndex) => {
+    if (!allowTrans) return;
+    const { x, y } = e.target.getStage().getPointerPosition();
+    setTransAnchor((prev) => {
+      const newArray = [...prev];
+      const newTargetPos = [...newArray[index].targetPos]
+      newTargetPos[anchorIndex] = { x, y };
+      newArray[index].targetPos = newTargetPos;
+      return newArray;
+    });
   };
 
   const [allowDraw, setAllowDraw] = useState(false);
@@ -174,16 +189,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     if (!allowDraw) return;
     const { x, y } = e.target.getStage().getPointerPosition();
     setAnchors((prev) => {
-      const newArray = [...prev];
-      newArray[index] = { x, y };
-      return newArray;
-    });
-  };
-
-  const moveTransAnchor = (e, index) => {
-    if (!allowTrans) return;
-    const { x, y } = e.target.getStage().getPointerPosition();
-    setTransAnchor((prev) => {
       const newArray = [...prev];
       newArray[index] = { x, y };
       return newArray;
@@ -310,11 +315,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     cutImage();
   }, [cropLines]);
 
-  // initialize transAnchor
-  useEffect(() => {
-    initTransAnchor();
-  }, [canvasFrame]);
-
   const Panel = (
     <form onSubmit={formik.handleSubmit} className="h-100">
       <fieldset
@@ -350,25 +350,26 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                     maskSize: "contain",
                   }}
                 >
-                  <div
-                    className="position-relative "
-                    style={{
-                      width: "125%",
-                      height: "125%",
-                      top: 0,
-                      left: 0,
-                      transformOrigin: "0 0",
-                      ...(Array.isArray(transAnchor) && Array.isArray(oriTransAnchor.current) && {
+                  {transAnchor.map(({ originalPos, targetPos }, index) => (
+                    <div
+                      key={index}
+                      className="position-absolute"
+                      style={{
+                        width: "125%",
+                        height: "125%",
+                        top: 0,
+                        left: 0,
+                        transformOrigin: "0 0",
                         transform: getMatirx3dText(
-                          oriTransAnchor.current,
-                          transAnchor.map(({ x, y }) => [x, y]),
+                          originalPos,
+                          targetPos.map(({ x, y }) => [x, y])
                         ),
                         backgroundImage: `linear-gradient(${generatePattern(
                           60
-                        )})`
-                      }),
-                    }}
-                  ></div>
+                        )})`,
+                      }}
+                    ></div>
+                  ))}
                 </div>
               )}
               <Stage
@@ -394,13 +395,15 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                       />
                     ))}
                   {allowTrans &&
-                    transAnchor.map((anchor, index) => (
-                      <Circle
-                        key={index}
-                        {...{ ...transAnchorConfig, ...anchor }}
-                        onDragMove={(e) => moveTransAnchor(e, index)}
-                      />
-                    ))}
+                    transAnchor.map(({ targetPos }, index) => 
+                      targetPos.map((anchor, anchorIndex) => 
+                        (<Circle
+                          key={`${index}_${anchorIndex}`}
+                          {...{ ...transAnchorConfig, ...anchor }}
+                          onDragMove={(e) => moveTransAnchor(e, index, anchorIndex)}
+                        />)
+                      )
+                    )}
                 </Layer>
               </Stage>
             </div>
@@ -415,12 +418,21 @@ export const EnvModal = ({ currentMode, oriValue }) => {
               >
                 <button
                   type="button"
-                  className={`ms-auto btn btn-${allowTrans ? "secondary" : "primary"}`}
+                  className={`btn btn-${allowTrans ? "secondary" : "primary"}`}
                   onClick={toggleAllowTrans}
                   disabled={allowDraw}
                 >
                   {allowTrans ? "編輯完成" : "編輯視角"}
                 </button>
+                {allowTrans && (
+                  <button
+                    type="button"
+                    className={`btn btn-primary`}
+                    onClick={addTransAnchor}
+                  >
+                    新增視角
+                  </button>
+                )}
               </div>
             )}
             <div className="d-flex flex-wrap mt-4">
