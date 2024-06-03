@@ -7,6 +7,7 @@ import { FormCheck, FormGroup, FormLabel } from "react-bootstrap";
 import { KTSVG } from "@/_metronic/helpers/index.ts";
 import { Stage, Layer, Line, Circle } from "react-konva";
 import { getFileUrl } from "@/tool/getFileUrl";
+import { getMatirx3dText } from "../tool/transformBlock";
 
 import { useSession } from "next-auth/react";
 import { useFormik } from "formik";
@@ -25,9 +26,15 @@ const generatePattern = (stripe, color1 = "#333", color2 = "#aaa") => {
   }, "to right,");
 };
 
-const anchorConfig = {
+const transAnchorConfig = {
   radius: 8,
   fill: "steelblue",
+  draggable: true,
+};
+
+const anchorConfig = {
+  radius: 8,
+  fill: "orange",
   draggable: true,
 };
 
@@ -88,6 +95,26 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [canvasFrame, setCanvasFrame] = useState();
   const canvasInitWidth = useRef(width);
 
+  const [allowTrans, setAllowTrans] = useState(false);
+  const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
+  const [transAnchor, setTransAnchor] = useState();
+  const oriTransAnchor = useRef();
+  const initTransAnchor = () => {
+    if (!canvasFrame || oriTransAnchor.current) return;
+    const x1 = canvasFrame.clientWidth * 0.25;
+    const x2 = canvasFrame.clientWidth * 0.75;
+    const y1 = canvasFrame.clientHeight * 0.25;
+    const y2 = canvasFrame.clientHeight * 0.75;
+    const position = [
+      { x: x1, y: y1 },
+      { x: x2, y: y1 },
+      { x: x2, y: y2 },
+      { x: x1, y: y2 },
+    ];
+    oriTransAnchor.current = position.map(({x,y}) => [x,y]);
+    setTransAnchor(position);
+  };
+
   const [allowDraw, setAllowDraw] = useState(false);
   const toggleAllowDraw = () => setAllowDraw((prev) => !prev);
 
@@ -110,10 +137,10 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [skewY, setSkewY] = useState(0);
 
   const resetTranform = () => {
-    setAngle(0)
-    setSkewX(0)
-    setSkewY(0)
-  }
+    setAngle(0);
+    setSkewX(0);
+    setSkewY(0);
+  };
 
   const clearCanvas = () => {
     clearCircle();
@@ -147,6 +174,16 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     if (!allowDraw) return;
     const { x, y } = e.target.getStage().getPointerPosition();
     setAnchors((prev) => {
+      const newArray = [...prev];
+      newArray[index] = { x, y };
+      return newArray;
+    });
+  };
+
+  const moveTransAnchor = (e, index) => {
+    if (!allowTrans) return;
+    const { x, y } = e.target.getStage().getPointerPosition();
+    setTransAnchor((prev) => {
       const newArray = [...prev];
       newArray[index] = { x, y };
       return newArray;
@@ -273,6 +310,11 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     cutImage();
   }, [cropLines]);
 
+  // initialize transAnchor
+  useEffect(() => {
+    initTransAnchor();
+  }, [canvasFrame]);
+
   const Panel = (
     <form onSubmit={formik.handleSubmit} className="h-100">
       <fieldset
@@ -309,19 +351,24 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                   }}
                 >
                   <div
-                    className="pe-none position-absolute"
+                    className="position-relative "
                     style={{
-                      top: "-50%",
-                      left: "-50%",
-                      height: "200%",
-                      width: "200%",
-                      transform: `rotate(${angle}deg) skew(${skewX}deg, ${skewY}deg)`,
-                      backgroundImage: `linear-gradient(${generatePattern(
-                        80
-                      )})`,
+                      width: "125%",
+                      height: "125%",
+                      top: 0,
+                      left: 0,
+                      transformOrigin: "0 0",
+                      ...(Array.isArray(transAnchor) && Array.isArray(oriTransAnchor.current) && {
+                        transform: getMatirx3dText(
+                          oriTransAnchor.current,
+                          transAnchor.map(({ x, y }) => [x, y]),
+                        ),
+                        backgroundImage: `linear-gradient(${generatePattern(
+                          60
+                        )})`
+                      }),
                     }}
-                  >
-                  </div>
+                  ></div>
                 </div>
               )}
               <Stage
@@ -331,61 +378,51 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 onClick={addAnchor}
               >
                 <Layer>
-                  {cropLines.map((cropLine, index) => (
-                    <Line
-                      key={index}
-                      {...zoneConfig}
-                      points={cropLine}
-                    />
-                  ))}
-                  {lines.length > 0 && (
+                  {!allowTrans &&
+                    cropLines.map((cropLine, index) => (
+                      <Line key={index} {...zoneConfig} points={cropLine} />
+                    ))}
+                  {!allowTrans && lines.length > 0 && (
                     <Line points={lines} {...drawLineConfig} />
                   )}
-                  {anchors.map((anchor, index) => (
-                    <Circle
-                      key={index}
-                      {...{ ...anchorConfig, ...anchor }}
-                      onDragMove={(e) => moveAnchor(e, index)}
-                    />
-                  ))}
+                  {!allowTrans &&
+                    anchors.map((anchor, index) => (
+                      <Circle
+                        key={index}
+                        {...{ ...anchorConfig, ...anchor }}
+                        onDragMove={(e) => moveAnchor(e, index)}
+                      />
+                    ))}
+                  {allowTrans &&
+                    transAnchor.map((anchor, index) => (
+                      <Circle
+                        key={index}
+                        {...{ ...transAnchorConfig, ...anchor }}
+                        onDragMove={(e) => moveTransAnchor(e, index)}
+                      />
+                    ))}
                 </Layer>
               </Stage>
             </div>
-            {!0 && <div key={[angle, skewX, skewY].some(item => !!item) ? "normal" : "reset"} className="pt-4 fs-5 fw-normal d-flex justify-content-between align-items-center">
-              {[
-                {
-                  id: "angle",
-                  defaultValue: angle,
-                  max: 180,
-                  onChange: (e) => setAngle(e.target.value),
-                  label: "旋轉角度",
-                },
-                {
-                  id: "skewX",
-                  defaultValue: skewX,
-                  min: -45,
-                  max: 45,
-                  onChange: (e) => setSkewX(e.target.value),
-                  label: "水平偏移",
-                },
-                {
-                  id: "skewY",
-                  defaultValue: skewY,
-                  min: -45,
-                  max: 45,
-                  onChange: (e) => setSkewY(e.target.value),
-                  label: "垂直偏移",
-                },
-              ].map((item) => (
-                <div key={item.id} className="flex-center">
-                  <label htmlFor={item.id} className="me-3">
-                    {item.label}
-                  </label>
-                  <input type="range" {...item} />
-                </div>
-              ))}
-              <button type="button" className="btn px-8 text-white" style={{backgroundColor: "var(--bs-gray-500)"}} onClick={resetTranform}>重置</button>
-            </div>}
+            {!0 && (
+              <div
+                key={
+                  [angle, skewX, skewY].some((item) => !!item)
+                    ? "normal"
+                    : "reset"
+                }
+                className="pt-4 fs-5 fw-normal d-flex justify-content-between align-items-center"
+              >
+                <button
+                  type="button"
+                  className={`ms-auto btn btn-${allowTrans ? "secondary" : "primary"}`}
+                  onClick={toggleAllowTrans}
+                  disabled={allowDraw}
+                >
+                  {allowTrans ? "編輯完成" : "編輯視角"}
+                </button>
+              </div>
+            )}
             <div className="d-flex flex-wrap mt-4">
               {envImage && (
                 <label className="btn btn-primary w-25 me-5">
@@ -419,8 +456,13 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 onClick={() => {
                   toggleAllowDraw();
                 }}
+                disabled={allowTrans}
               >
-                {!allowDraw ? "開始繪製" : "繪製完成"}
+                {!allowDraw
+                  ? allowTrans
+                    ? "視角編輯中"
+                    : "開始繪製"
+                  : "繪製完成"}
               </button>
             </div>
           </>
@@ -523,12 +565,13 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             className="w-100 btn btn-primary"
             disabled={
               allowDraw ||
+              allowTrans ||
               cropLines?.length === 0 ||
               !formik.values["env_image"] ||
               !formik.values["name"]
             }
           >
-            {allowDraw ? "繪製中無法儲存" : "儲存"}
+            {allowDraw || allowTrans ? "繪製中無法儲存" : "儲存"}
           </button>
         </div>
 
