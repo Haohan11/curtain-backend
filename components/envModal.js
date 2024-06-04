@@ -265,13 +265,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           const status = await createDataRequest(token, {
             ...values,
             cropline: JSON.stringify(cropLines),
-            perspect: JSON.stringify(transAnchor),
-            css_matrix: JSON(transAnchor.map(({ originalPos, targetPos }) =>
-              getMatirx3dText(
-                originalPos,
-                targetPos.map(({ x, y }) => [x, y])
-              )
-            )),
+            perspect: JSON.stringify(
+              transAnchor.map((anchor) => ({
+                ...anchor,
+                width: canvasFrame.clientWidth,
+              }))
+            ),
             width: canvasFrame.clientWidth,
           });
           if (status) {
@@ -284,13 +283,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             ...values,
             width: canvasFrame.clientWidth,
             cropline: JSON.stringify(cropLines),
-            perspect: JSON.stringify(transAnchor),
-            css_matrix: JSON.stringify(transAnchor.map(({ originalPos, targetPos }) =>
-              getMatirx3dText(
-                originalPos,
-                targetPos.map(({ x, y }) => [x, y])
-              )
-            )),
+            perspect: JSON.stringify(
+              transAnchor.map((anchor) => ({
+                ...anchor,
+                width: canvasFrame.clientWidth,
+              }))
+            ),
             id,
           });
           if (status) {
