@@ -61,6 +61,7 @@ const initValue = {
   enable: true,
   comment: "",
   cropline: [],
+  perspect: [],
 };
 
 const perspectivePadding = 0.25;
@@ -83,6 +84,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     env_image,
     cropline,
     width,
+    perspect,
   } = oriValue || initValue;
 
   // handle env name input
@@ -99,8 +101,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
 
   const [allowTrans, setAllowTrans] = useState(false);
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
-  const staticTranAnchor = useRef([]);
-  const [transAnchor, setTransAnchor] = useState([]);
+  const staticTranAnchor = useRef(perspect);
+  const [transAnchor, setTransAnchor] = useState(perspect);
   const addTransAnchor = () => {
     if (!canvasFrame) return;
     const x1 = canvasFrame.clientWidth * perspectivePadding;
@@ -263,6 +265,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           const status = await createDataRequest(token, {
             ...values,
             cropline: JSON.stringify(cropLines),
+            perspect: JSON.stringify(transAnchor),
             width: canvasFrame.clientWidth,
           });
           if (status) {
@@ -275,6 +278,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             ...values,
             width: canvasFrame.clientWidth,
             cropline: JSON.stringify(cropLines),
+            perspect: JSON.stringify(transAnchor),
             id,
           });
           if (status) {

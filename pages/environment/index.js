@@ -15,6 +15,16 @@ import { getDataByTable } from "@/data-list/core/request";
 import ModalWrapper from "@/components/modalWrapper";
 import PopUp from "@/components/popUp";
 import { useModals, usePermission } from "@/tool/hooks";
+
+function isJson(str) {
+  try {
+      JSON.parse(str);
+  } catch (e) {
+      return false;
+  }
+  return true;
+}
+
 const EnvModal = dynamic(
   async () => {
     const { EnvModal } = await import("../../components/envModal");
@@ -147,7 +157,8 @@ export const getServerSideProps = async (context) => {
     const list = data.map((item) => ({
       ...item,
       env_image: transImageUrl(item.env_image),
-      cropline: JSON.parse(item.cropline),
+      cropline: isJson(item.cropline) ? JSON.parse(item.cropline) : [],
+      perspect: isJson(item.perspect) ? JSON.parse(item.perspect) : [],
     }));
 
     return { props: { list } };
