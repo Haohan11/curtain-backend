@@ -1,4 +1,4 @@
-const versionText = "1.0.9"
+const versionText = "1.0.10"
 
 const VersionCode = () => (
   <span>

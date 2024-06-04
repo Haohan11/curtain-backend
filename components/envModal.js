@@ -115,19 +115,22 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       { x: x2, y: y2 },
       { x: x1, y: y2 },
     ];
-    const arrayPosi = position.map(({ x, y }) => [x, y]); 
-    setTransAnchor((prev) => staticTranAnchor.current = [
-      ...prev,
-      {
-        width: canvasFrame.clientWidth,
-        originalPos: arrayPosi,
-        targetPos: position,
-      },
-    ]);
+    const arrayPosi = position.map(({ x, y }) => [x, y]);
+    setTransAnchor(
+      (prev) =>
+        (staticTranAnchor.current = [
+          ...prev,
+          {
+            width: canvasFrame.clientWidth,
+            originalPos: arrayPosi,
+            targetPos: position,
+          },
+        ])
+    );
   };
   const scaleTransAnchor = () => {
     if (!canvasFrame || !transAnchor[0]?.width) return;
-    const scale = (canvasFrame.clientWidth / transAnchor[0]?.width) || 1;
+    const scale = canvasFrame.clientWidth / transAnchor[0]?.width || 1;
     setTransAnchor(
       staticTranAnchor.current.map(({ width, targetPos, originalPos }) => ({
         width,
@@ -135,10 +138,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           x: scale * x,
           y: scale * y,
         })),
-        originalPos: originalPos.map(([x, y]) => [
-          x * scale,
-          y * scale, 
-        ]),
+        originalPos: originalPos.map(([x, y]) => [x * scale, y * scale]),
       }))
     );
   };
@@ -151,7 +151,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       const newTargetPos = [...newArray[index].targetPos];
       newTargetPos[anchorIndex] = { x, y };
       newArray[index].targetPos = newTargetPos;
-      return staticTranAnchor.current = newArray;
+      return (staticTranAnchor.current = newArray);
     });
   };
 
@@ -266,6 +266,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             ...values,
             cropline: JSON.stringify(cropLines),
             perspect: JSON.stringify(transAnchor),
+            css_matrix: JSON(transAnchor.map(({ originalPos, targetPos }) =>
+              getMatirx3dText(
+                originalPos,
+                targetPos.map(({ x, y }) => [x, y])
+              )
+            )),
             width: canvasFrame.clientWidth,
           });
           if (status) {
@@ -279,6 +285,12 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             width: canvasFrame.clientWidth,
             cropline: JSON.stringify(cropLines),
             perspect: JSON.stringify(transAnchor),
+            css_matrix: JSON.stringify(transAnchor.map(({ originalPos, targetPos }) =>
+              getMatirx3dText(
+                originalPos,
+                targetPos.map(({ x, y }) => [x, y])
+              )
+            )),
             id,
           });
           if (status) {
