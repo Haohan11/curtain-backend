@@ -63,6 +63,8 @@ const initValue = {
   cropline: [],
 };
 
+const perspectivePadding = 0.25;
+
 export const EnvModal = ({ currentMode, oriValue }) => {
   const { data, status } = useSession();
   const token = data?.user?.accessToken;
@@ -97,30 +99,48 @@ export const EnvModal = ({ currentMode, oriValue }) => {
 
   const [allowTrans, setAllowTrans] = useState(false);
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
+  const staticTranAnchor = useRef([]);
   const [transAnchor, setTransAnchor] = useState([]);
-  const transAnchorId = useRef(0)
   const addTransAnchor = () => {
     if (!canvasFrame) return;
-    const x1 = canvasFrame.clientWidth * 0.25;
-    const x2 = canvasFrame.clientWidth * 0.75;
-    const y1 = canvasFrame.clientHeight * 0.25;
-    const y2 = canvasFrame.clientHeight * 0.75;
+    const x1 = canvasFrame.clientWidth * perspectivePadding;
+    const x2 = canvasFrame.clientWidth * (1 - perspectivePadding);
+    const y1 = canvasFrame.clientHeight * perspectivePadding;
+    const y2 = canvasFrame.clientHeight * (1 - perspectivePadding);
     const position = [
       { x: x1, y: y1 },
       { x: x2, y: y1 },
       { x: x2, y: y2 },
       { x: x1, y: y2 },
     ];
-    setTransAnchor((prev) => [
+    const arrayPosi = position.map(({ x, y }) => [x, y]); 
+    setTransAnchor((prev) => staticTranAnchor.current = [
       ...prev,
       {
-        id: transAnchorId.current++,
-        originalPos: position.map(({ x, y }) => [x, y]),
+        width: canvasFrame.clientWidth,
+        originalPos: arrayPosi,
         targetPos: position,
       },
     ]);
   };
-  const removeTransAnchor = (index) => setTransAnchor([])
+  const scaleTransAnchor = () => {
+    if (!canvasFrame || !transAnchor[0]?.width) return;
+    const scale = (canvasFrame.clientWidth / transAnchor[0]?.width) || 1;
+    setTransAnchor(
+      staticTranAnchor.current.map(({ width, targetPos, originalPos }) => ({
+        width,
+        targetPos: targetPos.map(({ x, y }) => ({
+          x: scale * x,
+          y: scale * y,
+        })),
+        originalPos: originalPos.map(([x, y]) => [
+          x * scale,
+          y * scale, 
+        ]),
+      }))
+    );
+  };
+  const removeTransAnchor = (index) => setTransAnchor([]);
   const moveTransAnchor = (e, index, anchorIndex) => {
     if (!allowTrans) return;
     const { x, y } = e.target.getStage().getPointerPosition();
@@ -129,7 +149,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       const newTargetPos = [...newArray[index].targetPos];
       newTargetPos[anchorIndex] = { x, y };
       newArray[index].targetPos = newTargetPos;
-      return newArray;
+      return staticTranAnchor.current = newArray;
     });
   };
 
@@ -274,7 +294,8 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   // resize listener will mutate this state to trigger useEffect to excute `scaleDrawItem`
   const [scaleState, setScaleState] = useState(false);
   const scaleDrawItem = () => {
-    if (!canvasFrame?.nodeType || !canvasInitWidth.current) return;
+    if (!scaleState || !canvasFrame?.nodeType || !canvasInitWidth.current)
+      return;
     const scale = canvasFrame.clientWidth / canvasInitWidth.current;
     anchors.length > 0 &&
       setAnchors(
@@ -287,6 +308,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
       setCropLines(
         staticCropline.current.map((line) => line.map((point) => point * scale))
       );
+    scaleTransAnchor();
     setScaleState(false);
   };
 
@@ -300,7 +322,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     setInitInputWidth(el.clientWidth * 2 + "px");
     el.remove();
 
-    const handleResize = () => setScaleState(true);
+    const handleResize = () => !scaleState && setScaleState(true);
     window.addEventListener("resize", handleResize);
 
     handleResize();
@@ -392,10 +414,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 onClick={addAnchor}
               >
                 <Layer>
-                  {!allowTrans &&
-                    cropLines.map((cropLine, index) => (
-                      <Line key={index} {...zoneConfig} points={cropLine} />
-                    ))}
+                  {cropLines.map((cropLine, index) => (
+                    <Line key={index} {...zoneConfig} points={cropLine} />
+                  ))}
                   {!allowTrans && lines.length > 0 && (
                     <Line points={lines} {...drawLineConfig} />
                   )}
@@ -442,13 +463,13 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 </button>
                 {allowTrans && (
                   <div>
-                      <button
-                        type="button"
-                        className={`btn btn-secondary me-3`}
-                        onClick={removeTransAnchor}
-                      >
-                        清空視角
-                      </button>
+                    <button
+                      type="button"
+                      className={`btn btn-secondary me-3`}
+                      onClick={removeTransAnchor}
+                    >
+                      清空視角
+                    </button>
                     <button
                       type="button"
                       className={`btn btn-primary`}
