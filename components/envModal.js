@@ -28,7 +28,7 @@ const generatePattern = (stripe, color1 = "#333", color2 = "#aaa") => {
 
 const transAnchorConfig = {
   radius: 8,
-  fill: "steelblue",
+  fill: ["steelblue", "gold", "darkseagreen"],
   draggable: true,
 };
 
@@ -98,6 +98,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const [allowTrans, setAllowTrans] = useState(false);
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
   const [transAnchor, setTransAnchor] = useState([]);
+  const transAnchorId = useRef(0)
   const addTransAnchor = () => {
     if (!canvasFrame) return;
     const x1 = canvasFrame.clientWidth * 0.25;
@@ -113,17 +114,19 @@ export const EnvModal = ({ currentMode, oriValue }) => {
     setTransAnchor((prev) => [
       ...prev,
       {
+        id: transAnchorId.current++,
         originalPos: position.map(({ x, y }) => [x, y]),
         targetPos: position,
       },
     ]);
   };
+  const removeTransAnchor = (index) => setTransAnchor([])
   const moveTransAnchor = (e, index, anchorIndex) => {
     if (!allowTrans) return;
     const { x, y } = e.target.getStage().getPointerPosition();
     setTransAnchor((prev) => {
       const newArray = [...prev];
-      const newTargetPos = [...newArray[index].targetPos]
+      const newTargetPos = [...newArray[index].targetPos];
       newTargetPos[anchorIndex] = { x, y };
       newArray[index].targetPos = newTargetPos;
       return newArray;
@@ -350,26 +353,36 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                     maskSize: "contain",
                   }}
                 >
-                  {transAnchor.map(({ originalPos, targetPos }, index) => (
-                    <div
-                      key={index}
-                      className="position-absolute"
-                      style={{
-                        width: "125%",
-                        height: "125%",
-                        top: 0,
-                        left: 0,
-                        transformOrigin: "0 0",
-                        transform: getMatirx3dText(
-                          originalPos,
-                          targetPos.map(({ x, y }) => [x, y])
-                        ),
-                        backgroundImage: `linear-gradient(${generatePattern(
-                          60
-                        )})`,
-                      }}
-                    ></div>
-                  ))}
+                  <div
+                    className="position-absolute"
+                    style={{
+                      width: "50%",
+                      height: "50%",
+                      top: "25%",
+                      left: "25%",
+                    }}
+                  >
+                    {transAnchor.map(({ originalPos, targetPos }, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          top: "0",
+                          left: "0",
+                          transformOrigin: "0 0",
+                          transform: getMatirx3dText(
+                            originalPos,
+                            targetPos.map(({ x, y }) => [x, y])
+                          ),
+                          backgroundImage: `linear-gradient(${generatePattern(
+                            30
+                          )})`,
+                        }}
+                      ></div>
+                    ))}
+                  </div>
                 </div>
               )}
               <Stage
@@ -395,14 +408,17 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                       />
                     ))}
                   {allowTrans &&
-                    transAnchor.map(({ targetPos }, index) => 
-                      targetPos.map((anchor, anchorIndex) => 
-                        (<Circle
+                    transAnchor.map(({ targetPos }, index) =>
+                      targetPos.map((anchor, anchorIndex) => (
+                        <Circle
                           key={`${index}_${anchorIndex}`}
                           {...{ ...transAnchorConfig, ...anchor }}
-                          onDragMove={(e) => moveTransAnchor(e, index, anchorIndex)}
-                        />)
-                      )
+                          fill={transAnchorConfig.fill[index % 3]}
+                          onDragMove={(e) =>
+                            moveTransAnchor(e, index, anchorIndex)
+                          }
+                        />
+                      ))
                     )}
                 </Layer>
               </Stage>
@@ -425,13 +441,22 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                   {allowTrans ? "編輯完成" : "編輯視角"}
                 </button>
                 {allowTrans && (
-                  <button
-                    type="button"
-                    className={`btn btn-primary`}
-                    onClick={addTransAnchor}
-                  >
-                    新增視角
-                  </button>
+                  <div>
+                      <button
+                        type="button"
+                        className={`btn btn-secondary me-3`}
+                        onClick={removeTransAnchor}
+                      >
+                        清空視角
+                      </button>
+                    <button
+                      type="button"
+                      className={`btn btn-primary`}
+                      onClick={addTransAnchor}
+                    >
+                      新增視角
+                    </button>
+                  </div>
                 )}
               </div>
             )}
