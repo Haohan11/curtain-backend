@@ -80,7 +80,7 @@ export const createDataRequest = async (token, values) => {
       if (!Array.isArray(value)) {
         formData.append(
           key,
-          typeof value === "object" && value !== null && !value instanceof File
+          (typeof value === "object" && value !== null && !(value instanceof File))
             ? JSON.stringify(value)
             : value
         );
@@ -103,9 +103,9 @@ export const createDataRequest = async (token, values) => {
       },
       body: formData,
     });
-    if (!res.ok) return false;
     const result = await res.json();
     console.log("submited:", result);
+    if (!res.ok) return false;
     return result.status;
   } catch (error) {
     console.log("error:", error);
@@ -122,7 +122,7 @@ export const updateDataRequest = async (token, values) => {
     if (!Array.isArray(value)) {
       formData.append(
         key,
-        typeof value === "object" && value !== null && !value instanceof File
+        (typeof value === "object" && value !== null && !(value instanceof File))
           ? JSON.stringify(value)
           : value
       );

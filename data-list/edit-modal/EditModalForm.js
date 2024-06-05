@@ -1360,8 +1360,8 @@ const EditModalForm = ({ isUserLoading }) => {
                                               .map((input) => input.checked)
                                               .includes(false)
                                           ) {
-                                            groupHead.click();
-                                            newPermi[`${item.id}`] = newPermi[
+                                            grand.code === "modify" && groupHead.click();
+                                            newPermi[
                                               `${child.id}`
                                             ] = isChecked;
                                           }
@@ -1376,7 +1376,20 @@ const EditModalForm = ({ isUserLoading }) => {
                                               ...document.querySelectorAll(
                                                 `[data-group=group-${child.id}]`
                                               ),
-                                            ].map((el) => (el.checked = false));
+                                            ].map((el) => {
+                                              el.checked = false;
+                                            });
+
+                                            [
+                                              ...document.querySelectorAll(
+                                                `[data-group=group-${child.id}]`
+                                              ),
+                                            ].forEach(
+                                              (el) =>
+                                                (newPermi[
+                                                  el.id.split("_")[1]
+                                                ] = false)
+                                            );
                                           }
 
                                           newPermi[`${grand.id}`] = isChecked;

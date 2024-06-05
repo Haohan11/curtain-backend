@@ -299,6 +299,7 @@ export const fullData = {
     }),
     formField: {
       name: "",
+      comment: "",
     },
   },
   // -&anchor
