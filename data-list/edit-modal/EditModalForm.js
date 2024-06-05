@@ -70,11 +70,9 @@ const ValidateInputField = ({
       type={type}
       name={name}
       autoComplete="off"
-      {...(onlynumber
-        ? {
-            onKeyDown: onlyInputNumbers,
-          }
-        : {})}
+      {...(onlynumber && {
+        onKeyDown: onlyInputNumbers,
+      })}
       disabled={readonly || formik?.isSubmitting}
     />
     {formik?.touched[name] && formik?.errors[name] && (
@@ -630,6 +628,9 @@ const EditModalForm = ({ isUserLoading }) => {
                     name={"email"}
                     formik={formik}
                   />
+                  {
+                    void (formik.values["oldEmail"] = initialValues["email"])
+                  }
                 </div>
               )}
 
@@ -1360,10 +1361,9 @@ const EditModalForm = ({ isUserLoading }) => {
                                               .map((input) => input.checked)
                                               .includes(false)
                                           ) {
-                                            grand.code === "modify" && groupHead.click();
-                                            newPermi[
-                                              `${child.id}`
-                                            ] = isChecked;
+                                            grand.code === "modify" &&
+                                              groupHead.click();
+                                            newPermi[`${child.id}`] = isChecked;
                                           }
 
                                           if (!isChecked) {

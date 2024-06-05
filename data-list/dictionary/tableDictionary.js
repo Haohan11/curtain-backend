@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+// import { checkEmailExist } from "@/data-list/core/request";
 
 import {
   stockColumns,
@@ -245,7 +246,30 @@ export const fullData = {
     },
     validationSchema: Yup.object().shape({
       preserve: Yup.boolean(),
-      email: Yup.string().email("格式錯誤").required("此欄位必填"),
+      oldEmail: Yup.string(),
+      email: Yup.string()
+        .email("格式錯誤")
+        .required("此欄位必填")
+        .test("email-check", "此帳號已被使用", async function (email) {
+          if (email === this.parent.oldEmail) return true;
+          try {
+            const formData = new FormData();
+            formData.append("email", email);
+            const res = await fetch(
+              `${process.env.NEXT_PUBLIC_BACKENDURL}/check-email`,
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            const result = await res.json();
+            const { exist } = result.data;
+            return !exist;
+          } catch (error) {
+            console.log(error);
+            return false;
+          }
+        }),
       name: Yup.string()
         .min(2, "至少 2 個字")
         .max(50, "至多 50 個字")
@@ -258,12 +282,13 @@ export const fullData = {
         .required("此欄位必填"),
       password: Yup.string().when("preserve", {
         is: false,
-        then: () => Yup.string()
-          .matches(
-            /^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,
-            "至少 4 碼英數字"
-          )
-          .required("此欄位必填"),
+        then: () =>
+          Yup.string()
+            .matches(
+              /^(?=.*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9].*[a-zA-Z0-9]).+$/,
+              "至少 4 碼英數字"
+            )
+            .required("此欄位必填"),
         otherwise: () => Yup.string(),
       }),
     }),
@@ -286,6 +311,7 @@ export const fullData = {
     fetchUrl: "role",
     modalConfig: {
       name_label: "角色名稱",
+      name_required: true,
       // members_label: "員工列表",
       permission_label: "權限設定",
       permission_list: {},
