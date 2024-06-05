@@ -628,9 +628,7 @@ const EditModalForm = ({ isUserLoading }) => {
                     name={"email"}
                     formik={formik}
                   />
-                  {
-                    void (formik.values["oldEmail"] = initialValues["email"])
-                  }
+                  {void (formik.values["oldEmail"] = initialValues["email"])}
                 </div>
               )}
 
@@ -1361,8 +1359,7 @@ const EditModalForm = ({ isUserLoading }) => {
                                               .map((input) => input.checked)
                                               .includes(false)
                                           ) {
-                                            grand.code === "modify" &&
-                                              groupHead.click();
+                                            groupHead.click();
                                             newPermi[`${child.id}`] = isChecked;
                                           }
 
@@ -1372,21 +1369,18 @@ const EditModalForm = ({ isUserLoading }) => {
                                               newPermi[`${item.id}`] =
                                               newPermi[`${child.id}`] =
                                                 isChecked;
-                                            [
-                                              ...document.querySelectorAll(
-                                                `[data-group=group-${child.id}]`
-                                              ),
-                                            ].map((el) => {
-                                              el.checked = false;
-                                            });
 
-                                            [
+                                            document.querySelectorAll(
+                                              `[data-group-head=group-${child.id}]`
+                                            ).checked = false;
+
+                                            grand.code === "view" && [
                                               ...document.querySelectorAll(
                                                 `[data-group=group-${child.id}]`
                                               ),
                                             ].forEach(
                                               (el) =>
-                                                (newPermi[
+                                                (el.checked = newPermi[
                                                   el.id.split("_")[1]
                                                 ] = false)
                                             );
