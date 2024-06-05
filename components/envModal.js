@@ -458,73 +458,14 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 </Layer>
               </Stage>
             </div>
-            {!0 && (
-              <div
-                key={
-                  [angle, skewX, skewY].some((item) => !!item)
-                    ? "normal"
-                    : "reset"
-                }
-                className="pt-4 fs-5 fw-normal d-flex justify-content-between align-items-center"
-              >
-                <button
-                  type="button"
-                  className={`btn btn-${allowTrans ? "secondary" : "primary"}`}
-                  onClick={toggleAllowTrans}
-                  disabled={allowDraw}
-                >
-                  {allowTrans ? "編輯完成" : "編輯視角"}
-                </button>
-                {allowTrans && (
-                  <div>
-                    <button
-                      type="button"
-                      className={`btn btn-secondary me-3`}
-                      onClick={removeTransAnchor}
-                    >
-                      清空視角
-                    </button>
-                    <button
-                      type="button"
-                      className={`btn btn-primary`}
-                      onClick={addTransAnchor}
-                    >
-                      新增視角
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-            <div className="d-flex flex-wrap mt-4">
-              {envImage && (
-                <label className="btn btn-primary w-25 me-5">
-                  更換圖片
-                  <input
-                    hidden
-                    type="file"
-                    accept=".png, .jpg, .jpeg"
-                    onChange={(e) => {
-                      const [file] = e.target.files;
-                      const path = getFileUrl(e);
-                      if (!file || !path) return;
-                      formik.setFieldValue("env_image", file);
-                      setEnvImage(path);
-                    }}
-                  />
-                </label>
-              )}
-              <button
-                type="button"
-                className="btn btn-secondary w-25 me-5"
-                onClick={clearCanvas}
-              >
-                清除畫布
-              </button>
+
+            <div className="d-flex align-items-center flex-wrap mt-4">
+              <span className="fs-2 text-gray-500 me-4">1. 繪製窗簾範圍:</span>
               <button
                 type="button"
                 className={`btn btn-${
                   allowDraw ? "secondary" : "primary"
-                } flex-grow-1`}
+                } w-25 me-3`}
                 onClick={() => {
                   toggleAllowDraw();
                 }}
@@ -533,9 +474,47 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                 {!allowDraw
                   ? allowTrans
                     ? "視角編輯中"
-                    : "開始繪製"
+                    : "繪製範圍"
                   : "繪製完成"}
               </button>
+              <button
+                type="button"
+                className="btn btn-secondary w-25"
+                onClick={clearCanvas}
+              >
+                清除範圍
+              </button>
+            </div>
+            <div className="pt-2 fs-5 d-flex align-items-center">
+              <span className="fs-2 text-gray-500 me-4">2. 編輯窗簾視角:</span>
+              <button
+                type="button"
+                className={`w-25 me-3 btn btn-${
+                  allowTrans ? "secondary" : "primary"
+                }`}
+                onClick={toggleAllowTrans}
+                disabled={allowDraw}
+              >
+                {allowTrans ? "編輯完成" : "編輯視角"}
+              </button>
+              {allowTrans && (
+                <>
+                  <button
+                    type="button"
+                    className={`w-25 btn btn-primary me-3`}
+                    onClick={addTransAnchor}
+                  >
+                    新增視角
+                  </button>
+                  <button
+                    type="button"
+                    className={`w-25 btn btn-secondary`}
+                    onClick={removeTransAnchor}
+                  >
+                    清除視角
+                  </button>
+                </>
+              )}
             </div>
           </>
         ) : (
@@ -567,7 +546,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
             />
           </label>
         )}
-        <div className="d-flex fs-2 pt-6 pb-2">
+        <div className="d-flex fs-2 pt-3 pb-1">
           <span className="text-gray-500 me-4">場景名稱:</span>
           <input
             {...formik.getFieldProps("name")}
@@ -620,24 +599,44 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <label className="d-block fs-2 text-gray-500 mb-1">備註</label>
         <textarea
           {...formik.getFieldProps("comment")}
-          className="w-100 py-2 px-4 mb-5 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
+          className="w-100 py-2 px-4 mb-4 fs-3 border-gray-300 border-2 rounded-2 flex-grow-1"
         ></textarea>
-        <div className="d-flex">
+        <div className="d-flex mb-3">
+        {envImage && (
+                <label className="flex-grow-1 btn btn-primary me-2">
+                  更換圖片
+                  <input
+                    hidden
+                    type="file"
+                    accept=".png, .jpg, .jpeg"
+                    onChange={(e) => {
+                      const [file] = e.target.files;
+                      const path = getFileUrl(e);
+                      if (!file || !path) return;
+                      formik.setFieldValue("env_image", file);
+                      setEnvImage(path);
+                    }}
+                  />
+                </label>
+              )}
           <button
             type="button"
-            className="w-100 btn btn-secondary me-12"
+            className="flex-grow-1 btn btn-secondary"
             onClick={() => {
               handleShowModal("reset");
             }}
           >
-            取消
+            取消設定
           </button>
-          <button
+          
+        </div>
+        <button
             type="submit"
             className="w-100 btn btn-primary"
             disabled={
               allowDraw ||
               allowTrans ||
+              transAnchor?.length === 0 ||
               cropLines?.length === 0 ||
               !formik.values["env_image"] ||
               !formik.values["name"]
@@ -645,7 +644,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           >
             {allowDraw || allowTrans ? "繪製中無法儲存" : "儲存"}
           </button>
-        </div>
 
         {/*是否重製*/}
         <ModalWrapper
