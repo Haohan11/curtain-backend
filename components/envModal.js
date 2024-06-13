@@ -32,17 +32,17 @@ const transAnchorConfig = {
   draggable: true,
 };
 
-// const scaleAnchorConfig = {
-//   radius: 8,
-//   stroke: "red",
-//   draggable: true,
-// };
+const scaleAnchorConfig = {
+  radius: 8,
+  stroke: "red",
+  draggable: true,
+};
 
-// const scaleLineConfig = {
-//   dash: [0, 0, 15, 5],
-//   stroke: "blue",
-//   strokeWidth: 3.5,
-// };
+const scaleLineConfig = {
+  dash: [0, 0, 15, 5],
+  stroke: "blue",
+  strokeWidth: 3.5,
+};
 
 const anchorConfig = {
   radius: 8,
@@ -115,7 +115,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
   const staticTranAnchor = useRef(perspect);
   const [transAnchor, setTransAnchor] = useState(perspect);
-  // const [tranScale, setTranScale] = useState([]);
+  const [tranScale, setTranScale] = useState([]);
 
   const addTransAnchor = () => {
     if (!canvasFrame) return;
@@ -141,7 +141,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           },
         ])
     );
-    // setTranScale((prev) => [...prev, 1]);
+    setTranScale((prev) => [...prev, 1]);
   };
   const scaleTransAnchor = () => {
     if (!canvasFrame || !transAnchor[0]?.width) return;
@@ -416,13 +416,9 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                           transform: `${getMatirx3dText(
                             originalPos,
                             targetPos.map(({ x, y }) => [x, y])
-                          )}`,
-                          // transform: `${getMatirx3dText(
-                          //   originalPos,
-                          //   targetPos.map(({ x, y }) => [x, y])
-                          // )} scale(${tranScale[index]}) translate(-${
-                          //   (1 - 1 / tranScale[index]) * 50
-                          // }%, -${(1 - 1 / tranScale[index]) * 50}%)`,
+                          )} scale(${tranScale[index]}) translate(-${
+                            (1 - 1 / tranScale[index]) * 50
+                          }%, -${(1 - 1 / tranScale[index]) * 50}%)`,
                           backgroundImage: `linear-gradient(${generatePattern(
                             30
                           )})`,
@@ -466,7 +462,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                         />
                       ))
                     )}
-                  {/* {allowTrans &&
+                  {allowTrans &&
                     transAnchor.map(
                       ({ targetPos }, index) => {
                         const xySet = targetPos.reduce(
@@ -533,7 +529,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                           </Fragment>
                         );
                       }
-                    )} */}
+                    )}
                 </Layer>
               </Stage>
             </div>
