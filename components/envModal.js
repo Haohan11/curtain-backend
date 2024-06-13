@@ -32,18 +32,6 @@ const transAnchorConfig = {
   draggable: true,
 };
 
-const scaleAnchorConfig = {
-  radius: 8,
-  stroke: "red",
-  draggable: true,
-};
-
-const scaleLineConfig = {
-  dash: [0, 0, 15, 5],
-  stroke: "blue",
-  strokeWidth: 3.5,
-};
-
 const anchorConfig = {
   radius: 8,
   fill: "orange",
@@ -115,7 +103,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
   const toggleAllowTrans = () => setAllowTrans((prev) => !prev);
   const staticTranAnchor = useRef(perspect);
   const [transAnchor, setTransAnchor] = useState(perspect);
-  const [tranScale, setTranScale] = useState([]);
 
   const addTransAnchor = () => {
     if (!canvasFrame) return;
@@ -141,7 +128,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
           },
         ])
     );
-    setTranScale((prev) => [...prev, 1]);
   };
   const scaleTransAnchor = () => {
     if (!canvasFrame || !transAnchor[0]?.width) return;
@@ -416,9 +402,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                           transform: `${getMatirx3dText(
                             originalPos,
                             targetPos.map(({ x, y }) => [x, y])
-                          )} scale(${tranScale[index]}) translate(-${
-                            (1 - 1 / tranScale[index]) * 50
-                          }%, -${(1 - 1 / tranScale[index]) * 50}%)`,
+                          )}`,
                           backgroundImage: `linear-gradient(${generatePattern(
                             30
                           )})`,
@@ -461,74 +445,6 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                           }
                         />
                       ))
-                    )}
-                  {allowTrans &&
-                    transAnchor.map(
-                      ({ targetPos }, index) => {
-                        const xySet = targetPos.reduce(
-                          (position, { x, y }, index) => {
-                            if (index === 0) return position;
-                            return {
-                              xmin: Math.min(position.xmin, x),
-                              xmax: Math.max(position.xmax, x),
-                              ymin: Math.min(position.ymin, y),
-                              ymax: Math.max(position.ymax, y),
-                            };
-                          },
-                          {
-                            xmin: targetPos[0].x,
-                            xmax: targetPos[0].x,
-                            ymin: targetPos[0].y,
-                            ymax: targetPos[0].y,
-                          }
-                        );
-
-                        const xcenter = (xySet.xmin + xySet.xmax) / 2;
-                        const ycenter = (xySet.ymin + xySet.ymax) / 2;
-                        const linePoints = [
-                          xcenter,
-                          ycenter,
-                          xcenter,
-                          ycenter - 100,
-                        ];
-                        return (
-                          <Fragment key={index}>
-                            <Line points={linePoints} {...scaleLineConfig} />
-                            <Circle
-                              {...{
-                                ...scaleAnchorConfig,
-                                x: xcenter,
-                                y: ycenter - tranScale[index] * 20,
-                              }}
-                              fill={transAnchorConfig.fill[index % 3]}
-                              onDragMove={(e) => {
-                                e.target.attrs = {
-                                  ...e.target.attrs,
-                                  x: xcenter,
-                                  y: (() => {
-                                    const y = e.target.attrs.y;
-                                    const clampY =
-                                      y < ycenter - 5 * 20
-                                        ? ycenter - 5 * 20
-                                        : y > ycenter - 1 * 20
-                                        ? ycenter - 1 * 20
-                                        : y;
-                                    const step = parseInt(
-                                      (clampY - ycenter) / -20
-                                    );
-                                    setTranScale((prev) => {
-                                      const newArray = [...prev];
-                                      newArray[index] = step;
-                                      return newArray;
-                                    });
-                                    return ycenter - step * 20;
-                                  })(),
-                                };
-                              }}
-                            />
-                          </Fragment>
-                        );
-                      }
                     )}
                 </Layer>
               </Stage>
