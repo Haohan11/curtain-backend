@@ -599,8 +599,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
         <div className="mt-auto">
           <div className="d-flex mb-2">
             {envImage && (
-              <button
-                type="button"
+              <label
                 className="flex-grow-1 btn btn-primary me-2"
               >
                 更換圖片
@@ -616,7 +615,7 @@ export const EnvModal = ({ currentMode, oriValue }) => {
                     setEnvImage(path);
                   }}
                 />
-              </button>
+              </label>
             )}
             <button
               type="button"
