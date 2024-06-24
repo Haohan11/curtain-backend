@@ -63,7 +63,7 @@ const EnvironmentPage = ({ list }) => {
           <div className="h-100 d-flex flex-column position-relative">
             <h1 className="my-5 fs-1 text-center text-primary">場景列表</h1>
             <div className="separator border-3"></div>
-            <div className="mt-5 mh-750px overflow-y-scroll px-2">
+            <div className="mt-5 mh-750px overflow-y-scroll px-2 pb-20">
               {!emptyList ? (
                 list.map((item) => (
                   <div
