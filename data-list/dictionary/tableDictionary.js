@@ -32,7 +32,7 @@ export const fullData = {
       code_label: "商品型號",
       code_required: true,
       code_placeholder: "請輸入商品型號",
-      supplier_label: "供應廠商",
+      supplier_label: "商品目錄",
       enable_label: "上架狀態",
       series_label: "商品系列",
       color_label: "商品顏色",
@@ -193,14 +193,14 @@ export const fullData = {
   },
   // -&anchor
   supplier: {
-    pageTitle: "供應商",
-    searchPlaceholder: "供應商",
-    createHeaderText: "供應商",
+    pageTitle: "商品目錄",
+    searchPlaceholder: "商品目錄",
+    createHeaderText: "商品目錄",
     column: supplierColumns,
     modalConfig: {
       enable_label,
-      name_label: "供應商名稱",
-      code_label: "供應商編號",
+      name_label: "目錄名稱",
+      code_label: "目錄編號",
       comment_label,
     },
     fetchUrl: "supplier",

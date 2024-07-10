@@ -1,62 +1,9 @@
-import { Column } from 'react-table'
-import { UserInfoCell } from './UserInfoCell'
-import { UserLastLoginCell } from './UserLastLoginCell'
-import { UserTwoStepsCell } from './UserTwoStepsCell'
 import { ActionsCell } from './ActionsCell'
-import { UserSelectionCell } from './UserSelectionCell'
 import { UserCustomHeader } from './UserCustomHeader'
-import { UserSelectionHeader } from './UserSelectionHeader'
 import { ColorsCell } from './ColorsCell'
 import { ColorSchemeCell } from './ColorSchemeCell'
-import {
-  User, Products, Series, ColorScheme, Design, Material, Supplier, Account, Role, Environment
-} from '../../core/_models'
 import { EnableCell } from './enableCell'
 import { ProductAvaliableCell } from './ProductAvaliableCell'
-
-const usersColumns = [
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Actions' className='text-start min-w-100px' />
-    ),
-    id: 'actions',
-    Cell: ({ ...props }) => <ActionsCell id={props.data[props.row.index].id} />,
-  },
-  // {
-  //   Header: (props) => <UserSelectionHeader tableProps={props} />,
-  //   id: 'selection',
-  //   Cell: ({...props}) => <UserSelectionCell id={props.data[props.row.index].id} />,
-  // },
-  {
-    Header: (props) => <UserCustomHeader tableProps={props} title='Name' className='min-w-125px' />,
-    id: 'name',
-    Cell: ({ ...props }) => <UserInfoCell user={props.data[props.row.index]} />,
-  },
-  {
-    Header: (props) => <UserCustomHeader tableProps={props} title='Role' className='min-w-125px' />,
-    accessor: 'role',
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Last login' className='min-w-125px' />
-    ),
-    id: 'last_login',
-    Cell: ({ ...props }) => <UserLastLoginCell last_login={props.data[props.row.index].last_login} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Two steps' className='min-w-125px' />
-    ),
-    id: 'two_steps',
-    Cell: ({ ...props }) => <UserTwoStepsCell two_steps={props.data[props.row.index].enable} />,
-  },
-  {
-    Header: (props) => (
-      <UserCustomHeader tableProps={props} title='Joined day' className='min-w-125px' />
-    ),
-    accessor: 'joined_day',
-  },
-]
 
 export const stockColumns = [
   {
@@ -89,7 +36,7 @@ export const stockColumns = [
   },
   {
     Header: (props) => (
-      <UserCustomHeader tableProps={props} title='供應商' className='min-w-125px' />
+      <UserCustomHeader tableProps={props} title='商品目錄' className='min-w-125px' />
     ),
     accessor: 'supplier.name',
   },
@@ -299,11 +246,11 @@ export const supplierColumns= [
     Cell: ({ ...props }) => <EnableCell enable={props.data[props.row.index].enable} />,
   },
   {
-    Header: (props) => <UserCustomHeader tableProps={props} title='供應商編號' className='min-w-125px' />,
+    Header: (props) => <UserCustomHeader tableProps={props} title='目錄編號' className='min-w-125px' />,
     accessor: 'code',
   },
   {
-    Header: (props) => <UserCustomHeader tableProps={props} title='供應商名稱' className='min-w-125px' />,
+    Header: (props) => <UserCustomHeader tableProps={props} title='目錄名稱' className='min-w-125px' />,
     accessor: 'name',
   },
   {

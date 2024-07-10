@@ -29,7 +29,7 @@ const SidebarMenuMain = () => {
           <SidebarMenuItem to='/stock/color-scheme' title='色系類別' hasBullet={true} />
           <SidebarMenuItem to='/stock/design' title='風格類別' hasBullet={true} />
           <SidebarMenuItem to='/stock/material' title='面料材質' hasBullet={true} />
-          <SidebarMenuItem to='/stock/supplier' title='供應商' hasBullet={true} />
+          <SidebarMenuItem to='/stock/supplier' title='商品目錄' hasBullet={true} />
         </SidebarMenuItemWithSub>}
       {(permission?.account?.view || permission?.account?.modify) &&
         <SidebarMenuItemWithSub
