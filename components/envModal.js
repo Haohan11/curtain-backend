@@ -33,7 +33,7 @@ const transAnchorConfig = {
 };
 
 const anchorConfig = {
-  radius: 8,
+  radius: 3,
   fill: "orange",
   draggable: true,
 };
