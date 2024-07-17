@@ -135,7 +135,7 @@ const EditModalForm = ({ isUserLoading }) => {
     return {
       ...data,
       series: series?.id || series,
-      supplier: supplier?.id || supplier,
+      supplier: supplier?.id || supplier || "",
       ...loopObject({ design, material, environment }, (field) =>
         Array.isArray(field) ? field.map((item) => `${item.id}`) : field
       ),
@@ -220,8 +220,7 @@ const EditModalForm = ({ isUserLoading }) => {
       if (colorImagePath.length === 0) return false;
 
       if (
-        colorImagePath.length === 1 &&
-        colorImagePath[0].imagePath.some((file) => !file)
+        colorImagePath.every(({ imagePath }) => imagePath.every((file) => !file))
       )
         return false;
 
@@ -235,10 +234,12 @@ const EditModalForm = ({ isUserLoading }) => {
       const colorList = formik.values["colorList"];
       if (colorList.length === 0) return false;
 
-      if (colorList.length === 1) {
-        const { stock_image, color_image, removal_image } = colorList[0];
-        return ![stock_image, color_image, removal_image].some((img) => !img);
-      }
+      if (
+        colorList.every(({ stock_image, color_image, removal_image }) =>
+          [stock_image, color_image, removal_image].every((file) => !file)
+        )
+      )
+        return false;
 
       return !colorList.some((row) => {
         const { stock_image, color_image, removal_image } = row;
@@ -1374,16 +1375,18 @@ const EditModalForm = ({ isUserLoading }) => {
                                               `[data-group-head=group-${child.id}]`
                                             ).checked = false;
 
-                                            grand.code === "view" && [
-                                              ...document.querySelectorAll(
-                                                `[data-group=group-${child.id}]`
-                                              ),
-                                            ].forEach(
-                                              (el) =>
-                                                (el.checked = newPermi[
-                                                  el.id.split("_")[1]
-                                                ] = false)
-                                            );
+                                            grand.code === "view" &&
+                                              [
+                                                ...document.querySelectorAll(
+                                                  `[data-group=group-${child.id}]`
+                                                ),
+                                              ].forEach(
+                                                (el) =>
+                                                  (el.checked = newPermi[
+                                                    el.id.split("_")[1]
+                                                  ] =
+                                                    false)
+                                              );
                                           }
 
                                           newPermi[`${grand.id}`] = isChecked;
