@@ -220,7 +220,9 @@ const EditModalForm = ({ isUserLoading }) => {
       if (colorImagePath.length === 0) return false;
 
       if (
-        colorImagePath.every(({ imagePath }) => imagePath.every((file) => !file))
+        colorImagePath.every(({ imagePath }) =>
+          imagePath.every((file) => !file)
+        )
       )
         return false;
 
@@ -779,7 +781,7 @@ const EditModalForm = ({ isUserLoading }) => {
           {config.color_label && (
             <div className="fv-row mb-7">
               <InputLabel text={config.color_label} required />
-              <div className="row gy-4 mb-3">
+              <div className="row gy-4 mb-5">
                 {{
                   create: colorImagePath,
                   edit: formik.values["colorList"],
@@ -793,125 +795,240 @@ const EditModalForm = ({ isUserLoading }) => {
                     color_image,
                     removal_image,
                     colorSchemeList,
-                    colorSchemes,
                     name,
+                    description,
                     color_name_id,
                   }) => (
-                    <div key={id ?? index} className="d-flex">
-                      {["商品圖片", "顏色圖片", "去背圖片"].map(
-                        (text, input_index) => (
-                          <label
-                            key={`color-image_${id ?? index}_${input_index}`}
-                            className={`d-block ${
-                              input_index !== 0 ? "ms-3 " : ""
-                            }h-100px w-100px cursor-pointer position-relative`}
-                            style={{ aspectRatio: "1" }}
-                          >
-                            {{
-                              create: imagePath?.[input_index],
-                              edit: [stock_image, color_image, removal_image][
-                                input_index
-                              ],
-                              close: "",
-                            }[currentMode] ? (
-                              <Image
-                                className="rounded-4 object-fit-cover"
-                                fill
-                                sizes="100px"
-                                src={
-                                  {
-                                    create: imagePath?.[input_index],
-                                    edit: [
-                                      stock_image,
-                                      color_image,
-                                      removal_image,
-                                    ][input_index],
-                                    close: "",
-                                  }[currentMode]
+                    <div key={id ?? index} className="d-flex mb-4">
+                      <div className="flex-grow-1">
+                        <div className="d-flex mb-3">
+                          {["商品圖片", "顏色圖片", "去背圖片"].map(
+                            (text, input_index) => (
+                              <label
+                                key={`color-image_${
+                                  id ?? index
+                                }_${input_index}`}
+                                className={`d-block ${
+                                  input_index !== 0 ? "ms-3 " : ""
+                                }h-100px w-100px cursor-pointer position-relative`}
+                                style={{ aspectRatio: "1" }}
+                              >
+                                {{
+                                  create: imagePath?.[input_index],
+                                  edit: [
+                                    stock_image,
+                                    color_image,
+                                    removal_image,
+                                  ][input_index],
+                                  close: "",
+                                }[currentMode] ? (
+                                  <Image
+                                    className="rounded-4 object-fit-cover"
+                                    fill
+                                    sizes="100px"
+                                    src={
+                                      {
+                                        create: imagePath?.[input_index],
+                                        edit: [
+                                          stock_image,
+                                          color_image,
+                                          removal_image,
+                                        ][input_index],
+                                        close: "",
+                                      }[currentMode]
+                                    }
+                                    alt="color image"
+                                  />
+                                ) : (
+                                  <div className="flex-center h-100 border border-2 rounded-4 bg-secondary">
+                                    {text}
+                                  </div>
+                                )}
+                                <input
+                                  type="file"
+                                  accept=".png, .jpg, .jpeg"
+                                  hidden
+                                  onChange={(event) => {
+                                    const file = event.target.files[0];
+                                    if (!file) return;
+                                    ({
+                                      create() {
+                                        addImageUrl(event, index, input_index);
+                                        const files =
+                                          [...formik.values["colorImages"]] ||
+                                          [];
+                                        files[index * 3 + input_index] = file;
+                                        formik.setFieldValue(
+                                          "colorImages",
+                                          files
+                                        );
+                                      },
+                                      edit() {
+                                        const colorList =
+                                          formik.values["colorList"];
+                                        const url = getFileUrl(event);
+                                        formik.setFieldValue(
+                                          "colorList",
+                                          colorList.map((color) =>
+                                            color.id === id
+                                              ? {
+                                                  ...color,
+                                                  ...[
+                                                    { stock_image: url },
+                                                    { color_image: url },
+                                                    { removal_image: url },
+                                                  ][input_index],
+                                                }
+                                              : color
+                                          )
+                                        );
+
+                                        const colorImagesList = Array.isArray(
+                                          formik.values[`colorImages_${id}`]
+                                        )
+                                          ? formik.values[`colorImages_${id}`]
+                                          : [...Array(3)];
+                                        formik.setFieldValue(
+                                          `colorImages_${id}`,
+                                          colorImagesList.map(
+                                            (oldFile, index) =>
+                                              index === input_index
+                                                ? file
+                                                : oldFile
+                                          )
+                                        );
+                                      },
+                                    })[currentMode]();
+                                  }}
+                                />
+                              </label>
+                            )
+                          )}
+                          <div className="ms-3 flex-grow-1">
+                            {!colorIsEmpty ? (
+                              <Select
+                                className={clsx(
+                                  "react-select-styled react-select-solid mb-3"
+                                )}
+                                classNamePrefix="react-select"
+                                defaultValue={
+                                  editMode
+                                    ? { label: name, value: color_name_id }
+                                    : {
+                                        label: color[0].name,
+                                        value: color[0].id,
+                                      }
                                 }
-                                alt="color image"
+                                options={color.map((c) => ({
+                                  label: c.name,
+                                  value: c.id,
+                                }))}
+                                name={`color_${index}`}
+                                onChange={(colorName) => {
+                                  ({
+                                    create() {
+                                      formik.setFieldValue(
+                                        `color_${index}`,
+                                        colorName.value
+                                      );
+                                    },
+                                    edit() {
+                                      formik.setFieldValue(
+                                        "colorList",
+                                        formik.values["colorList"].map(
+                                          (color) =>
+                                            color.id === id
+                                              ? {
+                                                  ...color,
+                                                  name: colorName.label,
+                                                  color_name_id:
+                                                    colorName.value,
+                                                }
+                                              : color
+                                        )
+                                      );
+                                    },
+                                  })[currentMode]();
+                                }}
+                                disabled={formik.isSubmitting || isUserLoading}
                               />
                             ) : (
-                              <div className="flex-center h-100 border border-2 rounded-4 bg-secondary">
-                                {text}
+                              <div className="form-select form-select-solid mb-3">
+                                目前沒有資料
                               </div>
                             )}
-                            <input
-                              type="file"
-                              accept=".png, .jpg, .jpeg"
-                              hidden
-                              onChange={(event) => {
-                                const file = event.target.files[0];
-                                if (!file) return;
-                                ({
-                                  create() {
-                                    addImageUrl(event, index, input_index);
-                                    const files =
-                                      [...formik.values["colorImages"]] || [];
-                                    files[index * 3 + input_index] = file;
-                                    formik.setFieldValue("colorImages", files);
-                                  },
-                                  edit() {
-                                    const colorList =
-                                      formik.values["colorList"];
-                                    const url = getFileUrl(event);
-                                    formik.setFieldValue(
-                                      "colorList",
-                                      colorList.map((color) =>
-                                        color.id === id
-                                          ? {
-                                              ...color,
-                                              ...[
-                                                { stock_image: url },
-                                                { color_image: url },
-                                                { removal_image: url },
-                                              ][input_index],
-                                            }
-                                          : color
-                                      )
-                                    );
-
-                                    const colorImagesList = Array.isArray(
-                                      formik.values[`colorImages_${id}`]
-                                    )
-                                      ? formik.values[`colorImages_${id}`]
-                                      : [...Array(3)];
-                                    formik.setFieldValue(
-                                      `colorImages_${id}`,
-                                      colorImagesList.map((oldFile, index) =>
-                                        index === input_index ? file : oldFile
-                                      )
-                                    );
-                                  },
-                                })[currentMode]();
-                              }}
-                            />
-                          </label>
-                        )
-                      )}
-                      <div className="ms-3 flex-grow-1">
-                        {!colorIsEmpty ? (
-                          <Select
-                            className={clsx(
-                              "react-select-styled react-select-solid mb-3"
+                            {!colorSchemeIsEmpty ? (
+                              <Select
+                                className={clsx(
+                                  "react-select-styled react-select-solid"
+                                )}
+                                classNamePrefix="react-select"
+                                defaultValue={
+                                  editMode
+                                    ? colorSchemeList
+                                    : {
+                                        label: colorScheme[0].name,
+                                        value: colorScheme[0].id,
+                                      }
+                                }
+                                isMulti
+                                options={colorScheme.map((cs) => ({
+                                  label: cs.name,
+                                  value: cs.id,
+                                }))}
+                                name={`colorScheme_${index}`}
+                                onChange={(colorss) => {
+                                  ({
+                                    create() {
+                                      formik.setFieldValue(
+                                        `colorScheme_${index}`,
+                                        [
+                                          ...colorss.map(
+                                            (colors) => colors.value
+                                          ),
+                                        ]
+                                      );
+                                    },
+                                    edit() {
+                                      // notice the colorSchemes is inside color item in colorList not colorScheme state
+                                      formik.setFieldValue(
+                                        "colorList",
+                                        formik.values["colorList"].map(
+                                          (color) =>
+                                            color.id === id
+                                              ? {
+                                                  ...color,
+                                                  colorSchemes: [
+                                                    ...colorss.map(
+                                                      (colors) => colors.value
+                                                    ),
+                                                  ],
+                                                }
+                                              : color
+                                        )
+                                      );
+                                    },
+                                  })[currentMode]();
+                                }}
+                                disabled={formik.isSubmitting || isUserLoading}
+                              />
+                            ) : (
+                              <div className="form-select form-select-solid">
+                                目前沒有資料
+                              </div>
                             )}
-                            classNamePrefix="react-select"
-                            defaultValue={
-                              editMode
-                                ? { label: name, value: color_name_id }
-                                : { label: color[0].name, value: color[0].id }
-                            }
-                            options={color.map((c) => ({
-                              label: c.name,
-                              value: c.id,
-                            }))}
-                            name={`color_${index}`}
-                            onChange={(colorName) => {
+                          </div>
+                        </div>
+                        <div className="">
+                          <input
+                            defaultValue={description || ""}
+                            placeholder="輸入顏色型號"
+                            onChange={({ target: { value: text } }) => {
                               ({
                                 create() {
                                   formik.setFieldValue(
-                                    `color_${index}`,
-                                    colorName.value
+                                    `description_${index}`,
+                                    text
                                   );
                                 },
                                 edit() {
@@ -921,8 +1038,7 @@ const EditModalForm = ({ isUserLoading }) => {
                                       color.id === id
                                         ? {
                                             ...color,
-                                            name: colorName.label,
-                                            color_name_id: colorName.value,
+                                            description: text,
                                           }
                                         : color
                                     )
@@ -930,67 +1046,11 @@ const EditModalForm = ({ isUserLoading }) => {
                                 },
                               })[currentMode]();
                             }}
-                            disabled={formik.isSubmitting || isUserLoading}
-                          />
-                        ) : (
-                          <div className="form-select form-select-solid mb-3">
-                            目前沒有資料
-                          </div>
-                        )}
-                        {!colorSchemeIsEmpty ? (
-                          <Select
                             className={clsx(
-                              "react-select-styled react-select-solid"
+                              "flex-grow-1 form-control form-control-solid"
                             )}
-                            classNamePrefix="react-select"
-                            defaultValue={
-                              editMode
-                                ? colorSchemeList
-                                : {
-                                    label: colorScheme[0].name,
-                                    value: colorScheme[0].id,
-                                  }
-                            }
-                            isMulti
-                            options={colorScheme.map((cs) => ({
-                              label: cs.name,
-                              value: cs.id,
-                            }))}
-                            name={`colorScheme_${index}`}
-                            onChange={(colorss) => {
-                              ({
-                                create() {
-                                  formik.setFieldValue(`colorScheme_${index}`, [
-                                    ...colorss.map((colors) => colors.value),
-                                  ]);
-                                },
-                                edit() {
-                                  // notice the colorSchemes is inside color item in colorList not colorScheme state
-                                  formik.setFieldValue(
-                                    "colorList",
-                                    formik.values["colorList"].map((color) =>
-                                      color.id === id
-                                        ? {
-                                            ...color,
-                                            colorSchemes: [
-                                              ...colorss.map(
-                                                (colors) => colors.value
-                                              ),
-                                            ],
-                                          }
-                                        : color
-                                    )
-                                  );
-                                },
-                              })[currentMode]();
-                            }}
-                            disabled={formik.isSubmitting || isUserLoading}
                           />
-                        ) : (
-                          <div className="form-select form-select-solid">
-                            目前沒有資料
-                          </div>
-                        )}
+                        </div>
                       </div>
                       <div
                         className="cursor-pointer align-self-center"

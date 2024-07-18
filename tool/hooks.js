@@ -69,5 +69,4 @@ export const usePermission = (persist) => {
   return permission;
 };
 
-export const checkExpires = (time) =>
-  time ? time * 1000 < Date.now() : console.log("Invalid exp.");
+export const checkExpires = (time) => !time && time * 1000 < Date.now();

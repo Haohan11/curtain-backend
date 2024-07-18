@@ -22,13 +22,17 @@ const Detector = ({ children }) => {
     ) {
       //登入完 開始倒數過期時間
       const limitTime = session?.data?._exp * 1000 - Date.now();
+      if (!limitTime) return;
       timeId = setTimeout(() => {
         handleShowModal("popup");
       }, limitTime);
     } else {
       //隨時檢測是否過期
       const checkTime = session?.data?._exp * 1000 - Date.now();
-      if ((session.status === "unauthenticated" && route !== "/login") || checkTime < 0) {
+      if (
+        (session.status === "unauthenticated" && route !== "/login") ||
+        checkTime < 0
+      ) {
         handleShowModal("popup");
       }
       clearTimeout(timeId);
