@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { LayoutProvider } from "@/_metronic/layout/core";
 
 import ScreenLoad from "@/components/loading/ScreenLoad";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 setupAxios(axios);
 
@@ -48,8 +49,8 @@ export default function App({
     Component.getLayout ?? ((page) => <DynamicWrapper>{page}</DynamicWrapper>);
 
   return getLayout(
-    <SessionProvider session={session}>
-      <>
+    <ErrorBoundary>
+      <SessionProvider session={session}>
         <Head>
           <title>翔宇窗飾後台</title>
         </Head>
@@ -65,7 +66,7 @@ export default function App({
             </MetronicI18nProvider>
           </QueryClientProvider>
         </Detector>
-      </>
-    </SessionProvider>
+      </SessionProvider>
+    </ErrorBoundary>
   );
 }
