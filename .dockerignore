@@ -1,0 +1,6 @@
+/.github
+
+.gitignore
+.env.local.example
+
+*.md
