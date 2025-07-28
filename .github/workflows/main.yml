@@ -25,5 +25,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_NAME }}:${{ github.sha[0:6] }}
+            ${{ vars.DOCKERHUB_NAME }}:${{ github.sha:0:6 }}
             ${{ vars.DOCKERHUB_NAME }}:latest
