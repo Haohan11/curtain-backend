@@ -19,11 +19,14 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Short SHA
+        run: echo "SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-6)" >> $GITHUB_ENV
+
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ vars.DOCKERHUB_NAME }}:${{ github.sha:0:6 }}
+            ${{ vars.DOCKERHUB_NAME }}:${{ env.SHORT_SHA }}
             ${{ vars.DOCKERHUB_NAME }}:latest
